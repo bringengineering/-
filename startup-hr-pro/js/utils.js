@@ -308,26 +308,54 @@ const Utils = {
   },
 
   /**
-   * 알림 표시
+   * 프로페셔널 Toast 알림 표시
    */
   showNotification(message, type = 'info') {
-    const colors = {
-      success: 'bg-green-500',
-      error: 'bg-red-500',
-      warning: 'bg-yellow-500',
-      info: 'bg-blue-500'
+    const container = document.getElementById('toast-container') || this.createToastContainer();
+
+    const icons = {
+      success: '✅',
+      error: '❌',
+      warning: '⚠️',
+      info: 'ℹ️'
     };
 
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-in`;
-    notification.textContent = message;
+    const colors = {
+      success: 'border-green-500',
+      error: 'border-red-500',
+      warning: 'border-yellow-500',
+      info: 'border-blue-500'
+    };
 
-    document.body.appendChild(notification);
+    const toast = document.createElement('div');
+    toast.className = `toast ${colors[type]} animate-slide-in-right`;
+    toast.innerHTML = `
+      <div class="text-2xl">${icons[type]}</div>
+      <div class="flex-1">
+        <div class="font-medium text-gray-900">${message}</div>
+      </div>
+      <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+        <span class="text-xl">×</span>
+      </button>
+    `;
 
+    container.appendChild(toast);
+
+    // 자동 제거
     setTimeout(() => {
-      notification.classList.add('animate-slide-out');
-      setTimeout(() => notification.remove(), 300);
-    }, 3000);
+      if (toast.parentElement) {
+        toast.style.animation = 'slide-in-right 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4000);
+  },
+
+  createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+    return container;
   },
 
   /**
