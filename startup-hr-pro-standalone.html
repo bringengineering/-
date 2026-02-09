@@ -1,0 +1,6386 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="스타트업 대표를 위한 프로페셔널 HR/법무 관리 플랫폼">
+  <title>StartupHR Pro - Professional Edition (Standalone)</title>
+
+  <!-- External CDN Libraries (Required) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+  <!-- Inline CSS -->
+  <style>
+/**
+ * StartupHR Pro - Professional Design System
+ * Modern Glassmorphism UI with Smooth Animations
+ */
+
+/* ===== CSS Variables ===== */
+:root {
+  /* Primary Colors */
+  --primary-50: #eff6ff;
+  --primary-100: #dbeafe;
+  --primary-200: #bfdbfe;
+  --primary-300: #93c5fd;
+  --primary-400: #60a5fa;
+  --primary-500: #3b82f6;
+  --primary-600: #2563eb;
+  --primary-700: #1d4ed8;
+  --primary-800: #1e40af;
+  --primary-900: #1e3a8a;
+
+  /* Success Colors */
+  --success-500: #10b981;
+  --success-600: #059669;
+
+  /* Warning Colors */
+  --warning-500: #f59e0b;
+  --warning-600: #d97706;
+
+  /* Danger Colors */
+  --danger-500: #ef4444;
+  --danger-600: #dc2626;
+
+  /* Gray Colors */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  --gradient-ocean: linear-gradient(135deg, #667eea 0%, #3b82f6 100%);
+  --gradient-sunset: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.18);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slower: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-Index */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --glass-bg: rgba(31, 41, 55, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Global Styles ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* ===== Glassmorphism Cards ===== */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-xl);
+  transition: all var(--transition-base);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2xl);
+}
+
+.glass-card-dark {
+  background: rgba(31, 41, 55, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Animated Background ===== */
+.animated-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.1) 100%);
+  animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(5%) translateY(5%);
+  }
+  50% {
+    transform: translateX(-5%) translateY(-5%);
+  }
+  75% {
+    transform: translateX(5%) translateY(-5%);
+  }
+}
+
+/* ===== Smooth Animations ===== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+.animate-fade-in-scale {
+  animation: fade-in-scale 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.5s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* Stagger Animation */
+.stagger-item {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.1s; }
+.stagger-item:nth-child(2) { animation-delay: 0.2s; }
+.stagger-item:nth-child(3) { animation-delay: 0.3s; }
+.stagger-item:nth-child(4) { animation-delay: 0.4s; }
+.stagger-item:nth-child(5) { animation-delay: 0.5s; }
+.stagger-item:nth-child(6) { animation-delay: 0.6s; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  border-radius: 0.75rem;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  border: none;
+  outline: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.3), transparent 70%);
+  transform: translateX(-100%);
+  transition: transform var(--transition-slow);
+}
+
+.btn:hover::before {
+  transform: translateX(100%);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background: var(--gradient-success);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-warning {
+  background: var(--gradient-warning);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger {
+  background: var(--gradient-danger);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 2px solid var(--gray-300);
+  color: var(--gray-700);
+}
+
+.btn-ghost:hover {
+  background: var(--gray-50);
+  border-color: var(--primary-500);
+  color: var(--primary-700);
+}
+
+/* ===== Progress Bar ===== */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--gray-200);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 999px;
+  transition: width var(--transition-slow);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* ===== Badges ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+.badge-success {
+  background: var(--success-500);
+  color: white;
+}
+
+.badge-warning {
+  background: var(--warning-500);
+  color: white;
+}
+
+.badge-danger {
+  background: var(--danger-500);
+  color: white;
+}
+
+.badge-primary {
+  background: var(--primary-500);
+  color: white;
+}
+
+.badge-gray {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+/* ===== Tooltip ===== */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 0.75rem;
+  background: var(--gray-900);
+  color: white;
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+  z-index: var(--z-tooltip);
+}
+
+.tooltip:hover::before {
+  opacity: 1;
+}
+
+/* ===== Modal ===== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  animation: fade-in 0.2s ease-out;
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-2xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fade-in-scale 0.3s ease-out;
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ===== Loading Spinner ===== */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+/* ===== Alert ===== */
+.alert {
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  animation: slide-up 0.3s ease-out;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--success-600);
+}
+
+.alert-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--warning-600);
+}
+
+.alert-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--danger-600);
+}
+
+.alert-info {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--primary-600);
+}
+
+/* ===== Notification Toast ===== */
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: var(--z-tooltip);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+}
+
+.toast {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-xl);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slide-in-right 0.3s ease-out;
+  border-left: 4px solid var(--primary-500);
+}
+
+.toast-success {
+  border-left-color: var(--success-500);
+}
+
+.toast-error {
+  border-left-color: var(--danger-500);
+}
+
+.toast-warning {
+  border-left-color: var(--warning-500);
+}
+
+/* ===== Chart Container ===== */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* ===== Stat Card ===== */
+.stat-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.stat-card-success::before {
+  background: var(--gradient-success);
+}
+
+.stat-card-warning::before {
+  background: var(--gradient-warning);
+}
+
+.stat-card-danger::before {
+  background: var(--gradient-danger);
+}
+
+/* ===== Mobile Menu Toggle ===== */
+.mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 60;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.mobile-menu-button:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  /* 태블릿 */
+  #sidebar {
+    width: 240px;
+  }
+
+  main {
+    margin-left: 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 모바일 */
+  body {
+    padding-top: 60px;
+  }
+
+  .mobile-menu-button {
+    display: block;
+  }
+
+  #sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+
+  #sidebar.active {
+    transform: translateX(0);
+  }
+
+  main {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .glass-card {
+    border-radius: 15px;
+    padding: 1rem !important;
+  }
+
+  .btn {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+
+  .modal {
+    max-width: 95vw;
+    margin: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+    top: 5rem;
+  }
+
+  /* 통계 카드 */
+  .stat-card {
+    padding: 1rem;
+  }
+
+  /* 차트 */
+  .chart-container {
+    height: 250px;
+  }
+
+  /* 테이블 스크롤 */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* 헤더 */
+  header .flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* 다크모드 토글 */
+  #darkModeToggle {
+    bottom: 4rem;
+    right: 1rem;
+    padding: 0.75rem;
+  }
+
+  /* 그리드 */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 네비게이션 */
+  .nav-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* 폼 */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* iOS zoom 방지 */
+  }
+}
+
+@media (max-width: 480px) {
+  /* 작은 모바일 */
+  main {
+    padding: 0.75rem;
+  }
+
+  .glass-card {
+    padding: 0.75rem !important;
+  }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 1.125rem !important;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .chart-container {
+    height: 200px;
+  }
+
+  /* 사이드바 너비 */
+  #sidebar {
+    width: 80vw;
+    max-width: 280px;
+  }
+}
+
+/* 모바일 가로 모드 */
+@media (max-height: 600px) and (orientation: landscape) {
+  #sidebar {
+    overflow-y: auto;
+  }
+
+  main {
+    padding: 1rem;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  body {
+    background: white;
+  }
+
+  .glass-card {
+    background: white;
+    border: 1px solid var(--gray-300);
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .btn,
+  button {
+    display: none;
+  }
+
+  .modal-backdrop {
+    display: none;
+  }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
+
+/* ===== Dark Mode ===== */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+}
+
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .modal {
+  background: var(--gray-800);
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  border-color: var(--gray-700);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: var(--gray-700);
+  border-color: var(--gray-600);
+  color: var(--gray-100);
+}
+
+[data-theme="dark"] .toast {
+  background: var(--gray-800);
+  color: var(--gray-100);
+}
+  </style>
+</head>
+<body class="bg-gray-100 animated-bg">
+
+  <!-- Mobile Menu Toggle -->
+  <button id="mobileMenuToggle" class="mobile-menu-button no-print">
+    <span class="text-2xl">☰</span>
+  </button>
+
+  <!-- Dark Mode Toggle (Fixed) -->
+  <button id="darkModeToggle" class="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-white shadow-xl hover:shadow-2xl transition-all no-print"
+          style="backdrop-filter: blur(20px); background: rgba(255, 255, 255, 0.9);">
+    <span class="text-2xl">🌙</span>
+  </button>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- 메인 컨테이너 -->
+  <div class="min-h-screen flex">
+
+    <!-- 사이드바 -->
+    <aside id="sidebar" class="w-64 fixed h-full glass-card-dark z-40 transition-all">
+      <!-- 로고 -->
+      <div class="p-6 border-b border-white border-opacity-10">
+        <h1 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+          StartupHR Pro
+        </h1>
+        <p class="text-xs text-gray-300 mt-1">Professional Edition</p>
+        <div class="mt-3 px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full inline-block">
+          <span class="text-xs font-bold text-white">v2.0</span>
+        </div>
+      </div>
+
+      <!-- 네비게이션 -->
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li>
+            <button data-page="dashboard"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-white transition-all flex items-center gap-3"
+                    style="background: rgba(59, 130, 246, 0.2);">
+              <span class="text-xl">📊</span>
+              <span class="font-medium">대시보드</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="employees"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">👥</span>
+              <span class="font-medium">직원 관리</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="contracts"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">📄</span>
+              <span class="font-medium">계약서 관리</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="attendance"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">⏰</span>
+              <span class="font-medium">근태 관리</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="legal"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">⚖️</span>
+              <span class="font-medium">법적 리스크</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="conversations"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">💬</span>
+              <span class="font-medium">대화 분석</span>
+            </button>
+          </li>
+          <li>
+            <button data-page="checklist"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">✅</span>
+              <span class="font-medium">체크리스트</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- 빠른 도구 -->
+        <div class="mt-8 pt-8 border-t border-white border-opacity-10">
+          <h3 class="text-xs font-semibold text-gray-400 uppercase mb-3 px-4">빠른 도구</h3>
+          <ul class="space-y-2">
+            <li>
+              <button onclick="App.exportAllData()"
+                      class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all flex items-center gap-2">
+                <span>💾</span>
+                <span>데이터 백업</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="App.importData()"
+                      class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all flex items-center gap-2">
+                <span>📥</span>
+                <span>데이터 불러오기</span>
+              </button>
+            </li>
+            <li>
+              <button onclick="if(confirm('정말 초기화하시겠습니까?')) { db.clearAll(); location.reload(); }"
+                      class="w-full text-left px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500 hover:bg-opacity-10 rounded-lg transition-all flex items-center gap-2">
+                <span>🗑️</span>
+                <span>데이터 초기화</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- 버전 정보 -->
+      <div class="absolute bottom-0 w-full p-4 border-t border-white border-opacity-10">
+        <p class="text-xs text-gray-400 text-center">Professional Edition</p>
+        <p class="text-xs text-gray-500 text-center mt-1">Made with ❤️ by Claude</p>
+      </div>
+    </aside>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="ml-64 flex-1 p-8 transition-all">
+      <!-- 헤더 -->
+      <header class="mb-8 glass-card p-6 animate-fade-in">
+        <div class="flex justify-between items-center">
+          <div>
+            <h2 class="text-sm text-gray-600 flex items-center gap-2" id="current-time">
+              <span>⏰</span>
+              <span id="time-text"></span>
+            </h2>
+          </div>
+          <div class="flex items-center space-x-4">
+            <!-- 알림 -->
+            <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-all" onclick="App.showNotifications()">
+              <span class="text-2xl">🔔</span>
+              <span id="notification-badge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-pulse-glow hidden"></span>
+            </button>
+            <!-- 프로필 -->
+            <div class="flex items-center space-x-2">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                   style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                대
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-gray-900">대표님</div>
+                <div class="text-xs text-gray-500">관리자</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 콘텐츠 영역 -->
+      <div id="content" class="animate-fade-in">
+        <!-- 여기에 페이지별 콘텐츠가 렌더링됩니다 -->
+        <div class="flex items-center justify-center h-64">
+          <div class="text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <p class="text-gray-600">로딩 중...</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Modal Container -->
+  <div id="modal-container"></div>
+
+  <!-- JavaScript 모듈 로드 -->
+  <script src="js/data-manager.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/employees.js"></script>
+  <script src="js/contracts.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/legal-check.js"></script>
+  <script src="js/conversations.js"></script>
+  <script src="js/checklist.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- 실시간 시계 -->
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      const timeEl = document.getElementById('time-text');
+      if (timeEl) {
+        timeEl.textContent = timeStr;
+      }
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+
+    // 저장된 테마 불러오기
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    updateDarkModeIcon();
+
+    darkModeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateDarkModeIcon();
+    });
+
+    function updateDarkModeIcon() {
+      const theme = html.getAttribute('data-theme');
+      darkModeToggle.innerHTML = theme === 'dark'
+        ? '<span class="text-2xl">☀️</span>'
+        : '<span class="text-2xl">🌙</span>';
+    }
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      const icon = mobileMenuToggle.querySelector('span');
+      icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+    });
+
+    // 사이드바 외부 클릭 시 닫기 (모바일)
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 &&
+          !sidebar.contains(e.target) &&
+          !mobileMenuToggle.contains(e.target) &&
+          sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        mobileMenuToggle.querySelector('span').textContent = '☰';
+      }
+    });
+
+    // 메뉴 클릭 시 사이드바 닫기 (모바일)
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+          mobileMenuToggle.querySelector('span').textContent = '☰';
+        }
+      });
+    });
+  </script>
+
+  <!-- Combined JavaScript (All Modules Inlined) -->
+  <script>
+/**
+ * StartupHR Pro - Data Manager
+ * LocalStorage 기반 데이터 관리 시스템
+ */
+
+class DataManager {
+  constructor() {
+    this.storagePrefix = 'startuphr_';
+    this.initializeStorage();
+  }
+
+  /**
+   * 초기 데이터 구조 설정
+   */
+  initializeStorage() {
+    const tables = [
+      'employees',
+      'contracts',
+      'attendance',
+      'education_support',
+      'warnings',
+      'communications',
+      'conversations',
+      'legal_checks',
+      'daily_checklists',
+      'case_studies',
+      'settings'
+    ];
+
+    tables.forEach(table => {
+      if (!this.getAll(table)) {
+        this.setTable(table, []);
+      }
+    });
+
+    // 샘플 데이터 초기화 (첫 실행 시)
+    if (this.getAll('employees').length === 0) {
+      this.loadSampleData();
+    }
+  }
+
+  /**
+   * 테이블 키 생성
+   */
+  getKey(table) {
+    return `${this.storagePrefix}${table}`;
+  }
+
+  /**
+   * 전체 데이터 조회
+   */
+  getAll(table) {
+    const data = localStorage.getItem(this.getKey(table));
+    return data ? JSON.parse(data) : null;
+  }
+
+  /**
+   * 테이블 설정
+   */
+  setTable(table, data) {
+    localStorage.setItem(this.getKey(table), JSON.stringify(data));
+  }
+
+  /**
+   * ID로 단일 항목 조회
+   */
+  getById(table, id) {
+    const data = this.getAll(table);
+    return data.find(item => item.id === id);
+  }
+
+  /**
+   * 조건으로 검색
+   */
+  find(table, predicate) {
+    const data = this.getAll(table);
+    return data.filter(predicate);
+  }
+
+  /**
+   * 항목 추가
+   */
+  add(table, item) {
+    const data = this.getAll(table);
+    const newItem = {
+      ...item,
+      id: this.generateId(),
+      created_at: new Date().toISOString()
+    };
+    data.push(newItem);
+    this.setTable(table, data);
+    return newItem;
+  }
+
+  /**
+   * 항목 업데이트
+   */
+  update(table, id, updates) {
+    const data = this.getAll(table);
+    const index = data.findIndex(item => item.id === id);
+    if (index !== -1) {
+      data[index] = {
+        ...data[index],
+        ...updates,
+        updated_at: new Date().toISOString()
+      };
+      this.setTable(table, data);
+      return data[index];
+    }
+    return null;
+  }
+
+  /**
+   * 항목 삭제
+   */
+  delete(table, id) {
+    const data = this.getAll(table);
+    const filtered = data.filter(item => item.id !== id);
+    this.setTable(table, filtered);
+    return filtered.length < data.length;
+  }
+
+  /**
+   * 고유 ID 생성
+   */
+  generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  /**
+   * 전체 데이터 내보내기 (백업)
+   */
+  exportAll() {
+    const allData = {};
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith(this.storagePrefix)) {
+        const tableName = key.replace(this.storagePrefix, '');
+        allData[tableName] = JSON.parse(localStorage.getItem(key));
+      }
+    });
+    return allData;
+  }
+
+  /**
+   * 데이터 가져오기 (복원)
+   */
+  importAll(data) {
+    Object.keys(data).forEach(table => {
+      this.setTable(table, data[table]);
+    });
+  }
+
+  /**
+   * 전체 데이터 초기화
+   */
+  clearAll() {
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith(this.storagePrefix)) {
+        localStorage.removeItem(key);
+      }
+    });
+    this.initializeStorage();
+  }
+
+  /**
+   * 샘플 데이터 로드
+   */
+  loadSampleData() {
+    // 샘플 직원 데이터
+    const sampleEmployees = [
+      {
+        name: '김승용',
+        email: 'seungyong@example.com',
+        phone: '010-1234-5678',
+        hire_date: '2026-01-01',
+        position: '현장 관리',
+        status: 'active',
+        contract_type: '정규직'
+      },
+      {
+        name: '이광민',
+        email: 'gwangmin@example.com',
+        phone: '010-2345-6789',
+        hire_date: '2025-08-15',
+        position: 'BIM 설계',
+        status: 'active',
+        contract_type: '계약직'
+      },
+      {
+        name: '박현서',
+        email: 'hyunseo@example.com',
+        phone: '010-3456-7890',
+        hire_date: '2025-11-01',
+        position: '프로젝트 매니저',
+        status: 'active',
+        contract_type: '정규직'
+      }
+    ];
+
+    sampleEmployees.forEach(emp => this.add('employees', emp));
+
+    // 샘플 케이스 스터디
+    const caseStudy = {
+      title: '초기 열정 → 급격한 의욕 저하 케이스',
+      category: '퇴사',
+      warning_signs: [
+        '초기 과도한 약속',
+        '이중 잣대 (돈 필요할 때 vs 불필요할 때)',
+        '소통 회피',
+        '책임 전가',
+        '극단적 제안'
+      ],
+      올바른대응: [
+        '초기: 과도한 약속 받지 않기',
+        '중기: 모든 조건 변경 서면화',
+        '신호 감지: 3회 소통 회피 시 경고',
+        '감정 소모전: 10분 넘어가면 종료',
+        '환불 제안: 거절 후 깔끔하게 정리'
+      ],
+      outcome: '조기 정리 권장, 3개월 끌지 말 것'
+    };
+
+    this.add('case_studies', caseStudy);
+
+    console.log('✅ 샘플 데이터 로드 완료');
+  }
+}
+
+// 전역 인스턴스 생성
+const db = new DataManager();
+
+/**
+ * StartupHR Pro - Utility Functions
+ * 공통 유틸리티 함수 모음
+ */
+
+const Utils = {
+  /**
+   * 날짜 포맷팅
+   */
+  formatDate(dateString, format = 'YYYY-MM-DD') {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    const formats = {
+      'YYYY-MM-DD': `${year}-${month}-${day}`,
+      'YYYY.MM.DD': `${year}.${month}.${day}`,
+      'MM/DD': `${month}/${day}`,
+      'YYYY-MM-DD HH:mm': `${year}-${month}-${day} ${hours}:${minutes}`,
+      'HH:mm': `${hours}:${minutes}`
+    };
+
+    return formats[format] || formats['YYYY-MM-DD'];
+  },
+
+  /**
+   * 상대적 시간 표시 (예: "2시간 전")
+   */
+  timeAgo(dateString) {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffMs = now - past;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    if (diffDay > 0) return `${diffDay}일 전`;
+    if (diffHour > 0) return `${diffHour}시간 전`;
+    if (diffMin > 0) return `${diffMin}분 전`;
+    return '방금';
+  },
+
+  /**
+   * 숫자 포맷팅 (3자리 콤마)
+   */
+  formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  },
+
+  /**
+   * 금액 포맷팅
+   */
+  formatCurrency(amount) {
+    return `${this.formatNumber(amount)}원`;
+  },
+
+  /**
+   * 주간 근무시간 계산
+   */
+  calculateWeeklyHours(attendance, employeeId, weekStart) {
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const weekAttendance = attendance.filter(record => {
+      const recordDate = new Date(record.date);
+      return record.employee_id === employeeId &&
+             recordDate >= weekStart &&
+             recordDate < weekEnd;
+    });
+
+    return weekAttendance.reduce((total, record) => {
+      return total + (record.work_hours || 0);
+    }, 0);
+  },
+
+  /**
+   * 시급 계산
+   */
+  calculateHourlyWage(monthlySalary, weeklyHours = 40) {
+    const monthlyHours = (weeklyHours * 52) / 12;
+    return Math.round(monthlySalary / monthlyHours);
+  },
+
+  /**
+   * 최저시급 체크 (2026년 기준)
+   */
+  checkMinimumWage(hourlyWage) {
+    const MINIMUM_WAGE_2026 = 10030; // 예상 최저시급
+    return {
+      isValid: hourlyWage >= MINIMUM_WAGE_2026,
+      difference: hourlyWage - MINIMUM_WAGE_2026,
+      minimumWage: MINIMUM_WAGE_2026
+    };
+  },
+
+  /**
+   * 52시간 체크
+   */
+  check52Hours(weeklyHours) {
+    let status = 'safe';
+    let message = '정상';
+    let color = 'green';
+
+    if (weeklyHours >= 52) {
+      status = 'danger';
+      message = '52시간 초과! 즉시 조치 필요';
+      color = 'red';
+    } else if (weeklyHours >= 50) {
+      status = 'critical';
+      message = '52시간 임박 경고';
+      color = 'orange';
+    } else if (weeklyHours >= 40) {
+      status = 'warning';
+      message = '연장근로 중';
+      color = 'yellow';
+    }
+
+    return {
+      status,
+      message,
+      color,
+      hours: weeklyHours,
+      overtime: Math.max(0, weeklyHours - 40),
+      violation: Math.max(0, weeklyHours - 52)
+    };
+  },
+
+  /**
+   * 감정적 표현 감지
+   */
+  detectEmotionalWords(text) {
+    const emotionalWords = {
+      critical: ['배신', '이기적', '책임감 없다', '정이 없다', '나가라', '그만둬라'],
+      warning: ['서운하다', '실망', '화난다', '짜증', '속상하다'],
+      inappropriate: ['바보', '멍청', '한심', '쓰레기']
+    };
+
+    const detected = {
+      critical: [],
+      warning: [],
+      inappropriate: [],
+      hasCritical: false,
+      hasWarning: false,
+      hasInappropriate: false
+    };
+
+    Object.keys(emotionalWords).forEach(level => {
+      emotionalWords[level].forEach(word => {
+        if (text.includes(word)) {
+          detected[level].push(word);
+          detected[`has${level.charAt(0).toUpperCase() + level.slice(1)}`] = true;
+        }
+      });
+    });
+
+    return detected;
+  },
+
+  /**
+   * 법적 리스크 키워드 감지
+   */
+  detectLegalRisks(text) {
+    const riskKeywords = {
+      critical: ['24시간 일하자', '52시간 초과', '주말도 당연히', '돈 안 주면'],
+      warning: ['환불 안 하면', '노동청 신고', '고소', '소송'],
+      important: ['계약', '급여', '환불', '퇴사', '해고', '교육비']
+    };
+
+    const risks = {
+      critical: [],
+      warning: [],
+      important: [],
+      riskScore: 0
+    };
+
+    Object.keys(riskKeywords).forEach(level => {
+      riskKeywords[level].forEach(keyword => {
+        if (text.includes(keyword)) {
+          risks[level].push(keyword);
+          risks.riskScore += level === 'critical' ? 30 : (level === 'warning' ? 15 : 5);
+        }
+      });
+    });
+
+    return risks;
+  },
+
+  /**
+   * D-day 계산
+   */
+  getDDay(targetDate) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const target = new Date(targetDate);
+    target.setHours(0, 0, 0, 0);
+    const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+
+    if (diff === 0) return 'D-Day';
+    if (diff > 0) return `D-${diff}`;
+    return `D+${Math.abs(diff)}`;
+  },
+
+  /**
+   * 리스크 레벨 색상
+   */
+  getRiskColor(score) {
+    if (score >= 80) return 'red';
+    if (score >= 60) return 'orange';
+    if (score >= 40) return 'yellow';
+    return 'green';
+  },
+
+  /**
+   * 요일 구하기
+   */
+  getDayOfWeek(dateString) {
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    const date = new Date(dateString);
+    return days[date.getDay()];
+  },
+
+  /**
+   * 주차 시작일 구하기 (월요일 기준)
+   */
+  getWeekStart(date = new Date()) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+  },
+
+  /**
+   * 난수 생성
+   */
+  randomId() {
+    return Math.random().toString(36).substr(2, 9);
+  },
+
+  /**
+   * 배열 셔플
+   */
+  shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  },
+
+  /**
+   * Deep Clone
+   */
+  clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  },
+
+  /**
+   * 텍스트 하이라이트
+   */
+  highlightText(text, keywords) {
+    let highlighted = text;
+    keywords.forEach(keyword => {
+      const regex = new RegExp(keyword, 'gi');
+      highlighted = highlighted.replace(regex, `<mark class="bg-yellow-200">$&</mark>`);
+    });
+    return highlighted;
+  },
+
+  /**
+   * 파일 다운로드
+   */
+  downloadFile(content, filename, contentType = 'text/plain') {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  },
+
+  /**
+   * JSON 다운로드
+   */
+  downloadJSON(data, filename) {
+    const json = JSON.stringify(data, null, 2);
+    this.downloadFile(json, filename, 'application/json');
+  },
+
+  /**
+   * 성공 알림
+   */
+  showSuccess(message) {
+    this.showNotification(message, 'success');
+  },
+
+  /**
+   * 에러 알림
+   */
+  showError(message) {
+    this.showNotification(message, 'error');
+  },
+
+  /**
+   * 프로페셔널 Toast 알림 표시
+   */
+  showNotification(message, type = 'info') {
+    const container = document.getElementById('toast-container') || this.createToastContainer();
+
+    const icons = {
+      success: '✅',
+      error: '❌',
+      warning: '⚠️',
+      info: 'ℹ️'
+    };
+
+    const colors = {
+      success: 'border-green-500',
+      error: 'border-red-500',
+      warning: 'border-yellow-500',
+      info: 'border-blue-500'
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${colors[type]} animate-slide-in-right`;
+    toast.innerHTML = `
+      <div class="text-2xl">${icons[type]}</div>
+      <div class="flex-1">
+        <div class="font-medium text-gray-900">${message}</div>
+      </div>
+      <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600">
+        <span class="text-xl">×</span>
+      </button>
+    `;
+
+    container.appendChild(toast);
+
+    // 자동 제거
+    setTimeout(() => {
+      if (toast.parentElement) {
+        toast.style.animation = 'slide-in-right 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4000);
+  },
+
+  createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+    return container;
+  },
+
+  /**
+   * 확인 다이얼로그
+   */
+  confirm(message) {
+    return window.confirm(message);
+  },
+
+  /**
+   * 디바운스
+   */
+  debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+};
+
+// 전역 사용을 위한 export
+window.Utils = Utils;
+
+/**
+ * StartupHR Pro - Employee Management Module
+ * 직원 관리 시스템
+ */
+
+const EmployeeManager = {
+  /**
+   * 모든 직원 조회
+   */
+  getAll() {
+    return db.getAll('employees');
+  },
+
+  /**
+   * 직원 추가
+   */
+  add(employeeData) {
+    const employee = db.add('employees', {
+      name: employeeData.name,
+      email: employeeData.email,
+      phone: employeeData.phone,
+      hire_date: employeeData.hire_date,
+      position: employeeData.position,
+      status: 'active',
+      contract_type: employeeData.contract_type || '정규직'
+    });
+
+    Utils.showSuccess(`${employee.name}님이 추가되었습니다.`);
+    return employee;
+  },
+
+  /**
+   * 직원 정보 업데이트
+   */
+  update(id, updates) {
+    const updated = db.update('employees', id, updates);
+    if (updated) {
+      Utils.showSuccess('직원 정보가 업데이트되었습니다.');
+    }
+    return updated;
+  },
+
+  /**
+   * 직원 삭제
+   */
+  delete(id) {
+    if (Utils.confirm('정말 삭제하시겠습니까?')) {
+      const success = db.delete('employees', id);
+      if (success) {
+        Utils.showSuccess('직원이 삭제되었습니다.');
+      }
+      return success;
+    }
+    return false;
+  },
+
+  /**
+   * 직원 상세 정보
+   */
+  getDetail(id) {
+    const employee = db.getById('employees', id);
+    if (!employee) return null;
+
+    // 관련 데이터 통합
+    const contracts = db.find('contracts', c => c.employee_id === id);
+    const attendance = db.find('attendance', a => a.employee_id === id);
+    const warnings = db.find('warnings', w => w.employee_id === id);
+    const communications = db.find('communications', c => c.employee_id === id);
+
+    // 이번 주 근무시간 계산
+    const weekStart = Utils.getWeekStart();
+    const weeklyHours = Utils.calculateWeeklyHours(attendance, id, weekStart);
+    const hourCheck = Utils.check52Hours(weeklyHours);
+
+    return {
+      ...employee,
+      contracts,
+      attendance,
+      warnings,
+      communications,
+      weeklyHours,
+      hourCheck,
+      stats: this.calculateStats(id)
+    };
+  },
+
+  /**
+   * 직원 통계 계산
+   */
+  calculateStats(id) {
+    const attendance = db.find('attendance', a => a.employee_id === id);
+    const warnings = db.find('warnings', w => w.employee_id === id);
+
+    // 총 근무일수
+    const totalDays = attendance.length;
+
+    // 평균 근무시간
+    const totalHours = attendance.reduce((sum, a) => sum + (a.work_hours || 0), 0);
+    const avgHours = totalDays > 0 ? (totalHours / totalDays).toFixed(1) : 0;
+
+    // 경고 횟수
+    const warningCount = warnings.length;
+
+    // 지각 횟수
+    const lateCount = attendance.filter(a => {
+      if (!a.clock_in) return false;
+      const clockIn = new Date(`2000-01-01 ${a.clock_in}`);
+      const standard = new Date(`2000-01-01 09:00`);
+      return clockIn > standard;
+    }).length;
+
+    return {
+      totalDays,
+      totalHours: totalHours.toFixed(1),
+      avgHours,
+      warningCount,
+      lateCount
+    };
+  },
+
+  /**
+   * 활성 직원만 조회
+   */
+  getActive() {
+    return db.find('employees', e => e.status === 'active');
+  },
+
+  /**
+   * 퇴사자 조회
+   */
+  getInactive() {
+    return db.find('employees', e => e.status === 'inactive');
+  },
+
+  /**
+   * 직원 검색
+   */
+  search(keyword) {
+    const lower = keyword.toLowerCase();
+    return db.find('employees', e =>
+      e.name.toLowerCase().includes(lower) ||
+      e.email.toLowerCase().includes(lower) ||
+      e.position.toLowerCase().includes(lower)
+    );
+  },
+
+  /**
+   * 리스크 있는 직원 찾기
+   */
+  getRiskyEmployees() {
+    const employees = this.getActive();
+    const risky = [];
+
+    employees.forEach(emp => {
+      const detail = this.getDetail(emp.id);
+      const risks = [];
+
+      // 52시간 초과
+      if (detail.hourCheck.status === 'danger') {
+        risks.push({
+          type: 'critical',
+          message: `52시간 초과 (${detail.weeklyHours}시간)`
+        });
+      }
+
+      // 경고 3회 이상
+      if (detail.stats.warningCount >= 3) {
+        risks.push({
+          type: 'warning',
+          message: `경고 ${detail.stats.warningCount}회`
+        });
+      }
+
+      // 지각 5회 이상
+      if (detail.stats.lateCount >= 5) {
+        risks.push({
+          type: 'warning',
+          message: `지각 ${detail.stats.lateCount}회`
+        });
+      }
+
+      // 소통 회피 패턴 감지
+      const recentComms = detail.communications.slice(-10);
+      const missedComms = recentComms.filter(c => c.comm_type === '소통회피').length;
+      if (missedComms >= 3) {
+        risks.push({
+          type: 'critical',
+          message: '소통 회피 패턴 감지'
+        });
+      }
+
+      if (risks.length > 0) {
+        risky.push({
+          employee: emp,
+          risks,
+          riskScore: risks.filter(r => r.type === 'critical').length * 30 +
+                     risks.filter(r => r.type === 'warning').length * 15
+        });
+      }
+    });
+
+    return risky.sort((a, b) => b.riskScore - a.riskScore);
+  },
+
+  /**
+   * 계약 만료 임박 직원
+   */
+  getExpiringContracts(days = 30) {
+    const employees = this.getActive();
+    const expiring = [];
+
+    employees.forEach(emp => {
+      const contracts = db.find('contracts', c =>
+        c.employee_id === emp.id && c.end_date
+      );
+
+      contracts.forEach(contract => {
+        const daysUntil = Math.ceil(
+          (new Date(contract.end_date) - new Date()) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysUntil > 0 && daysUntil <= days) {
+          expiring.push({
+            employee: emp,
+            contract,
+            daysUntil,
+            dDay: Utils.getDDay(contract.end_date)
+          });
+        }
+      });
+    });
+
+    return expiring.sort((a, b) => a.daysUntil - b.daysUntil);
+  },
+
+  /**
+   * 퇴사 처리
+   */
+  terminate(id, reason, exitDate) {
+    const employee = db.getById('employees', id);
+    if (!employee) return null;
+
+    // 상태 업데이트
+    this.update(id, {
+      status: 'inactive',
+      exit_date: exitDate,
+      exit_reason: reason
+    });
+
+    // 퇴사 기록 추가
+    db.add('communications', {
+      employee_id: id,
+      comm_type: '퇴사',
+      subject: '퇴사 처리',
+      content: reason,
+      date: exitDate
+    });
+
+    Utils.showSuccess(`${employee.name}님의 퇴사가 처리되었습니다.`);
+    return true;
+  },
+
+  /**
+   * 대시보드 요약 데이터
+   */
+  getDashboardSummary() {
+    const all = this.getAll();
+    const active = this.getActive();
+    const risky = this.getRiskyEmployees();
+    const expiring = this.getExpiringContracts();
+
+    // 이번 주 전체 근무시간
+    const weekStart = Utils.getWeekStart();
+    const attendance = db.getAll('attendance');
+
+    const weeklyStats = active.map(emp => {
+      const hours = Utils.calculateWeeklyHours(attendance, emp.id, weekStart);
+      return {
+        employee: emp,
+        hours,
+        check: Utils.check52Hours(hours)
+      };
+    });
+
+    return {
+      total: all.length,
+      active: active.length,
+      inactive: all.length - active.length,
+      risky: risky.length,
+      expiring: expiring.length,
+      weeklyStats,
+      riskyEmployees: risky,
+      expiringContracts: expiring
+    };
+  }
+};
+
+window.EmployeeManager = EmployeeManager;
+
+/**
+ * StartupHR Pro - Contract Management Module
+ * 계약서 자동 생성 및 관리
+ */
+
+const ContractManager = {
+  /**
+   * 계약서 생성
+   */
+  create(contractData) {
+    // 법적 리스크 자동 체크
+    const risks = this.checkRisks(contractData);
+
+    if (risks.critical.length > 0) {
+      const proceed = Utils.confirm(
+        `⚠️ 심각한 법적 리스크가 발견되었습니다:\n${risks.critical.join('\n')}\n\n계속하시겠습니까?`
+      );
+      if (!proceed) return null;
+    }
+
+    const contract = db.add('contracts', {
+      employee_id: contractData.employee_id,
+      contract_type: contractData.contract_type,
+      start_date: contractData.start_date,
+      end_date: contractData.end_date || null,
+      weekly_hours: parseInt(contractData.weekly_hours),
+      salary: parseInt(contractData.salary),
+      special_terms: contractData.special_terms || {},
+      status: 'draft',
+      risks: risks
+    });
+
+    Utils.showSuccess('계약서가 생성되었습니다.');
+    return contract;
+  },
+
+  /**
+   * 법적 리스크 체크
+   */
+  checkRisks(data) {
+    const risks = {
+      critical: [],
+      warning: [],
+      info: []
+    };
+
+    // 1. 52시간 체크
+    if (data.weekly_hours > 52) {
+      risks.critical.push('❌ 주 52시간 초과 계약 (근로기준법 위반)');
+    } else if (data.weekly_hours > 40) {
+      risks.warning.push('⚠️ 연장근로 포함 계약 (합의 필요)');
+    }
+
+    // 2. 최저시급 체크
+    const hourlyWage = Utils.calculateHourlyWage(data.salary, data.weekly_hours);
+    const wageCheck = Utils.checkMinimumWage(hourlyWage);
+
+    if (!wageCheck.isValid) {
+      risks.critical.push(
+        `❌ 최저시급 미달 (시급: ${Utils.formatCurrency(hourlyWage)}, 최저: ${Utils.formatCurrency(wageCheck.minimumWage)})`
+      );
+    }
+
+    // 3. 주말 근무 체크
+    if (data.special_terms.weekend_required && !data.special_terms.weekend_agreed) {
+      risks.critical.push('❌ 주말 근무 의무화 (직원 동의 필요)');
+    }
+
+    // 4. 교육비 반환 조항 체크
+    if (data.special_terms.education_support && !data.special_terms.refund_policy) {
+      risks.warning.push('⚠️ 교육비 반환 조항 누락 (명확히 명시 필요)');
+    }
+
+    // 5. 해지 조건 체크
+    if (!data.special_terms.termination_notice) {
+      risks.info.push('ℹ️ 해지 통보 기간 미명시 (30일 권장)');
+    }
+
+    return risks;
+  },
+
+  /**
+   * 계약서 템플릿 생성
+   */
+  generateTemplate(contractId) {
+    const contract = db.getById('contracts', contractId);
+    if (!contract) return null;
+
+    const employee = db.getById('employees', contract.employee_id);
+    const hourlyWage = Utils.calculateHourlyWage(contract.salary, contract.weekly_hours);
+
+    return `
+근로계약서
+
+갑(사용자): [회사명]
+을(근로자): ${employee.name}
+
+제1조 (근로계약 기간)
+- 시작일: ${Utils.formatDate(contract.start_date, 'YYYY.MM.DD')}
+${contract.end_date ? `- 종료일: ${Utils.formatDate(contract.end_date, 'YYYY.MM.DD')}` : '- 기간의 정함 없음 (정규직)'}
+
+제2조 (근무 장소 및 업무)
+- 근무지: [회사 주소]
+- 담당업무: ${employee.position}
+
+제3조 (근로시간)
+1. 근로일: 월요일 ~ 금요일
+2. 근로시간: 09:00 ~ 18:00 (주 ${contract.weekly_hours}시간)
+3. 휴게시간: 12:00 ~ 13:00 (1시간)
+
+★ 주말/공휴일 근로는 을(근로자)의 자발적 선택사항이며,
+   갑(사용자)은 이를 강요할 수 없습니다.
+${contract.special_terms.weekend_agreed ? '   주말 근무 시 사전 합의 및 별도 수당을 지급합니다.' : ''}
+
+제4조 (임금)
+1. 월 급여: ${Utils.formatCurrency(contract.salary)}
+2. 시급 환산: ${Utils.formatCurrency(hourlyWage)}
+3. 지급일: 매월 25일
+4. 지급방법: 을의 계좌로 입금
+
+제5조 (연장근로)
+1. 연장근로는 을의 동의 하에만 가능합니다.
+2. 주 12시간을 초과할 수 없습니다. (근로기준법 준수)
+3. 연장수당: 통상임금의 1.5배 지급
+4. 주 52시간 초과 시 을은 거부할 권리가 있습니다.
+
+제6조 (업무 보고 및 소통)
+1. 을은 다음 사항을 사전 보고해야 합니다:
+   - 결근/지각/조퇴 (당일 09:00까지)
+   - 업무상 중요 결정
+   - 장기 휴가 (1주일 전)
+
+2. 다음은 보고 의무가 없습니다:
+   - 개인 사생활
+   - 업무 외 시간 활동
+   - 구체적 사유 (참/불참 여부만 공유)
+
+${this.generateEducationClause(contract)}
+
+제${contract.special_terms.education_support ? '8' : '7'}조 (계약 해지)
+1. 갑 또는 을은 ${contract.special_terms.termination_notice || 30}일 전 서면 통보로 계약을 해지할 수 있습니다.
+2. 즉시 해지 가능 사유:
+   - 무단결근 3회 이상
+   - 중대한 규칙 위반
+   - 범죄 행위
+
+3. 을의 권리:
+   - 부당해고 시 노동위원회 구제 신청 가능
+   - 해고사유서 서면 교부 요구 가능
+
+제${contract.special_terms.education_support ? '9' : '8'}조 (4대보험)
+갑은 을을 4대보험(국민연금, 건강보험, 고용보험, 산재보험)에 가입합니다.
+
+제${contract.special_terms.education_support ? '10' : '9'}조 (기밀유지)
+을은 재직 중 및 퇴직 후에도 업무상 알게 된 회사의 기밀을 누설하지 않습니다.
+
+제${contract.special_terms.education_support ? '11' : '10'}조 (분쟁 해결)
+1. 본 계약 관련 분쟁은 상호 협의로 해결합니다.
+2. 협의 불가 시 관할 노동위원회 또는 법원에 의합니다.
+3. 모든 중요 합의는 서면으로 작성하며, 구두 약속은 효력이 없습니다.
+
+본 계약을 증명하기 위하여 계약서 2통을 작성하고
+갑과 을이 서명 날인 후 각 1통씩 보관합니다.
+
+${Utils.formatDate(new Date(), 'YYYY년 MM월 DD일')}
+
+갑(사용자): [회사명]
+          대표: _________________ (인)
+
+을(근로자): ${employee.name}
+          서명: _________________ (인)
+    `.trim();
+  },
+
+  /**
+   * 교육비 조항 생성
+   */
+  generateEducationClause(contract) {
+    if (!contract.special_terms.education_support) return '';
+
+    const edu = contract.special_terms.education_support;
+
+    return `
+제7조 (교육 지원 및 반환)
+1. 갑이 을에게 제공하는 교육:
+   - 교육명: ${edu.name || '[교육명]'}
+   - 기관: ${edu.institution || '[교육기관]'}
+   - 금액: ${Utils.formatCurrency(edu.amount || 0)}
+   - 기간: ${edu.period || '[기간]'}
+
+2. 반환 조건:
+   - 을이 교육 완료 후 ${edu.refund_period || 6}개월 이내 퇴사 시
+   - 반환 비율: 잔여 기간 비례 (예: 2개월 근무 후 퇴사 = 4/6 = 66% 반환)
+
+3. 반환 면제:
+   - 갑의 귀책사유로 퇴사
+   - 부당해고
+   - ${edu.refund_period || 6}개월 이상 근무
+
+★ 본 조항은 을의 자발적 동의 하에 작성되었으며,
+   을은 충분히 이해하고 서명합니다.
+`;
+  },
+
+  /**
+   * PDF 생성 (프로페셔널 버전)
+   */
+  generatePDF(contractId) {
+    const contract = db.getById('contracts', contractId);
+    if (!contract) return;
+
+    const employee = db.getById('employees', contract.employee_id);
+    const template = this.generateTemplate(contractId);
+
+    try {
+      // jsPDF 인스턴스 생성
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // 제목
+      doc.setFontSize(20);
+      doc.setFont(undefined, 'bold');
+      doc.text('Employment Contract', 105, 20, { align: 'center' });
+
+      doc.setFontSize(16);
+      doc.text('Geun-ro-gye-yak-seo', 105, 28, { align: 'center' });
+
+      // 구분선
+      doc.setLineWidth(0.5);
+      doc.line(20, 35, 190, 35);
+
+      // 내용
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'normal');
+
+      let yPos = 45;
+      const lineHeight = 7;
+      const maxWidth = 170;
+
+      // 계약 정보
+      const contractInfo = [
+        `Employee: ${employee.name}`,
+        `Position: ${employee.position}`,
+        `Start Date: ${Utils.formatDate(contract.start_date, 'YYYY.MM.DD')}`,
+        contract.end_date ? `End Date: ${Utils.formatDate(contract.end_date, 'YYYY.MM.DD')}` : 'Type: Permanent',
+        '',
+        `Working Hours: ${contract.weekly_hours} hours/week`,
+        `Monthly Salary: ${Utils.formatCurrency(contract.salary)}`,
+        `Hourly Wage: ${Utils.formatCurrency(Utils.calculateHourlyWage(contract.salary, contract.weekly_hours))}`,
+        '',
+        'Working Days: Monday ~ Friday',
+        'Working Time: 09:00 ~ 18:00',
+        'Lunch Break: 12:00 ~ 13:00 (1 hour)',
+        '',
+        '[ Important Notice ]',
+        '- Overtime work requires employee consent',
+        '- Maximum 52 hours per week (Labor Law)',
+        '- Weekend work is voluntary',
+        '- Overtime pay: 1.5x regular wage'
+      ];
+
+      // 교육비 정보
+      if (contract.special_terms?.education_support) {
+        const edu = contract.special_terms.education_support;
+        contractInfo.push('');
+        contractInfo.push('[ Education Support ]');
+        contractInfo.push(`- Training: ${edu.name || 'N/A'}`);
+        contractInfo.push(`- Amount: ${Utils.formatCurrency(edu.amount || 0)}`);
+        contractInfo.push(`- Refund period: ${edu.refund_period || 6} months`);
+      }
+
+      contractInfo.forEach(line => {
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+        doc.text(line, 20, yPos);
+        yPos += lineHeight;
+      });
+
+      // 서명란
+      yPos += 10;
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+
+      doc.setLineWidth(0.3);
+      doc.line(20, yPos, 190, yPos);
+      yPos += 10;
+
+      doc.setFont(undefined, 'bold');
+      doc.text('Signatures', 105, yPos, { align: 'center' });
+      yPos += 15;
+
+      doc.setFont(undefined, 'normal');
+      doc.text('Employer: ___________________', 30, yPos);
+      doc.text('Employee: ___________________', 120, yPos);
+      yPos += 10;
+      doc.text(`Date: ${Utils.formatDate(new Date(), 'YYYY.MM.DD')}`, 30, yPos);
+
+      // 푸터
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text('Generated by StartupHR Pro', 105, 285, { align: 'center' });
+      doc.text(`${Utils.formatDate(new Date(), 'YYYY-MM-DD HH:mm')}`, 105, 290, { align: 'center' });
+
+      // PDF 다운로드
+      const filename = `Contract_${employee.name}_${Utils.formatDate(new Date())}.pdf`;
+      doc.save(filename);
+
+      Utils.showSuccess('계약서 PDF가 다운로드되었습니다!');
+
+      // 한글 버전도 텍스트로 제공
+      this.downloadTextVersion(contractId);
+
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      // PDF 실패 시 텍스트 파일로 대체
+      this.downloadTextVersion(contractId);
+    }
+  },
+
+  /**
+   * 텍스트 버전 다운로드 (한글 지원)
+   */
+  downloadTextVersion(contractId) {
+    const template = this.generateTemplate(contractId);
+    if (!template) return;
+
+    const contract = db.getById('contracts', contractId);
+    const employee = db.getById('employees', contract.employee_id);
+    const filename = `계약서_한글_${employee.name}_${Utils.formatDate(new Date())}.txt`;
+
+    Utils.downloadFile(template, filename, 'text/plain; charset=utf-8');
+    Utils.showSuccess('한글 계약서(텍스트)도 다운로드되었습니다!');
+  },
+
+  /**
+   * 계약서 상태 업데이트
+   */
+  updateStatus(contractId, status) {
+    db.update('contracts', contractId, { status });
+
+    if (status === 'signed') {
+      db.update('contracts', contractId, {
+        signed_at: new Date().toISOString()
+      });
+      Utils.showSuccess('계약서가 서명되었습니다.');
+    }
+  },
+
+  /**
+   * 직원별 계약서 조회
+   */
+  getByEmployee(employeeId) {
+    return db.find('contracts', c => c.employee_id === employeeId);
+  },
+
+  /**
+   * 전체 계약서 조회
+   */
+  getAll() {
+    return db.getAll('contracts');
+  },
+
+  /**
+   * 계약서 상세
+   */
+  getDetail(contractId) {
+    const contract = db.getById('contracts', contractId);
+    if (!contract) return null;
+
+    const employee = db.getById('employees', contract.employee_id);
+    const template = this.generateTemplate(contractId);
+
+    return {
+      ...contract,
+      employee,
+      template,
+      hourlyWage: Utils.calculateHourlyWage(contract.salary, contract.weekly_hours)
+    };
+  }
+};
+
+window.ContractManager = ContractManager;
+
+/**
+ * StartupHR Pro - Attendance Management Module
+ * 근태 관리 시스템 (52시간 체크 포함)
+ */
+
+const AttendanceManager = {
+  /**
+   * 출퇴근 기록 추가
+   */
+  add(employeeId, date, clockIn, clockOut) {
+    // 근무시간 자동 계산
+    const workHours = this.calculateWorkHours(clockIn, clockOut);
+
+    // 근무 유형 결정
+    const workType = this.getWorkType(date);
+
+    const attendance = db.add('attendance', {
+      employee_id: employeeId,
+      date,
+      clock_in: clockIn,
+      clock_out: clockOut,
+      work_hours: workHours,
+      work_type: workType,
+      notes: ''
+    });
+
+    // 52시간 체크
+    this.check52HoursWarning(employeeId, date);
+
+    Utils.showSuccess('출퇴근 기록이 추가되었습니다.');
+    return attendance;
+  },
+
+  /**
+   * 근무시간 계산
+   */
+  calculateWorkHours(clockIn, clockOut) {
+    if (!clockIn || !clockOut) return 0;
+
+    const start = new Date(`2000-01-01 ${clockIn}`);
+    const end = new Date(`2000-01-01 ${clockOut}`);
+
+    let diffMs = end - start;
+
+    // 점심시간 1시간 제외
+    if (diffMs > 4 * 60 * 60 * 1000) { // 4시간 이상이면 점심시간 제외
+      diffMs -= 60 * 60 * 1000;
+    }
+
+    const hours = diffMs / (1000 * 60 * 60);
+    return Math.max(0, Math.round(hours * 10) / 10);
+  },
+
+  /**
+   * 근무 유형 결정
+   */
+  getWorkType(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDay();
+
+    // 주말
+    if (day === 0 || day === 6) {
+      return '주말';
+    }
+
+    // 공휴일 체크 (간단 버전)
+    const holidays = ['2026-01-01', '2026-03-01', '2026-05-05', '2026-06-06', '2026-08-15', '2026-10-03', '2026-10-09', '2026-12-25'];
+    if (holidays.includes(dateString)) {
+      return '공휴일';
+    }
+
+    return '평일';
+  },
+
+  /**
+   * 주간 근무시간 조회
+   */
+  getWeeklyHours(employeeId, weekStartDate) {
+    const weekStart = weekStartDate ? new Date(weekStartDate) : Utils.getWeekStart();
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 7);
+
+    const attendance = db.find('attendance', a => {
+      const recordDate = new Date(a.date);
+      return a.employee_id === employeeId &&
+             recordDate >= weekStart &&
+             recordDate < weekEnd;
+    });
+
+    const totalHours = attendance.reduce((sum, a) => sum + (a.work_hours || 0), 0);
+
+    return {
+      weekStart: Utils.formatDate(weekStart),
+      weekEnd: Utils.formatDate(weekEnd),
+      records: attendance,
+      totalHours: Math.round(totalHours * 10) / 10,
+      check: Utils.check52Hours(totalHours),
+      dailyBreakdown: this.getDailyBreakdown(attendance)
+    };
+  },
+
+  /**
+   * 일일 분석
+   */
+  getDailyBreakdown(attendance) {
+    const days = ['월', '화', '수', '목', '금', '토', '일'];
+    const breakdown = [];
+
+    attendance.forEach(record => {
+      const day = Utils.getDayOfWeek(record.date);
+      breakdown.push({
+        date: Utils.formatDate(record.date, 'MM/DD'),
+        day,
+        hours: record.work_hours,
+        clockIn: record.clock_in,
+        clockOut: record.clock_out,
+        type: record.work_type
+      });
+    });
+
+    return breakdown.sort((a, b) => a.date.localeCompare(b.date));
+  },
+
+  /**
+   * 52시간 경고 체크
+   */
+  check52HoursWarning(employeeId, date) {
+    const weekStart = Utils.getWeekStart(new Date(date));
+    const weekly = this.getWeeklyHours(employeeId, weekStart);
+
+    const employee = db.getById('employees', employeeId);
+    if (!employee) return;
+
+    if (weekly.check.status === 'danger') {
+      // 52시간 초과
+      Utils.showError(
+        `🚨 ${employee.name}님 주 52시간 초과! (${weekly.totalHours}시간)\n즉시 조치가 필요합니다.`
+      );
+
+      // 경고 기록 추가
+      db.add('warnings', {
+        employee_id: employeeId,
+        warning_type: '52시간 초과',
+        description: `주 ${weekly.totalHours}시간 근무`,
+        severity: 5,
+        issued_date: new Date().toISOString(),
+        resolved: false
+      });
+
+    } else if (weekly.check.status === 'critical') {
+      // 52시간 임박
+      Utils.showError(
+        `⚠️ ${employee.name}님 52시간 임박! (${weekly.totalHours}시간)\n연장근로 중단을 권장합니다.`
+      );
+
+    } else if (weekly.check.status === 'warning') {
+      // 40시간 초과
+      console.log(`ℹ️ ${employee.name}님 연장근로 중 (${weekly.totalHours}시간)`);
+    }
+  },
+
+  /**
+   * 월간 통계
+   */
+  getMonthlyStats(employeeId, year, month) {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0);
+
+    const attendance = db.find('attendance', a => {
+      const recordDate = new Date(a.date);
+      return a.employee_id === employeeId &&
+             recordDate >= startDate &&
+             recordDate <= endDate;
+    });
+
+    const totalDays = attendance.length;
+    const totalHours = attendance.reduce((sum, a) => sum + (a.work_hours || 0), 0);
+    const avgHours = totalDays > 0 ? totalHours / totalDays : 0;
+
+    // 지각 체크
+    const lateCount = attendance.filter(a => {
+      if (!a.clock_in) return false;
+      const clockIn = new Date(`2000-01-01 ${a.clock_in}`);
+      const standard = new Date(`2000-01-01 09:00`);
+      return clockIn > standard;
+    }).length;
+
+    // 주말 근무
+    const weekendCount = attendance.filter(a => a.work_type === '주말').length;
+
+    return {
+      year,
+      month,
+      totalDays,
+      totalHours: Math.round(totalHours * 10) / 10,
+      avgHours: Math.round(avgHours * 10) / 10,
+      lateCount,
+      weekendCount,
+      records: attendance
+    };
+  },
+
+  /**
+   * 전체 직원 주간 근무시간
+   */
+  getAllWeeklyHours(weekStartDate) {
+    const employees = db.find('employees', e => e.status === 'active');
+    const weekStart = weekStartDate ? new Date(weekStartDate) : Utils.getWeekStart();
+
+    return employees.map(emp => {
+      const weekly = this.getWeeklyHours(emp.id, weekStart);
+      return {
+        employee: emp,
+        ...weekly
+      };
+    }).sort((a, b) => b.totalHours - a.totalHours);
+  },
+
+  /**
+   * 52시간 위반자 찾기
+   */
+  find52HoursViolators(weekStartDate) {
+    const all = this.getAllWeeklyHours(weekStartDate);
+    return all.filter(data => data.check.status === 'danger' || data.check.status === 'critical');
+  },
+
+  /**
+   * 엑셀 데이터 생성 (CSV)
+   */
+  exportToCSV(employeeId, startDate, endDate) {
+    const attendance = db.find('attendance', a => {
+      const recordDate = new Date(a.date);
+      return a.employee_id === employeeId &&
+             recordDate >= new Date(startDate) &&
+             recordDate <= new Date(endDate);
+    });
+
+    const employee = db.getById('employees', employeeId);
+    const csv = this.generateCSV(attendance, employee);
+    const filename = `근태기록_${employee.name}_${startDate}_${endDate}.csv`;
+
+    Utils.downloadFile(csv, filename, 'text/csv; charset=utf-8');
+    Utils.showSuccess('근태 기록이 다운로드되었습니다.');
+  },
+
+  /**
+   * CSV 생성
+   */
+  generateCSV(attendance, employee) {
+    let csv = '\uFEFF'; // UTF-8 BOM
+    csv += `직원명,날짜,요일,출근,퇴근,근무시간,유형,비고\n`;
+
+    attendance.forEach(record => {
+      csv += `${employee.name},`;
+      csv += `${Utils.formatDate(record.date)},`;
+      csv += `${Utils.getDayOfWeek(record.date)},`;
+      csv += `${record.clock_in || ''},`;
+      csv += `${record.clock_out || ''},`;
+      csv += `${record.work_hours || 0},`;
+      csv += `${record.work_type},`;
+      csv += `${record.notes || ''}\n`;
+    });
+
+    return csv;
+  },
+
+  /**
+   * 지각 체크
+   */
+  isLate(clockIn) {
+    if (!clockIn) return false;
+    const time = new Date(`2000-01-01 ${clockIn}`);
+    const standard = new Date(`2000-01-01 09:00`);
+    return time > standard;
+  },
+
+  /**
+   * 대시보드 요약
+   */
+  getDashboardSummary() {
+    const weekStart = Utils.getWeekStart();
+    const all = this.getAllWeeklyHours(weekStart);
+    const violators = this.find52HoursViolators(weekStart);
+
+    // 전체 평균
+    const avgHours = all.reduce((sum, data) => sum + data.totalHours, 0) / (all.length || 1);
+
+    return {
+      weekStart: Utils.formatDate(weekStart),
+      totalEmployees: all.length,
+      avgHours: Math.round(avgHours * 10) / 10,
+      violators: violators.length,
+      violatorDetails: violators,
+      allStats: all
+    };
+  },
+
+  /**
+   * 자동 입력 (테스트용)
+   */
+  addSampleData(employeeId, days = 5) {
+    const today = new Date();
+
+    for (let i = 0; i < days; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+
+      // 주말 제외
+      if (date.getDay() === 0 || date.getDay() === 6) continue;
+
+      const clockIn = '09:00';
+      const clockOut = `${18 + Math.floor(Math.random() * 3)}:00`;
+
+      this.add(
+        employeeId,
+        Utils.formatDate(date),
+        clockIn,
+        clockOut
+      );
+    }
+
+    Utils.showSuccess('샘플 근태 데이터가 추가되었습니다.');
+  }
+};
+
+window.AttendanceManager = AttendanceManager;
+
+/**
+ * StartupHR Pro - Legal Risk Check Module
+ * 법적 리스크 자동 체크 시스템
+ */
+
+const LegalCheckManager = {
+  /**
+   * 전체 법적 리스크 체크
+   */
+  checkAll() {
+    const employees = db.find('employees', e => e.status === 'active');
+    const results = [];
+
+    employees.forEach(emp => {
+      const check = this.checkEmployee(emp.id);
+      results.push({
+        employee: emp,
+        ...check
+      });
+    });
+
+    // 리스크 점수로 정렬
+    return results.sort((a, b) => b.totalScore - a.totalScore);
+  },
+
+  /**
+   * 직원별 법적 리스크 체크
+   */
+  checkEmployee(employeeId) {
+    const risks = {
+      workHours: this.check52Hours(employeeId),
+      minimumWage: this.checkMinimumWage(employeeId),
+      contract: this.checkContract(employeeId),
+      insurance: this.check4대보험(employeeId),
+      communication: this.checkCommunication(employeeId)
+    };
+
+    // 총점 계산 (100점 만점)
+    const scores = Object.values(risks).map(r => r.score);
+    const totalScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+
+    // 위험 레벨 결정
+    let level = 'safe';
+    let color = 'green';
+
+    if (totalScore >= 70) {
+      level = 'danger';
+      color = 'red';
+    } else if (totalScore >= 50) {
+      level = 'warning';
+      color = 'orange';
+    } else if (totalScore >= 30) {
+      level = 'caution';
+      color = 'yellow';
+    }
+
+    return {
+      totalScore,
+      level,
+      color,
+      risks
+    };
+  },
+
+  /**
+   * 52시간 체크
+   */
+  check52Hours(employeeId) {
+    const weekly = AttendanceManager.getWeeklyHours(employeeId);
+    const check = weekly.check;
+
+    let score = 0;
+    let issues = [];
+
+    if (check.status === 'danger') {
+      score = 100;
+      issues.push(`🔴 주 52시간 초과 (${weekly.totalHours}시간)`);
+      issues.push('근로기준법 위반으로 과태료 대상');
+      issues.push('즉시 근무시간 조정 필요');
+    } else if (check.status === 'critical') {
+      score = 70;
+      issues.push(`🟠 52시간 임박 (${weekly.totalHours}시간)`);
+      issues.push('연장근로 중단 권장');
+    } else if (check.status === 'warning') {
+      score = 30;
+      issues.push(`🟡 연장근로 중 (${weekly.totalHours}시간)`);
+      issues.push('연장수당 지급 확인 필요');
+    } else {
+      issues.push('✅ 정상 범위');
+    }
+
+    return {
+      category: '근로시간',
+      score,
+      status: check.status,
+      details: {
+        weeklyHours: weekly.totalHours,
+        overtime: check.overtime,
+        violation: check.violation
+      },
+      issues,
+      actions: this.getActions52Hours(check.status)
+    };
+  },
+
+  /**
+   * 52시간 조치사항
+   */
+  getActions52Hours(status) {
+    const actions = {
+      danger: [
+        '즉시 퇴근 조치',
+        '초과분에 대한 연장수당 지급',
+        '향후 52시간 준수 서면 경고',
+        '노무사 상담 권장'
+      ],
+      critical: [
+        '금주 추가 연장근로 금지',
+        '다음 주 근무 계획 조정'
+      ],
+      warning: [
+        '연장수당 정확히 계산',
+        '주간 근무시간 모니터링'
+      ],
+      safe: ['현 상태 유지']
+    };
+
+    return actions[status] || [];
+  },
+
+  /**
+   * 최저임금 체크
+   */
+  checkMinimumWage(employeeId) {
+    const contracts = db.find('contracts', c => c.employee_id === employeeId);
+    if (contracts.length === 0) {
+      return {
+        category: '임금',
+        score: 50,
+        status: 'warning',
+        issues: ['⚠️ 계약서 없음'],
+        actions: ['계약서 작성 필요']
+      };
+    }
+
+    const latestContract = contracts.sort((a, b) =>
+      new Date(b.start_date) - new Date(a.start_date)
+    )[0];
+
+    const hourlyWage = Utils.calculateHourlyWage(
+      latestContract.salary,
+      latestContract.weekly_hours
+    );
+
+    const check = Utils.checkMinimumWage(hourlyWage);
+
+    let score = 0;
+    let issues = [];
+
+    if (!check.isValid) {
+      score = 100;
+      issues.push(`🔴 최저시급 미달`);
+      issues.push(`현재 시급: ${Utils.formatCurrency(hourlyWage)}`);
+      issues.push(`최저시급: ${Utils.formatCurrency(check.minimumWage)}`);
+      issues.push(`부족분: ${Utils.formatCurrency(Math.abs(check.difference))}`);
+    } else {
+      issues.push('✅ 최저시급 준수');
+      issues.push(`현재 시급: ${Utils.formatCurrency(hourlyWage)}`);
+    }
+
+    return {
+      category: '임금',
+      score,
+      status: check.isValid ? 'safe' : 'danger',
+      details: {
+        hourlyWage,
+        minimumWage: check.minimumWage,
+        difference: check.difference
+      },
+      issues,
+      actions: check.isValid ? [] : ['즉시 급여 인상 필요', '소급 적용 검토']
+    };
+  },
+
+  /**
+   * 계약서 체크
+   */
+  checkContract(employeeId) {
+    const contracts = db.find('contracts', c => c.employee_id === employeeId);
+
+    if (contracts.length === 0) {
+      return {
+        category: '계약서',
+        score: 80,
+        status: 'danger',
+        issues: ['🔴 계약서 없음', '법적 분쟁 시 불리함'],
+        actions: ['즉시 계약서 작성', '소급 서명 검토']
+      };
+    }
+
+    const latestContract = contracts[contracts.length - 1];
+    let score = 0;
+    let issues = [];
+
+    // 필수 조항 체크
+    const missingClauses = [];
+
+    if (!latestContract.weekly_hours) missingClauses.push('근로시간');
+    if (!latestContract.salary) missingClauses.push('급여');
+    if (!latestContract.special_terms?.termination_notice) missingClauses.push('해지조건');
+
+    if (missingClauses.length > 0) {
+      score = 40;
+      issues.push(`🟡 필수 조항 누락: ${missingClauses.join(', ')}`);
+    } else {
+      issues.push('✅ 필수 조항 포함');
+    }
+
+    // 서명 여부
+    if (latestContract.status !== 'signed') {
+      score += 30;
+      issues.push('🟡 미서명 상태');
+    }
+
+    return {
+      category: '계약서',
+      score,
+      status: score >= 50 ? 'warning' : 'safe',
+      details: {
+        contractCount: contracts.length,
+        latestStatus: latestContract.status,
+        missingClauses
+      },
+      issues,
+      actions: score > 0 ? ['계약서 보완', '재서명 진행'] : []
+    };
+  },
+
+  /**
+   * 4대보험 체크 (간단 버전)
+   */
+  check4대보험(employeeId) {
+    // 실제로는 외부 API 연동 필요
+    // 여기서는 계약서 존재 여부로 간단 체크
+
+    const contracts = db.find('contracts', c => c.employee_id === employeeId);
+
+    if (contracts.length === 0) {
+      return {
+        category: '4대보험',
+        score: 50,
+        status: 'warning',
+        issues: ['⚠️ 계약서 없어 확인 불가'],
+        actions: ['계약 체결 후 4대보험 가입']
+      };
+    }
+
+    return {
+      category: '4대보험',
+      score: 0,
+      status: 'safe',
+      issues: ['ℹ️ 별도 확인 필요'],
+      actions: ['정기 점검 권장']
+    };
+  },
+
+  /**
+   * 소통 패턴 체크
+   */
+  checkCommunication(employeeId) {
+    const communications = db.find('communications', c => c.employee_id === employeeId);
+    const recentComms = communications.slice(-10); // 최근 10건
+
+    let score = 0;
+    let issues = [];
+
+    // 소통 회피 패턴
+    const avoidCount = recentComms.filter(c =>
+      c.content.includes('소통 회피') ||
+      c.content.includes('무응답') ||
+      c.content.includes('연락 두절')
+    ).length;
+
+    if (avoidCount >= 3) {
+      score = 60;
+      issues.push('🔴 소통 회피 패턴 감지');
+      issues.push(`최근 10회 중 ${avoidCount}회 소통 문제`);
+    } else if (avoidCount >= 1) {
+      score = 30;
+      issues.push('🟡 소통 주의 필요');
+    } else {
+      issues.push('✅ 정상 소통');
+    }
+
+    // 경고 기록
+    const warnings = db.find('warnings', w => w.employee_id === employeeId);
+    if (warnings.length >= 3) {
+      score += 40;
+      issues.push(`🟠 경고 ${warnings.length}회`);
+    }
+
+    return {
+      category: '소통',
+      score: Math.min(100, score),
+      status: score >= 60 ? 'danger' : (score >= 30 ? 'warning' : 'safe'),
+      details: {
+        totalComms: communications.length,
+        avoidCount,
+        warningCount: warnings.length
+      },
+      issues,
+      actions: score >= 60 ? ['조기 정리 검토', '모든 소통 서면화'] :
+               score >= 30 ? ['면담 진행', '상황 모니터링'] : []
+    };
+  },
+
+  /**
+   * 종합 리포트 생성
+   */
+  generateReport(employeeId) {
+    const employee = db.getById('employees', employeeId);
+    const check = this.checkEmployee(employeeId);
+
+    const report = `
+========================================
+법적 리스크 체크 리포트
+========================================
+
+직원명: ${employee.name}
+직책: ${employee.position}
+입사일: ${Utils.formatDate(employee.hire_date)}
+점검일: ${Utils.formatDate(new Date(), 'YYYY-MM-DD HH:mm')}
+
+----------------------------------------
+종합 점수: ${check.totalScore}/100
+위험 레벨: ${check.level.toUpperCase()}
+----------------------------------------
+
+${Object.values(check.risks).map(risk => `
+[${risk.category}] ${risk.score}점
+상태: ${risk.status}
+
+문제점:
+${risk.issues.map(issue => `  - ${issue}`).join('\n')}
+
+조치사항:
+${risk.actions.length > 0 ? risk.actions.map(action => `  - ${action}`).join('\n') : '  - 조치 불필요'}
+`).join('\n')}
+
+========================================
+`.trim();
+
+    return report;
+  },
+
+  /**
+   * 리포트 다운로드
+   */
+  downloadReport(employeeId) {
+    const report = this.generateReport(employeeId);
+    const employee = db.getById('employees', employeeId);
+    const filename = `법적리스크체크_${employee.name}_${Utils.formatDate(new Date())}.txt`;
+
+    Utils.downloadFile(report, filename, 'text/plain; charset=utf-8');
+    Utils.showSuccess('리포트가 다운로드되었습니다.');
+  },
+
+  /**
+   * 대시보드 요약
+   */
+  getDashboardSummary() {
+    const results = this.checkAll();
+
+    const dangerCount = results.filter(r => r.level === 'danger').length;
+    const warningCount = results.filter(r => r.level === 'warning' || r.level === 'caution').length;
+    const avgScore = Math.round(
+      results.reduce((sum, r) => sum + r.totalScore, 0) / (results.length || 1)
+    );
+
+    return {
+      avgScore,
+      dangerCount,
+      warningCount,
+      safeCount: results.length - dangerCount - warningCount,
+      topRisks: results.slice(0, 5),
+      allResults: results
+    };
+  }
+};
+
+window.LegalCheckManager = LegalCheckManager;
+
+/**
+ * StartupHR Pro - Daily Checklist Module
+ * 일일 체크리스트 및 브리핑 시스템
+ */
+
+const ChecklistManager = {
+  /**
+   * 일일 브리핑 생성
+   */
+  generateDailyBriefing() {
+    const today = Utils.formatDate(new Date());
+    const summary = EmployeeManager.getDashboardSummary();
+    const attendance = AttendanceManager.getDashboardSummary();
+    const legal = LegalCheckManager.getDashboardSummary();
+
+    // 긴급 알림
+    const urgent = [];
+
+    // 52시간 초과자
+    summary.weeklyStats.forEach(stat => {
+      if (stat.check.status === 'danger') {
+        urgent.push({
+          type: 'critical',
+          icon: '🔴',
+          message: `${stat.employee.name}님 주 52시간 초과 (${stat.hours}시간)`,
+          action: '즉시 퇴근 조치 필요'
+        });
+      }
+    });
+
+    // 계약 만료 임박
+    summary.expiringContracts.forEach(exp => {
+      if (exp.daysUntil <= 7) {
+        urgent.push({
+          type: 'critical',
+          icon: '🔴',
+          message: `${exp.employee.name}님 계약 만료 ${exp.dDay}`,
+          action: '계약 갱신 여부 즉시 결정'
+        });
+      } else if (exp.daysUntil <= 30) {
+        urgent.push({
+          type: 'warning',
+          icon: '🟡',
+          message: `${exp.employee.name}님 계약 만료 ${exp.dDay}`,
+          action: '갱신 검토 필요'
+        });
+      }
+    });
+
+    // 법적 리스크 고위험
+    legal.topRisks.slice(0, 3).forEach(risk => {
+      if (risk.level === 'danger') {
+        urgent.push({
+          type: 'critical',
+          icon: '🔴',
+          message: `${risk.employee.name}님 법적 리스크 ${risk.totalScore}점`,
+          action: '노무사 상담 권장'
+        });
+      }
+    });
+
+    return {
+      date: today,
+      day: Utils.getDayOfWeek(today),
+      urgent,
+      metrics: {
+        totalEmployees: summary.active,
+        avgWeeklyHours: attendance.avgHours,
+        riskScore: legal.avgScore,
+        pendingTasks: this.getPendingTasksCount()
+      },
+      summary: {
+        active: summary.active,
+        risky: summary.risky,
+        expiring: summary.expiring,
+        legalDanger: legal.dangerCount,
+        legalWarning: legal.warningCount
+      }
+    };
+  },
+
+  /**
+   * 일일 체크리스트 생성
+   */
+  createDailyChecklist() {
+    const today = Utils.formatDate(new Date());
+
+    const checklist = {
+      date: today,
+      type: 'daily',
+      items: [
+        {
+          id: 1,
+          category: 'morning',
+          task: '긴급 알림 확인',
+          priority: 'high',
+          done: false
+        },
+        {
+          id: 2,
+          category: 'morning',
+          task: '오늘 면담/미팅 준비',
+          priority: 'high',
+          done: false
+        },
+        {
+          id: 3,
+          category: 'morning',
+          task: '직원 출근 현황 확인',
+          priority: 'medium',
+          done: false
+        },
+        {
+          id: 4,
+          category: 'morning',
+          task: '어제 미처리 건 검토',
+          priority: 'medium',
+          done: false
+        },
+        {
+          id: 5,
+          category: 'afternoon',
+          task: '업무 진행 상황 체크',
+          priority: 'medium',
+          done: false
+        },
+        {
+          id: 6,
+          category: 'afternoon',
+          task: '직원 질문/요청 응답',
+          priority: 'high',
+          done: false
+        },
+        {
+          id: 7,
+          category: 'afternoon',
+          task: '오늘 발생한 이슈 기록',
+          priority: 'high',
+          done: false
+        },
+        {
+          id: 8,
+          category: 'evening',
+          task: '직원 퇴근 시간 확인',
+          priority: 'medium',
+          done: false
+        },
+        {
+          id: 9,
+          category: 'evening',
+          task: '오늘 근무시간 기록 확인',
+          priority: 'high',
+          done: false
+        },
+        {
+          id: 10,
+          category: 'evening',
+          task: '내일 할 일 정리',
+          priority: 'low',
+          done: false
+        }
+      ],
+      completion_rate: 0
+    };
+
+    // 저장
+    const existing = db.find('daily_checklists', c => c.date === today && c.type === 'daily');
+    if (existing.length === 0) {
+      db.add('daily_checklists', checklist);
+    }
+
+    return checklist;
+  },
+
+  /**
+   * 주간 체크리스트 생성
+   */
+  createWeeklyChecklist() {
+    const weekStart = Utils.formatDate(Utils.getWeekStart());
+
+    return {
+      date: weekStart,
+      type: 'weekly',
+      items: [
+        { task: '지난주 근무시간 총계 확인', deadline: '월요일', done: false },
+        { task: '52시간 초과자 체크', deadline: '월요일', done: false },
+        { task: '이번 주 일정 공유', deadline: '월요일', done: false },
+        { task: '직원별 업무 배정 확인', deadline: '화요일', done: false },
+        { task: '주간 팀 미팅', deadline: '수요일', done: false },
+        { task: '법적 리스크 점검', deadline: '목요일', done: false },
+        { task: '다음주 준비 사항 정리', deadline: '금요일', done: false }
+      ],
+      completion_rate: 0
+    };
+  },
+
+  /**
+   * 체크리스트 조회
+   */
+  getChecklist(date, type = 'daily') {
+    const checklists = db.find('daily_checklists', c =>
+      c.date === date && c.type === type
+    );
+
+    if (checklists.length > 0) {
+      return checklists[0];
+    }
+
+    // 없으면 새로 생성
+    return type === 'daily' ?
+           this.createDailyChecklist() :
+           this.createWeeklyChecklist();
+  },
+
+  /**
+   * 체크리스트 항목 토글
+   */
+  toggleItem(checklistId, itemId) {
+    const checklist = db.getById('daily_checklists', checklistId);
+    if (!checklist) return null;
+
+    const itemIndex = checklist.items.findIndex(item => item.id === itemId);
+    if (itemIndex === -1) return null;
+
+    checklist.items[itemIndex].done = !checklist.items[itemIndex].done;
+
+    // 완료율 계산
+    const doneCount = checklist.items.filter(item => item.done).length;
+    checklist.completion_rate = Math.round((doneCount / checklist.items.length) * 100);
+
+    db.update('daily_checklists', checklistId, {
+      items: checklist.items,
+      completion_rate: checklist.completion_rate
+    });
+
+    return checklist;
+  },
+
+  /**
+   * 미완료 작업 개수
+   */
+  getPendingTasksCount() {
+    const today = Utils.formatDate(new Date());
+    const checklist = this.getChecklist(today);
+
+    return checklist.items.filter(item => !item.done).length;
+  },
+
+  /**
+   * 일일 리포트 생성
+   */
+  generateDailyReport() {
+    const today = Utils.formatDate(new Date());
+    const yesterday = Utils.formatDate(new Date(Date.now() - 24 * 60 * 60 * 1000));
+
+    const checklist = this.getChecklist(today);
+    const completed = checklist.items.filter(item => item.done);
+    const pending = checklist.items.filter(item => !item.done);
+
+    // 어제 활동
+    const yesterdayComms = db.find('communications', c =>
+      Utils.formatDate(c.date).startsWith(yesterday)
+    );
+
+    const report = {
+      date: today,
+      checklist: {
+        total: checklist.items.length,
+        completed: completed.length,
+        pending: pending.length,
+        completionRate: checklist.completion_rate
+      },
+      completed: completed.map(item => ({
+        task: item.task,
+        category: item.category
+      })),
+      pending: pending.map(item => ({
+        task: item.task,
+        priority: item.priority,
+        category: item.category
+      })),
+      yesterday: {
+        activities: yesterdayComms.length,
+        summary: yesterdayComms.slice(0, 5).map(c => ({
+          type: c.comm_type,
+          subject: c.subject,
+          time: Utils.formatDate(c.date, 'HH:mm')
+        }))
+      },
+      risks: LegalCheckManager.getDashboardSummary()
+    };
+
+    db.add('daily_reports', report);
+
+    return report;
+  },
+
+  /**
+   * 리포트 다운로드
+   */
+  downloadDailyReport() {
+    const report = this.generateDailyReport();
+
+    const text = `
+========================================
+일일 리포트
+========================================
+
+날짜: ${report.date}
+
+----------------------------------------
+체크리스트 완료율: ${report.checklist.completionRate}%
+----------------------------------------
+완료: ${report.checklist.completed}개
+미완료: ${report.checklist.pending}개
+
+완료한 작업:
+${report.completed.map((item, idx) => `${idx + 1}. ${item.task}`).join('\n')}
+
+미완료 작업:
+${report.pending.map((item, idx) => `${idx + 1}. [${item.priority}] ${item.task}`).join('\n')}
+
+----------------------------------------
+어제 활동
+----------------------------------------
+${report.yesterday.summary.map(a => `[${a.time}] ${a.type} - ${a.subject}`).join('\n')}
+
+----------------------------------------
+법적 리스크 현황
+----------------------------------------
+평균 점수: ${report.risks.avgScore}/100
+위험: ${report.risks.dangerCount}명
+주의: ${report.risks.warningCount}명
+
+========================================
+`.trim();
+
+    const filename = `일일리포트_${report.date}.txt`;
+    Utils.downloadFile(text, filename, 'text/plain; charset=utf-8');
+    Utils.showSuccess('일일 리포트가 다운로드되었습니다.');
+  },
+
+  /**
+   * 상황별 가이드 검색
+   */
+  getSituationGuide(situation) {
+    const guides = {
+      '직원이 갑자기 그만두겠다고 함': {
+        immediate: [
+          '❌ 감정적 반응 금지',
+          '✅ "알겠습니다. 생각 정리 후 내일 다시 얘기합시다"',
+          '✅ 이 대화 즉시 문자로 요약 전송'
+        ],
+        within24h: [
+          '노무사 긴급 상담',
+          '퇴사 체크리스트 확인',
+          '법적 증거 패키지 준비'
+        ]
+      },
+      '직원이 주말 근무 거부': {
+        check: [
+          '❓ 계약서에 주말 근무 명시되어 있나?',
+          '❓ 주말 급여 지급하고 있나?',
+          '❓ 다른 직원들도 같은 조건인가?'
+        ],
+        action: [
+          '✅ 계약서 미명시 → 강제 불가',
+          '✅ "참여 여부만 금요일에 알려달라" 요청',
+          '❌ "당연히 나와야지" 압박 금지'
+        ]
+      },
+      '직원이 노동청 신고하겠다고 위협': {
+        immediate: [
+          '🚨 즉시 노무사 연락',
+          '❌ 절대 협박/회유 금지',
+          '✅ "알겠습니다" 답변만'
+        ],
+        within3h: [
+          '52시간 초과 여부 긴급 확인',
+          '급여 체불 여부 확인',
+          '4대보험 정상 가입 확인',
+          '증거 자료 백업'
+        ]
+      },
+      '직원과 42분 통화 중': {
+        realtime: [
+          '⏱️ 10분 경과 → 서면 정리 제안',
+          '⏱️ 20분 경과 → 통화 종료 후 문자',
+          '⏱️ 30분 경과 → 강제 종료 필요',
+          '❌ 감정적 표현 절대 금지',
+          '✅ 녹음 시작 (합법적 범위)'
+        ]
+      }
+    };
+
+    return guides[situation] || {
+      info: '해당 상황에 대한 가이드가 없습니다.',
+      action: ['노무사 상담 권장']
+    };
+  }
+};
+
+window.ChecklistManager = ChecklistManager;
+
+/**
+ * StartupHR Pro - Conversation Analysis Module
+ * 대화 분석 및 녹취록 관리
+ */
+
+const ConversationManager = {
+  /**
+   * 대화 기록 추가
+   */
+  add(employeeId, transcript) {
+    const analysis = this.analyze(transcript);
+
+    const conversation = db.add('conversations', {
+      employee_id: employeeId,
+      date: new Date().toISOString(),
+      duration: analysis.estimatedMinutes,
+      transcript_text: transcript,
+      risk_score: analysis.riskScore,
+      critical_count: analysis.criticalKeywords.length,
+      warning_count: analysis.warningKeywords.length,
+      summary: analysis.summary,
+      keywords_detected: analysis.allKeywords
+    });
+
+    // 하이라이트 저장
+    analysis.highlights.forEach(highlight => {
+      db.add('conversation_highlights', {
+        conversation_id: conversation.id,
+        text_snippet: highlight.text,
+        risk_level: highlight.level,
+        keyword: highlight.keyword,
+        recommendation: highlight.recommendation
+      });
+    });
+
+    if (analysis.riskScore >= 70) {
+      Utils.showError('🚨 고위험 대화 패턴 감지! 즉시 조치가 필요합니다.');
+    }
+
+    Utils.showSuccess('대화가 분석되었습니다.');
+    return conversation;
+  },
+
+  /**
+   * 대화 내용 분석
+   */
+  analyze(text) {
+    // 감정적 표현 감지
+    const emotional = Utils.detectEmotionalWords(text);
+
+    // 법적 리스크 키워드 감지
+    const legal = Utils.detectLegalRisks(text);
+
+    // 모든 키워드
+    const allKeywords = [
+      ...emotional.critical,
+      ...emotional.warning,
+      ...emotional.inappropriate,
+      ...legal.critical,
+      ...legal.warning,
+      ...legal.important
+    ];
+
+    // 리스크 점수 계산
+    const emotionalScore = emotional.critical.length * 20 +
+                          emotional.warning.length * 10 +
+                          emotional.inappropriate.length * 25;
+
+    const riskScore = Math.min(100, emotionalScore + legal.riskScore);
+
+    // 하이라이트 생성
+    const highlights = [];
+
+    emotional.critical.forEach(keyword => {
+      highlights.push({
+        text: this.extractContext(text, keyword),
+        level: 'critical',
+        keyword,
+        recommendation: '감정적 표현 대신 객관적 사실로 전환 필요'
+      });
+    });
+
+    legal.critical.forEach(keyword => {
+      highlights.push({
+        text: this.extractContext(text, keyword),
+        level: 'critical',
+        keyword,
+        recommendation: '법적 리스크 - 즉시 정정 및 서면 정리 필요'
+      });
+    });
+
+    // 대화 길이 추정 (300자 = 1분 가정)
+    const estimatedMinutes = Math.ceil(text.length / 300);
+
+    // 요약 생성
+    const summary = this.generateSummary(text, allKeywords, riskScore);
+
+    return {
+      estimatedMinutes,
+      riskScore,
+      criticalKeywords: [...emotional.critical, ...legal.critical],
+      warningKeywords: [...emotional.warning, ...legal.warning],
+      allKeywords,
+      highlights,
+      summary,
+      emotional,
+      legal
+    };
+  },
+
+  /**
+   * 키워드 문맥 추출
+   */
+  extractContext(text, keyword, contextLength = 50) {
+    const index = text.indexOf(keyword);
+    if (index === -1) return keyword;
+
+    const start = Math.max(0, index - contextLength);
+    const end = Math.min(text.length, index + keyword.length + contextLength);
+
+    let snippet = text.substring(start, end);
+
+    if (start > 0) snippet = '...' + snippet;
+    if (end < text.length) snippet = snippet + '...';
+
+    return snippet;
+  },
+
+  /**
+   * 요약 생성
+   */
+  generateSummary(text, keywords, riskScore) {
+    return {
+      wordCount: text.length,
+      keywordCount: keywords.length,
+      riskLevel: riskScore >= 70 ? 'critical' :
+                 riskScore >= 50 ? 'high' :
+                 riskScore >= 30 ? 'medium' : 'low',
+      mainIssues: this.extractMainIssues(keywords),
+      recommendations: this.getRecommendations(riskScore, keywords)
+    };
+  },
+
+  /**
+   * 주요 이슈 추출
+   */
+  extractMainIssues(keywords) {
+    const issues = [];
+
+    if (keywords.some(k => k.includes('52시간') || k.includes('주말'))) {
+      issues.push('근로시간 관련 논의');
+    }
+
+    if (keywords.some(k => k.includes('환불') || k.includes('교육비'))) {
+      issues.push('교육비 환불 문제');
+    }
+
+    if (keywords.some(k => k.includes('퇴사') || k.includes('해고'))) {
+      issues.push('퇴사 관련 논의');
+    }
+
+    if (keywords.some(k => ['배신', '서운', '이기적'].includes(k))) {
+      issues.push('감정적 갈등');
+    }
+
+    return issues.length > 0 ? issues : ['일반 대화'];
+  },
+
+  /**
+   * 권장사항 생성
+   */
+  getRecommendations(riskScore, keywords) {
+    const recommendations = [];
+
+    if (riskScore >= 70) {
+      recommendations.push('❌ 즉시 대화 중단');
+      recommendations.push('✅ 내용을 서면으로 정리하여 발송');
+      recommendations.push('✅ 노무사 긴급 상담');
+      recommendations.push('✅ 증거 패키지 준비');
+    } else if (riskScore >= 50) {
+      recommendations.push('⚠️ 대화 내용 서면화');
+      recommendations.push('✅ 감정적 표현 자제');
+      recommendations.push('✅ 객관적 사실만 전달');
+    } else if (riskScore >= 30) {
+      recommendations.push('ℹ️ 대화 기록 보관');
+      recommendations.push('✅ 필요시 서면 보충');
+    } else {
+      recommendations.push('✅ 정상 범위의 대화');
+    }
+
+    return recommendations;
+  },
+
+  /**
+   * 10분 룰 체크
+   */
+  check10MinuteRule(startTime) {
+    const now = new Date();
+    const start = new Date(startTime);
+    const diffMinutes = (now - start) / (1000 * 60);
+
+    if (diffMinutes >= 10) {
+      return {
+        exceeded: true,
+        minutes: Math.round(diffMinutes),
+        warning: '⏱️ 10분이 경과했습니다. 대화를 종료하고 서면으로 정리하시겠습니까?'
+      };
+    }
+
+    return {
+      exceeded: false,
+      minutes: Math.round(diffMinutes),
+      remaining: 10 - Math.round(diffMinutes)
+    };
+  },
+
+  /**
+   * 직원별 대화 기록 조회
+   */
+  getByEmployee(employeeId) {
+    return db.find('conversations', c => c.employee_id === employeeId)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  },
+
+  /**
+   * 대화 상세
+   */
+  getDetail(conversationId) {
+    const conversation = db.getById('conversations', conversationId);
+    if (!conversation) return null;
+
+    const employee = db.getById('employees', conversation.employee_id);
+    const highlights = db.find('conversation_highlights', h =>
+      h.conversation_id === conversationId
+    );
+
+    return {
+      ...conversation,
+      employee,
+      highlights
+    };
+  },
+
+  /**
+   * 증거 패키지 생성
+   */
+  generateEvidencePackage(employeeId) {
+    const employee = db.getById('employees', employeeId);
+    const conversations = this.getByEmployee(employeeId);
+    const attendance = db.find('attendance', a => a.employee_id === employeeId);
+    const contracts = db.find('contracts', c => c.employee_id === employeeId);
+    const warnings = db.find('warnings', w => w.employee_id === employeeId);
+    const communications = db.find('communications', c => c.employee_id === employeeId);
+
+    const package = `
+========================================
+법적 증거 패키지
+========================================
+
+직원명: ${employee.name}
+직책: ${employee.position}
+입사일: ${Utils.formatDate(employee.hire_date)}
+생성일: ${Utils.formatDate(new Date(), 'YYYY-MM-DD HH:mm')}
+
+========================================
+1. 대화 녹취 기록 (${conversations.length}건)
+========================================
+
+${conversations.map((conv, idx) => `
+[${idx + 1}] ${Utils.formatDate(conv.date, 'YYYY-MM-DD HH:mm')}
+길이: ${conv.duration}분
+리스크 점수: ${conv.risk_score}/100
+주요 이슈: ${conv.summary.mainIssues.join(', ')}
+
+전문:
+${conv.transcript_text}
+
+분석 결과:
+- 위험 키워드: ${conv.critical_count}개
+- 주의 키워드: ${conv.warning_count}개
+
+권장조치:
+${conv.summary.recommendations.map(r => `  - ${r}`).join('\n')}
+
+${'='.repeat(40)}
+`).join('\n')}
+
+========================================
+2. 근태 기록 (${attendance.length}건)
+========================================
+
+${attendance.map(a => `${Utils.formatDate(a.date)} | ${a.clock_in} ~ ${a.clock_out} | ${a.work_hours}시간 | ${a.work_type}`).join('\n')}
+
+========================================
+3. 계약서 (${contracts.length}건)
+========================================
+
+${contracts.map((c, idx) => `[${idx + 1}] ${c.contract_type} | ${Utils.formatDate(c.start_date)} ~ ${c.end_date || '무기한'} | ${Utils.formatCurrency(c.salary)}`).join('\n')}
+
+========================================
+4. 경고 기록 (${warnings.length}건)
+========================================
+
+${warnings.map(w => `[${Utils.formatDate(w.issued_date)}] ${w.warning_type} - ${w.description}`).join('\n')}
+
+========================================
+5. 소통 기록 (${communications.length}건)
+========================================
+
+${communications.map(c => `[${Utils.formatDate(c.date)}] ${c.comm_type} - ${c.subject}`).join('\n')}
+
+========================================
+종합 의견
+========================================
+
+${this.generateFinalOpinion(employee, conversations, attendance, warnings)}
+
+========================================
+`.trim();
+
+    return package;
+  },
+
+  /**
+   * 종합 의견 생성
+   */
+  generateFinalOpinion(employee, conversations, attendance, warnings) {
+    const totalRiskScore = conversations.reduce((sum, c) => sum + c.risk_score, 0) /
+                           (conversations.length || 1);
+
+    const weeklyHours = AttendanceManager.getWeeklyHours(employee.id);
+
+    let opinion = `직원 ${employee.name}님에 대한 종합 분석 결과:\n\n`;
+
+    if (totalRiskScore >= 70) {
+      opinion += '🔴 고위험 상태\n';
+      opinion += '- 대화 내용에서 심각한 법적 리스크 발견\n';
+      opinion += '- 조기 정리 또는 노무사 상담 강력 권장\n\n';
+    }
+
+    if (weeklyHours.check.status === 'danger') {
+      opinion += '🔴 52시간 위반\n';
+      opinion += `- 주 ${weeklyHours.totalHours}시간 근무\n`;
+      opinion += '- 근로기준법 위반 상태\n\n';
+    }
+
+    if (warnings.length >= 3) {
+      opinion += `🟠 경고 ${warnings.length}회 누적\n`;
+      opinion += '- 개선 의지 확인 필요\n\n';
+    }
+
+    opinion += '권장 조치:\n';
+    opinion += '1. 모든 향후 소통은 서면으로만 진행\n';
+    opinion += '2. 감정적 표현 일체 배제\n';
+    opinion += '3. 필요시 노무사 동석 하 면담\n';
+    opinion += '4. 법적 절차 대비 증거 자료 지속 수집\n';
+
+    return opinion;
+  },
+
+  /**
+   * 증거 패키지 다운로드
+   */
+  downloadEvidencePackage(employeeId) {
+    const package = this.generateEvidencePackage(employeeId);
+    const employee = db.getById('employees', employeeId);
+    const filename = `증거패키지_${employee.name}_${Utils.formatDate(new Date())}.txt`;
+
+    Utils.downloadFile(package, filename, 'text/plain; charset=utf-8');
+    Utils.showSuccess('증거 패키지가 다운로드되었습니다.');
+  }
+};
+
+window.ConversationManager = ConversationManager;
+
+/**
+ * StartupHR Pro - Main Application
+ * SPA 라우팅 및 UI 렌더링
+ */
+
+const App = {
+  currentPage: 'dashboard',
+  charts: {}, // Chart.js 인스턴스 저장
+
+  init() {
+    console.log('🚀 StartupHR Pro 시작');
+
+    // 이벤트 리스너 등록
+    this.setupEventListeners();
+
+    // 초기 페이지 렌더링
+    this.renderPage('dashboard');
+
+    // 샘플 데이터 추가 (테스트용)
+    this.addSampleAttendance();
+
+    // 모달 외부 클릭 시 닫기 설정
+    this.setupModalCloseOnOutsideClick();
+  },
+
+  setupEventListeners() {
+    // 네비게이션
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = e.target.closest('[data-page]').dataset.page;
+        this.renderPage(page);
+      });
+    });
+  },
+
+  setupModalCloseOnOutsideClick() {
+    document.addEventListener('click', (e) => {
+      const modal = document.querySelector('.modal-overlay');
+      if (modal && e.target === modal) {
+        this.hideModal();
+      }
+    });
+  },
+
+  renderPage(page) {
+    this.currentPage = page;
+
+    // 네비게이션 활성화
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      if (btn.dataset.page === page) {
+        btn.classList.add('bg-blue-600', 'text-white');
+        btn.classList.remove('text-gray-700', 'hover:bg-gray-100');
+      } else {
+        btn.classList.remove('bg-blue-600', 'text-white');
+        btn.classList.add('text-gray-700', 'hover:bg-gray-100');
+      }
+    });
+
+    // 콘텐츠 렌더링
+    const content = document.getElementById('content');
+
+    switch (page) {
+      case 'dashboard':
+        content.innerHTML = this.renderDashboard();
+        break;
+      case 'employees':
+        content.innerHTML = this.renderEmployees();
+        break;
+      case 'contracts':
+        content.innerHTML = this.renderContracts();
+        break;
+      case 'attendance':
+        content.innerHTML = this.renderAttendance();
+        break;
+      case 'legal':
+        content.innerHTML = this.renderLegalCheck();
+        break;
+      case 'conversations':
+        content.innerHTML = this.renderConversations();
+        break;
+      case 'checklist':
+        content.innerHTML = this.renderChecklist();
+        break;
+      default:
+        content.innerHTML = this.renderDashboard();
+    }
+
+    // 페이지별 이벤트 리스너
+    this.setupPageEvents(page);
+  },
+
+  renderDashboard() {
+    const briefing = ChecklistManager.generateDailyBriefing();
+    const summary = EmployeeManager.getDashboardSummary();
+    const attendance = AttendanceManager.getDashboardSummary();
+    const legal = LegalCheckManager.getDashboardSummary();
+
+    const html = `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">대시보드</h1>
+          <p class="text-gray-600 mt-1">${briefing.date} ${briefing.day}요일</p>
+        </div>
+
+        <!-- 긴급 알림 -->
+        ${briefing.urgent.length > 0 ? `
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg shadow-md animate-fade-in">
+          <h3 class="font-bold text-red-800 mb-2">🚨 긴급 알림 (${briefing.urgent.length})</h3>
+          <div class="space-y-2">
+            ${briefing.urgent.map(alert => `
+              <div class="text-sm">
+                <span class="font-semibold">${alert.icon} ${alert.message}</span>
+                <p class="text-red-700 ml-6">${alert.action}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+
+        <!-- 주요 지표 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">총 직원</div>
+                <div class="text-3xl font-bold text-gray-900">${summary.active}명</div>
+              </div>
+              <div class="text-4xl">👥</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">평균 근무시간</div>
+                <div class="text-3xl font-bold text-gray-900">${attendance.avgHours}h</div>
+              </div>
+              <div class="text-4xl">⏰</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">법적 리스크</div>
+                <div class="text-3xl font-bold ${legal.avgScore >= 70 ? 'text-red-600' : legal.avgScore >= 50 ? 'text-yellow-600' : 'text-green-600'}">
+                  ${legal.avgScore}/100
+                </div>
+              </div>
+              <div class="text-4xl">⚖️</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">위험 직원</div>
+                <div class="text-3xl font-bold ${summary.risky > 0 ? 'text-red-600' : 'text-green-600'}">
+                  ${summary.risky}명
+                </div>
+              </div>
+              <div class="text-4xl">${summary.risky > 0 ? '⚠️' : '✅'}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 차트 섹션 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- 주간 근무시간 차트 -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold mb-4">주간 근무시간 추이</h3>
+            <canvas id="weeklyHoursChart" style="max-height: 300px;"></canvas>
+          </div>
+
+          <!-- 법적 리스크 분포 차트 -->
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold mb-4">법적 리스크 분포</h3>
+            <canvas id="riskDistributionChart" style="max-height: 300px;"></canvas>
+          </div>
+        </div>
+
+        <!-- 이번 주 근무시간 상세 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">이번 주 근무시간 상세</h3>
+          <div class="space-y-3">
+            ${summary.weeklyStats.map(stat => `
+              <div class="p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div class="flex justify-between mb-2">
+                  <span class="font-medium">${stat.employee.name}</span>
+                  <span class="font-bold ${stat.check.status === 'danger' ? 'text-red-600' : stat.check.status === 'critical' ? 'text-orange-500' : stat.check.status === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                    ${stat.hours}h / 52h
+                  </span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div class="h-3 rounded-full transition-all ${stat.check.status === 'danger' ? 'bg-red-600' : stat.check.status === 'critical' ? 'bg-orange-500' : stat.check.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'}"
+                       style="width: ${Math.min(100, (stat.hours / 52) * 100)}%"></div>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                  <div class="text-xs text-gray-500">${stat.check.message}</div>
+                  <button onclick="App.viewEmployeeDetail('${stat.employee.id}')"
+                          class="text-xs text-blue-600 hover:text-blue-800 font-medium">
+                    상세보기 →
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="mt-4 pt-4 border-t">
+            <div class="flex justify-between items-center text-sm text-gray-600">
+              <span>52시간 기준선</span>
+              <span class="text-red-600 font-medium">⚠️ 초과 시 즉시 조치</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 법적 리스크 TOP 3 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">법적 리스크 TOP 3</h3>
+          ${legal.topRisks.slice(0, 3).map((risk, idx) => `
+            <div class="mb-3 p-4 rounded-lg ${risk.level === 'danger' ? 'bg-red-50 border border-red-200' : risk.level === 'warning' ? 'bg-yellow-50 border border-yellow-200' : 'bg-green-50 border border-green-200'} hover:shadow-md transition-shadow cursor-pointer"
+                 onclick="App.viewEmployeeDetail('${risk.employee.id}')">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <span class="font-bold text-lg">${idx + 1}. ${risk.employee.name}</span>
+                  <span class="ml-2 text-sm text-gray-600">${risk.employee.position}</span>
+                </div>
+                <span class="font-bold text-xl ${risk.level === 'danger' ? 'text-red-600' : risk.level === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                  ${risk.totalScore}점
+                </span>
+              </div>
+              <div class="text-sm text-gray-700 mt-2">
+                ${Object.values(risk.risks).filter(r => r.issues.length > 0).map(r => `• ${r.issues[0]}`).join('<br>')}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- 빠른 작업 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">빠른 작업</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button onclick="App.renderPage('employees')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">👥</div>
+              <div class="font-medium">직원 관리</div>
+            </button>
+            <button onclick="App.renderPage('contracts')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">📄</div>
+              <div class="font-medium">계약서 생성</div>
+            </button>
+            <button onclick="App.renderPage('attendance')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">⏰</div>
+              <div class="font-medium">근태 기록</div>
+            </button>
+            <button onclick="App.renderPage('legal')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">⚖️</div>
+              <div class="font-medium">법적 체크</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 다음 프레임에서 차트 렌더링
+    setTimeout(() => {
+      this.renderDashboardCharts(summary, legal);
+    }, 100);
+
+    return html;
+  },
+
+  renderEmployees() {
+    const employees = EmployeeManager.getAll();
+    const summary = EmployeeManager.getDashboardSummary();
+
+    return `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">직원 관리</h1>
+            <p class="text-gray-600 mt-1">총 ${summary.active}명 재직중</p>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="App.exportEmployeesCSV()"
+                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <span>📊</span>
+              <span>CSV 내보내기</span>
+            </button>
+            <button onclick="App.showAddEmployeeModal()"
+                    class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+              <span class="text-xl">+</span>
+              <span class="font-medium">직원 추가</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="text-sm text-gray-600">재직중</div>
+            <div class="text-2xl font-bold text-green-600">${summary.active}명</div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="text-sm text-gray-600">퇴사</div>
+            <div class="text-2xl font-bold text-gray-600">${summary.inactive}명</div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="text-sm text-gray-600">평균 근속</div>
+            <div class="text-2xl font-bold text-blue-600">${Math.round(summary.avgWorkingDays / 30)}개월</div>
+          </div>
+          <div class="bg-white p-4 rounded-lg shadow-md">
+            <div class="text-sm text-gray-600">위험 직원</div>
+            <div class="text-2xl font-bold ${summary.risky > 0 ? 'text-red-600' : 'text-green-600'}">
+              ${summary.risky}명
+            </div>
+          </div>
+        </div>
+
+        <!-- 검색 및 필터 -->
+        <div class="bg-white p-4 rounded-lg shadow-md">
+          <div class="flex gap-3">
+            <input type="text" id="employeeSearch" placeholder="이름, 직책으로 검색..."
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   oninput="App.filterEmployees()">
+            <select id="employeeFilter" onchange="App.filterEmployees()"
+                    class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="all">전체</option>
+              <option value="active">재직중</option>
+              <option value="inactive">퇴사</option>
+              <option value="risky">위험직원</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 직원 테이블 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="min-w-full" id="employeeTable">
+              <thead class="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                <tr>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">이름</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">직책</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">입사일</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">근속일</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">상태</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">주간 근무</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">리스크</th>
+                  <th class="px-6 py-4 text-left text-sm font-semibold">작업</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200" id="employeeTableBody">
+                ${employees.map(emp => {
+                  const detail = EmployeeManager.getDetail(emp.id);
+                  const legalCheck = LegalCheckManager.checkEmployee(emp.id);
+                  return `
+                    <tr class="hover:bg-gray-50 transition-colors employee-row"
+                        data-status="${emp.status}"
+                        data-risky="${legalCheck.totalScore >= 70 ? 'true' : 'false'}"
+                        data-name="${emp.name.toLowerCase()}"
+                        data-position="${emp.position.toLowerCase()}">
+                      <td class="px-6 py-4">
+                        <div class="flex items-center">
+                          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold mr-3">
+                            ${emp.name.charAt(0)}
+                          </div>
+                          <div>
+                            <div class="font-medium text-gray-900">${emp.name}</div>
+                            <div class="text-sm text-gray-500">${emp.email || '-'}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">${emp.position}</div>
+                        <div class="text-xs text-gray-500">${emp.employment_type}</div>
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-900">
+                        ${Utils.formatDate(emp.hire_date, 'YYYY.MM.DD')}
+                      </td>
+                      <td class="px-6 py-4 text-sm text-gray-900">
+                        ${detail.workingDays}일
+                      </td>
+                      <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium ${emp.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                          ${emp.status === 'active' ? '재직' : '퇴사'}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold ${detail.hourCheck.status === 'danger' ? 'text-red-600' : detail.hourCheck.status === 'critical' ? 'text-orange-500' : detail.hourCheck.status === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                            ${detail.weeklyHours}h
+                          </span>
+                          ${detail.hourCheck.status === 'danger' ? '<span class="text-red-600">⚠️</span>' : ''}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold ${legalCheck.color === 'red' ? 'text-red-600' : legalCheck.color === 'yellow' || legalCheck.color === 'orange' ? 'text-yellow-600' : 'text-green-600'}">
+                            ${legalCheck.totalScore}
+                          </span>
+                          ${legalCheck.totalScore >= 70 ? '<span class="text-red-600">🚨</span>' : legalCheck.totalScore >= 50 ? '<span class="text-yellow-600">⚠️</span>' : '<span class="text-green-600">✓</span>'}
+                        </div>
+                      </td>
+                      <td class="px-6 py-4">
+                        <div class="flex gap-2">
+                          <button onclick="App.viewEmployeeDetail('${emp.id}')"
+                                  class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                            상세
+                          </button>
+                          <button onclick="App.showAddEmployeeModal('${emp.id}')"
+                                  class="text-gray-600 hover:text-gray-800 font-medium text-sm">
+                            수정
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          ${employees.length === 0 ? `
+            <div class="text-center py-12">
+              <div class="text-6xl mb-4">👥</div>
+              <h3 class="text-xl font-bold text-gray-900 mb-2">직원이 없습니다</h3>
+              <p class="text-gray-600 mb-4">첫 직원을 추가해보세요!</p>
+              <button onclick="App.showAddEmployeeModal()"
+                      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                직원 추가하기
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  },
+
+  // 직원 필터링
+  filterEmployees() {
+    const searchTerm = document.getElementById('employeeSearch')?.value.toLowerCase() || '';
+    const filter = document.getElementById('employeeFilter')?.value || 'all';
+    const rows = document.querySelectorAll('.employee-row');
+
+    rows.forEach(row => {
+      const name = row.dataset.name;
+      const position = row.dataset.position;
+      const status = row.dataset.status;
+      const isRisky = row.dataset.risky === 'true';
+
+      let matchesSearch = name.includes(searchTerm) || position.includes(searchTerm);
+      let matchesFilter = true;
+
+      if (filter === 'active') matchesFilter = status === 'active';
+      else if (filter === 'inactive') matchesFilter = status === 'inactive';
+      else if (filter === 'risky') matchesFilter = isRisky;
+
+      row.style.display = (matchesSearch && matchesFilter) ? '' : 'none';
+    });
+  },
+
+  // CSV 내보내기
+  exportEmployeesCSV() {
+    const employees = EmployeeManager.getAll();
+    let csv = 'ID,이름,직책,이메일,전화번호,입사일,근무형태,연봉,상태\n';
+
+    employees.forEach(emp => {
+      csv += `${emp.id},"${emp.name}","${emp.position}","${emp.email || ''}","${emp.phone || ''}","${emp.hire_date}","${emp.employment_type}","${emp.salary || ''}","${emp.status}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `직원목록_${Utils.formatDate(new Date())}.csv`;
+    link.click();
+
+    Utils.showSuccess('CSV 파일이 다운로드되었습니다.');
+  },
+
+  renderContracts() {
+    return `
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">계약서 관리</h1>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <p class="text-gray-600">계약서 생성 기능은 직원 관리 페이지에서 이용하실 수 있습니다.</p>
+          <button onclick="App.renderPage('employees')"
+                  class="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            직원 관리로 이동
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  renderAttendance() {
+    const summary = AttendanceManager.getDashboardSummary();
+
+    const html = `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">근태 관리</h1>
+            <p class="text-gray-600 mt-1">이번 주 ${summary.weekStart}~</p>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="App.exportAttendanceReport()"
+                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <span>📊</span>
+              <span>보고서 내보내기</span>
+            </button>
+            <button onclick="App.showAddAttendanceModal()"
+                    class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+              <span class="text-xl">+</span>
+              <span class="font-medium">근태 추가</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">전체 직원</div>
+                <div class="text-3xl font-bold text-gray-900">${summary.totalEmployees}명</div>
+              </div>
+              <div class="text-4xl">👥</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">평균 근무시간</div>
+                <div class="text-3xl font-bold text-blue-600">${summary.avgHours}h</div>
+              </div>
+              <div class="text-4xl">⏰</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">52시간 위반</div>
+                <div class="text-3xl font-bold ${summary.violators > 0 ? 'text-red-600' : 'text-green-600'}">
+                  ${summary.violators}명
+                </div>
+              </div>
+              <div class="text-4xl">${summary.violators > 0 ? '⚠️' : '✅'}</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">총 근무시간</div>
+                <div class="text-3xl font-bold text-purple-600">
+                  ${summary.allStats.reduce((acc, s) => acc + s.totalHours, 0)}h
+                </div>
+              </div>
+              <div class="text-4xl">📈</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 차트 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">주간 근무시간 분석</h3>
+          <canvas id="attendanceChart" style="max-height: 300px;"></canvas>
+        </div>
+
+        <!-- 직원별 근무시간 상세 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">직원별 근무시간 상세</h3>
+          <div class="space-y-4">
+            ${summary.allStats.map(stat => `
+              <div class="border rounded-lg p-4 hover:shadow-md transition-shadow ${stat.check.status === 'danger' ? 'border-red-300 bg-red-50' : stat.check.status === 'critical' ? 'border-orange-300 bg-orange-50' : stat.check.status === 'warning' ? 'border-yellow-300 bg-yellow-50' : 'border-green-300 bg-green-50'}">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <div class="font-bold text-lg text-gray-900">${stat.employee.name}</div>
+                    <div class="text-sm text-gray-600">${stat.employee.position}</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-2xl font-bold ${stat.check.color === 'red' ? 'text-red-600' : stat.check.color === 'orange' ? 'text-orange-500' : stat.check.color === 'yellow' ? 'text-yellow-600' : 'text-green-600'}">
+                      ${stat.totalHours}h
+                    </div>
+                    <div class="text-sm text-gray-600">/ 52h</div>
+                  </div>
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-3">
+                  <div class="h-3 rounded-full transition-all ${stat.check.status === 'danger' ? 'bg-red-600' : stat.check.status === 'critical' ? 'bg-orange-500' : stat.check.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'}"
+                       style="width: ${Math.min(100, (stat.totalHours / 52) * 100)}%"></div>
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                  <div class="text-sm font-medium ${stat.check.color === 'red' ? 'text-red-700' : stat.check.color === 'orange' ? 'text-orange-700' : stat.check.color === 'yellow' ? 'text-yellow-700' : 'text-green-700'}">
+                    ${stat.check.message}
+                  </div>
+                  <button onclick="App.viewEmployeeDetail('${stat.employee.id}')"
+                          class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    상세보기 →
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-7 gap-2 text-xs">
+                  ${stat.dailyBreakdown.map(day => `
+                    <div class="text-center p-2 rounded ${day.hours > 8 ? 'bg-red-100 text-red-700' : day.hours > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'}">
+                      <div class="font-semibold">${day.day}</div>
+                      <div class="mt-1">${day.hours}h</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 법정 기준 안내 -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+          <h3 class="font-bold text-lg mb-3 text-gray-900">법정 근로시간 기준</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div class="bg-white rounded-lg p-4">
+              <div class="font-semibold text-gray-900 mb-2">주 52시간 제도</div>
+              <p class="text-gray-700">1주 최대 52시간 (법정 40시간 + 연장 12시간)</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <div class="font-semibold text-gray-900 mb-2">하루 8시간</div>
+              <p class="text-gray-700">법정 근로시간은 1일 8시간, 1주 40시간</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <div class="font-semibold text-gray-900 mb-2">초과 시 처벌</div>
+              <p class="text-gray-700">위반 시 2년 이하 징역 또는 2천만원 이하 벌금</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      this.renderAttendanceChart(summary);
+    }, 100);
+
+    return html;
+  },
+
+  renderAttendanceChart(summary) {
+    if (this.charts.attendance) this.charts.attendance.destroy();
+
+    const ctx = document.getElementById('attendanceChart');
+    if (!ctx) return;
+
+    this.charts.attendance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: summary.allStats.map(s => s.employee.name),
+        datasets: [{
+          label: '주간 근무시간',
+          data: summary.allStats.map(s => s.totalHours),
+          backgroundColor: summary.allStats.map(s => {
+            if (s.check.status === 'danger') return 'rgba(220, 38, 38, 0.8)';
+            if (s.check.status === 'critical') return 'rgba(249, 115, 22, 0.8)';
+            if (s.check.status === 'warning') return 'rgba(234, 179, 8, 0.8)';
+            return 'rgba(34, 197, 94, 0.8)';
+          }),
+          borderColor: summary.allStats.map(s => {
+            if (s.check.status === 'danger') return 'rgb(220, 38, 38)';
+            if (s.check.status === 'critical') return 'rgb(249, 115, 22)';
+            if (s.check.status === 'warning') return 'rgb(234, 179, 8)';
+            return 'rgb(34, 197, 94)';
+          }),
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              afterLabel: (context) => {
+                const stat = summary.allStats[context.dataIndex];
+                return stat.check.message;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 60,
+            ticks: {
+              callback: (value) => value + 'h'
+            },
+            grid: {
+              color: 'rgba(0, 0, 0, 0.05)'
+            }
+          },
+          x: {
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  },
+
+  showAddAttendanceModal() {
+    const employees = EmployeeManager.getAll();
+
+    const content = `
+      <form id="attendanceForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">직원 선택 *</label>
+          <select name="employee_id" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="">직원을 선택하세요</option>
+            ${employees.filter(e => e.status === 'active').map(e => `
+              <option value="${e.id}">${e.name} - ${e.position}</option>
+            `).join('')}
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">날짜 *</label>
+          <input type="date" name="date" required value="${Utils.formatDate(new Date())}"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">출근 시간 *</label>
+            <input type="time" name="clock_in" required value="09:00"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">퇴근 시간 *</label>
+            <input type="time" name="clock_out" required value="18:00"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">메모</label>
+          <textarea name="note" rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="근무 관련 메모를 입력하세요..."></textarea>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p class="text-sm text-blue-800">
+            <strong>TIP:</strong> 근무시간은 자동으로 계산됩니다. 점심시간 1시간은 자동으로 제외됩니다.
+          </p>
+        </div>
+      </form>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        취소
+      </button>
+      <button type="button" onclick="App.saveAttendance()"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        추가하기
+      </button>
+    `;
+
+    this.showModal('근태 기록 추가', content, { footer });
+  },
+
+  saveAttendance() {
+    const form = document.getElementById('attendanceForm');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const clockIn = formData.get('clock_in');
+    const clockOut = formData.get('clock_out');
+
+    // 근무시간 계산 (점심시간 1시간 제외)
+    const [inHour, inMin] = clockIn.split(':').map(Number);
+    const [outHour, outMin] = clockOut.split(':').map(Number);
+    const hours = (outHour * 60 + outMin - inHour * 60 - inMin) / 60 - 1; // 점심시간 1시간 제외
+
+    if (hours <= 0) {
+      Utils.showError('퇴근 시간이 출근 시간보다 빠릅니다.');
+      return;
+    }
+
+    const data = {
+      employee_id: formData.get('employee_id'),
+      date: formData.get('date'),
+      clock_in: clockIn,
+      clock_out: clockOut,
+      hours: Math.round(hours * 10) / 10,
+      note: formData.get('note') || ''
+    };
+
+    AttendanceManager.create(data);
+    Utils.showSuccess('근태 기록이 추가되었습니다.');
+
+    this.hideModal();
+    this.renderPage('attendance');
+  },
+
+  exportAttendanceReport() {
+    const summary = AttendanceManager.getDashboardSummary();
+    let report = `근태 관리 보고서\n`;
+    report += `작성일: ${Utils.formatDate(new Date())}\n`;
+    report += `기간: ${summary.weekStart} ~ 이번 주\n\n`;
+    report += `=== 요약 ===\n`;
+    report += `전체 직원: ${summary.totalEmployees}명\n`;
+    report += `평균 근무시간: ${summary.avgHours}시간\n`;
+    report += `52시간 위반: ${summary.violators}명\n\n`;
+    report += `=== 직원별 상세 ===\n`;
+
+    summary.allStats.forEach(stat => {
+      report += `\n${stat.employee.name} (${stat.employee.position})\n`;
+      report += `  총 근무시간: ${stat.totalHours}시간\n`;
+      report += `  상태: ${stat.check.message}\n`;
+      report += `  일별: ${stat.dailyBreakdown.map(d => `${d.day}:${d.hours}h`).join(', ')}\n`;
+    });
+
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `근태보고서_${Utils.formatDate(new Date())}.txt`;
+    link.click();
+
+    Utils.showSuccess('보고서가 다운로드되었습니다.');
+  },
+
+  renderLegalCheck() {
+    const summary = LegalCheckManager.getDashboardSummary();
+
+    const html = `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">법적 리스크 체크</h1>
+            <p class="text-gray-600 mt-1">근로기준법 준수 현황 분석</p>
+          </div>
+          <button onclick="App.exportLegalReport()"
+                  class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+            <span>📋</span>
+            <span class="font-medium">리포트 다운로드</span>
+          </button>
+        </div>
+
+        <!-- 통계 카드 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">평균 리스크</div>
+                <div class="text-3xl font-bold ${summary.avgScore >= 70 ? 'text-red-600' : summary.avgScore >= 50 ? 'text-yellow-600' : 'text-green-600'}">
+                  ${summary.avgScore}
+                </div>
+              </div>
+              <div class="text-4xl">⚖️</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">안전</div>
+                <div class="text-3xl font-bold text-green-600">${summary.safeCount}명</div>
+              </div>
+              <div class="text-4xl">✅</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">주의</div>
+                <div class="text-3xl font-bold text-yellow-600">${summary.warningCount}명</div>
+              </div>
+              <div class="text-4xl">⚠️</div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-600 mb-1">위험</div>
+                <div class="text-3xl font-bold text-red-600">${summary.dangerCount}명</div>
+              </div>
+              <div class="text-4xl">🚨</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 차트 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold mb-4">리스크 분포</h3>
+            <canvas id="legalRiskChart" style="max-height: 250px;"></canvas>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-bold mb-4">카테고리별 평균 점수</h3>
+            <canvas id="categoryScoreChart" style="max-height: 250px;"></canvas>
+          </div>
+        </div>
+
+        <!-- 직원별 리스크 현황 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4">직원별 리스크 상세 분석</h3>
+          <div class="space-y-4">
+            ${summary.allResults.sort((a, b) => b.totalScore - a.totalScore).map((result, idx) => `
+              <div class="border-l-4 ${result.level === 'danger' ? 'border-red-500 bg-red-50' : result.level === 'warning' ? 'border-yellow-500 bg-yellow-50' : 'border-green-500 bg-green-50'} rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                   onclick="App.viewEmployeeDetail('${result.employee.id}')">
+                <div class="flex justify-between items-start mb-3">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl font-bold">${idx + 1}.</span>
+                      <span class="text-lg font-bold text-gray-900">${result.employee.name}</span>
+                      <span class="text-sm text-gray-600">${result.employee.position}</span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-3xl font-bold ${result.color === 'red' ? 'text-red-600' : result.color === 'orange' || result.color === 'yellow' ? 'text-yellow-600' : 'text-green-600'}">
+                      ${result.totalScore}
+                    </div>
+                    <div class="text-sm text-gray-600">/ 100</div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-5 gap-3 mb-3">
+                  ${Object.values(result.risks).map(risk => `
+                    <div class="text-center p-2 rounded ${risk.status === 'danger' ? 'bg-red-100' : risk.status === 'warning' ? 'bg-yellow-100' : 'bg-green-100'}">
+                      <div class="text-xs text-gray-600 mb-1">${risk.category}</div>
+                      <div class="text-lg font-bold ${risk.status === 'danger' ? 'text-red-600' : risk.status === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                        ${risk.score}
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <div class="space-y-1">
+                  ${Object.values(result.risks).filter(risk => risk.issues.length > 0).map(risk => `
+                    <div class="text-sm text-gray-700 flex items-start">
+                      <span class="mr-2 ${risk.status === 'danger' ? 'text-red-600' : risk.status === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                        ${risk.status === 'danger' ? '🚨' : risk.status === 'warning' ? '⚠️' : '✓'}
+                      </span>
+                      <span><strong>${risk.category}:</strong> ${risk.issues.join(', ')}</span>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <div class="mt-3 pt-3 border-t flex justify-end">
+                  <span class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                    상세보기 →
+                  </span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 법적 기준 안내 -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+          <h3 class="font-bold text-lg mb-4 text-gray-900">리스크 점수 기준</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">✅</span>
+                <span class="font-semibold text-green-700">안전 (0-49점)</span>
+              </div>
+              <p class="text-sm text-gray-700">법적 리스크가 낮은 안전한 상태입니다.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">⚠️</span>
+                <span class="font-semibold text-yellow-700">주의 (50-69점)</span>
+              </div>
+              <p class="text-sm text-gray-700">일부 개선이 필요한 항목이 있습니다.</p>
+            </div>
+            <div class="bg-white rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-2xl">🚨</span>
+                <span class="font-semibold text-red-700">위험 (70-100점)</span>
+              </div>
+              <p class="text-sm text-gray-700">즉시 조치가 필요한 위험한 상태입니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      this.renderLegalCharts(summary);
+    }, 100);
+
+    return html;
+  },
+
+  renderLegalCharts(summary) {
+    if (this.charts.legalRisk) this.charts.legalRisk.destroy();
+    if (this.charts.categoryScore) this.charts.categoryScore.destroy();
+
+    // 리스크 분포 차트
+    const riskCtx = document.getElementById('legalRiskChart');
+    if (riskCtx) {
+      this.charts.legalRisk = new Chart(riskCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['안전', '주의', '위험'],
+          datasets: [{
+            data: [summary.safeCount, summary.warningCount, summary.dangerCount],
+            backgroundColor: [
+              'rgba(34, 197, 94, 0.8)',
+              'rgba(234, 179, 8, 0.8)',
+              'rgba(220, 38, 38, 0.8)'
+            ],
+            borderColor: [
+              'rgb(34, 197, 94)',
+              'rgb(234, 179, 8)',
+              'rgb(220, 38, 38)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                font: { size: 12 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const value = context.parsed;
+                  const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                  return `${context.label}: ${value}명 (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 카테고리별 평균 점수 차트
+    const categoryCtx = document.getElementById('categoryScoreChart');
+    if (categoryCtx) {
+      const categories = ['근로계약', '근로시간', '임금', '휴게휴가', '기타'];
+      const avgScores = categories.map(cat => {
+        const scores = summary.allResults.map(r => {
+          const risk = Object.values(r.risks).find(risk => risk.category === cat);
+          return risk ? risk.score : 0;
+        });
+        return scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+      });
+
+      this.charts.categoryScore = new Chart(categoryCtx, {
+        type: 'radar',
+        data: {
+          labels: categories,
+          datasets: [{
+            label: '평균 리스크 점수',
+            data: avgScores,
+            backgroundColor: 'rgba(59, 130, 246, 0.2)',
+            borderColor: 'rgb(59, 130, 246)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgb(59, 130, 246)',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: 'rgb(59, 130, 246)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                stepSize: 20
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+    }
+  },
+
+  exportLegalReport() {
+    const summary = LegalCheckManager.getDashboardSummary();
+    let report = `법적 리스크 분석 보고서\n`;
+    report += `작성일: ${Utils.formatDate(new Date())}\n\n`;
+    report += `=== 요약 ===\n`;
+    report += `평균 리스크 점수: ${summary.avgScore}/100\n`;
+    report += `안전: ${summary.safeCount}명\n`;
+    report += `주의: ${summary.warningCount}명\n`;
+    report += `위험: ${summary.dangerCount}명\n\n`;
+    report += `=== 직원별 상세 ===\n`;
+
+    summary.allResults.sort((a, b) => b.totalScore - a.totalScore).forEach((result, idx) => {
+      report += `\n${idx + 1}. ${result.employee.name} (${result.employee.position})\n`;
+      report += `   총점: ${result.totalScore}/100 [${result.level}]\n`;
+      Object.values(result.risks).forEach(risk => {
+        report += `   - ${risk.category}: ${risk.score}점\n`;
+        risk.issues.forEach(issue => {
+          report += `     • ${issue}\n`;
+        });
+      });
+    });
+
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `법적리스크보고서_${Utils.formatDate(new Date())}.txt`;
+    link.click();
+
+    Utils.showSuccess('보고서가 다운로드되었습니다.');
+  },
+
+  renderConversations() {
+    return `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">대화 분석</h1>
+          <p class="text-gray-600 mt-1">직원과의 대화에서 법적 리스크를 자동으로 감지합니다</p>
+        </div>
+
+        <!-- 안내 카드 -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6">
+          <h3 class="font-bold text-lg mb-3 text-gray-900">AI 대화 분석</h3>
+          <p class="text-gray-700 mb-4">
+            채팅, 이메일, 구두 대화 등을 입력하면 AI가 법적 리스크를 자동으로 분석합니다.
+            퇴사, 임금, 근로시간, 부당 대우 등의 키워드를 감지하여 위험도를 평가합니다.
+          </p>
+          <div class="grid grid-cols-3 gap-3 text-sm">
+            <div class="bg-white rounded-lg p-3">
+              <div class="font-semibold text-red-700 mb-1">🚨 위험 키워드</div>
+              <div class="text-gray-600">퇴사, 고소, 노동청, 부당해고</div>
+            </div>
+            <div class="bg-white rounded-lg p-3">
+              <div class="font-semibold text-yellow-700 mb-1">⚠️ 주의 키워드</div>
+              <div class="text-gray-600">불만, 야근, 임금, 휴가</div>
+            </div>
+            <div class="bg-white rounded-lg p-3">
+              <div class="font-semibold text-blue-700 mb-1">ℹ️ 일반 키워드</div>
+              <div class="text-gray-600">회의, 업무, 보고, 프로젝트</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 분석 입력 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+            <h3 class="text-xl font-bold">대화 내용 입력</h3>
+          </div>
+          <div class="p-6">
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">직원 선택 (선택사항)</label>
+              <select id="conversationEmployee"
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">선택 안함</option>
+                ${EmployeeManager.getAll().filter(e => e.status === 'active').map(e => `
+                  <option value="${e.id}">${e.name} - ${e.position}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2">대화 내용</label>
+              <textarea id="conversationInput"
+                        class="w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
+                        placeholder="예시:
+직원: 요즘 야근이 너무 많아요. 주 52시간을 넘는 것 같은데...
+대표: 스타트업이라 어쩔 수 없어. 조금만 참아줘.
+직원: 하지만 법적으로 문제가 있는 거 아닌가요?
+대표: 나중에 보상해줄게. 지금은 회사가 중요해.
+
+위와 같이 실제 대화 내용을 입력하세요."></textarea>
+            </div>
+
+            <div class="flex justify-between items-center">
+              <button onclick="App.clearConversationInput()"
+                      class="text-gray-600 hover:text-gray-800 font-medium">
+                초기화
+              </button>
+              <button onclick="App.analyzeConversation()"
+                      class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg hover:shadow-lg transition-all flex items-center gap-2 font-medium">
+                <span>🔍</span>
+                <span>AI 분석 시작</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 분석 결과 -->
+        <div id="analysisResult"></div>
+      </div>
+    `;
+  },
+
+  clearConversationInput() {
+    document.getElementById('conversationInput').value = '';
+    document.getElementById('analysisResult').innerHTML = '';
+  },
+
+  renderChecklist() {
+    const briefing = ChecklistManager.generateDailyBriefing();
+    const today = Utils.formatDate(new Date());
+    const checklist = ChecklistManager.getChecklist(today);
+
+    return `
+      <div class="space-y-6">
+        <!-- 헤더 -->
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">일일 체크리스트</h1>
+            <p class="text-gray-600 mt-1">${briefing.date} ${briefing.day}요일</p>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="App.addCustomChecklistItem()"
+                    class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2">
+              <span>+</span>
+              <span>항목 추가</span>
+            </button>
+            <button onclick="ChecklistManager.downloadDailyReport()"
+                    class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2">
+              <span>📊</span>
+              <span class="font-medium">일일 리포트</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 진행률 카드 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+            <div class="flex items-center justify-between text-white">
+              <div>
+                <div class="text-sm opacity-90 mb-1">오늘의 완료율</div>
+                <div class="text-4xl font-bold">${checklist.completion_rate}%</div>
+              </div>
+              <div class="text-6xl">
+                ${checklist.completion_rate === 100 ? '🎉' : checklist.completion_rate >= 70 ? '💪' : checklist.completion_rate >= 40 ? '📝' : '⏰'}
+              </div>
+            </div>
+            <div class="mt-4 bg-white bg-opacity-20 rounded-full h-3 overflow-hidden">
+              <div class="bg-white h-3 rounded-full transition-all duration-500"
+                   style="width: ${checklist.completion_rate}%"></div>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <div class="text-2xl font-bold text-gray-900">${checklist.items.length}</div>
+                <div class="text-sm text-gray-600">전체 항목</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-green-600">${checklist.items.filter(i => i.done).length}</div>
+                <div class="text-sm text-gray-600">완료</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-blue-600">${checklist.items.filter(i => !i.done).length}</div>
+                <div class="text-sm text-gray-600">남은 항목</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 체크리스트 항목들 -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span>✅</span>
+            <span>오늘의 체크리스트</span>
+          </h3>
+
+          ${checklist.items.length === 0 ? `
+            <div class="text-center py-12">
+              <div class="text-6xl mb-4">📋</div>
+              <h4 class="text-xl font-bold text-gray-900 mb-2">체크리스트가 비어있습니다</h4>
+              <p class="text-gray-600 mb-4">새로운 항목을 추가해보세요!</p>
+              <button onclick="App.addCustomChecklistItem()"
+                      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                항목 추가하기
+              </button>
+            </div>
+          ` : `
+            <div class="space-y-2">
+              ${checklist.items.map(item => `
+                <label class="flex items-center p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors border ${item.done ? 'border-green-200 bg-green-50' : 'border-gray-200'}">
+                  <input type="checkbox" ${item.done ? 'checked' : ''}
+                         class="w-6 h-6 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                         onchange="App.toggleChecklistItem('${checklist.id}', ${item.id})">
+                  <span class="ml-4 flex-1 ${item.done ? 'line-through text-gray-500' : 'text-gray-900 font-medium'}">
+                    ${item.task}
+                  </span>
+                  <span class="ml-auto flex items-center gap-2">
+                    <span class="text-xs px-3 py-1 rounded-full font-medium ${
+                      item.priority === 'high' ? 'bg-red-100 text-red-800' :
+                      item.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }">
+                      ${item.priority === 'high' ? '높음' : item.priority === 'medium' ? '중간' : '낮음'}
+                    </span>
+                    ${item.done ? '<span class="text-2xl">✓</span>' : ''}
+                  </span>
+                </label>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <!-- 알림 요약 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          ${briefing.urgent.length > 0 ? `
+            <div class="bg-red-50 border-2 border-red-200 rounded-lg p-4">
+              <h4 class="font-bold text-red-800 mb-3 flex items-center gap-2">
+                <span>🚨</span>
+                <span>긴급 (${briefing.urgent.length})</span>
+              </h4>
+              <div class="space-y-2">
+                ${briefing.urgent.slice(0, 3).map(alert => `
+                  <div class="text-sm text-red-700">
+                    ${alert.icon} ${alert.message}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${briefing.important.length > 0 ? `
+            <div class="bg-yellow-50 border-2 border-yellow-200 rounded-lg p-4">
+              <h4 class="font-bold text-yellow-800 mb-3 flex items-center gap-2">
+                <span>⚠️</span>
+                <span>중요 (${briefing.important.length})</span>
+              </h4>
+              <div class="space-y-2">
+                ${briefing.important.slice(0, 3).map(alert => `
+                  <div class="text-sm text-yellow-700">
+                    ${alert.icon} ${alert.message}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${briefing.normal.length > 0 ? `
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
+              <h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2">
+                <span>ℹ️</span>
+                <span>일반 (${briefing.normal.length})</span>
+              </h4>
+              <div class="space-y-2">
+                ${briefing.normal.slice(0, 3).map(alert => `
+                  <div class="text-sm text-blue-700">
+                    ${alert.icon} ${alert.message}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- 빠른 도구 -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span>🛠️</span>
+            <span>빠른 도구</span>
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <button onclick="ChecklistManager.downloadDailyReport()"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">📊</div>
+              <div class="font-medium text-sm">일일 리포트</div>
+            </button>
+            <button onclick="App.exportAllData()"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">💾</div>
+              <div class="font-medium text-sm">데이터 백업</div>
+            </button>
+            <button onclick="App.renderPage('legal')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">⚖️</div>
+              <div class="font-medium text-sm">법적 체크</div>
+            </button>
+            <button onclick="App.renderPage('attendance')"
+                    class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all hover:shadow-md">
+              <div class="text-3xl mb-2">⏰</div>
+              <div class="font-medium text-sm">근태 관리</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  addCustomChecklistItem() {
+    const content = `
+      <form id="checklistItemForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">할 일 *</label>
+          <input type="text" name="task" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                 placeholder="예: 직원 면담 진행">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">우선순위 *</label>
+          <select name="priority" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="high">높음 - 긴급</option>
+            <option value="medium" selected>중간 - 보통</option>
+            <option value="low">낮음 - 여유</option>
+          </select>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p class="text-sm text-blue-800">
+            <strong>TIP:</strong> 체크리스트는 매일 자동으로 생성되며, 완료된 항목은 다음날 초기화됩니다.
+          </p>
+        </div>
+      </form>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        취소
+      </button>
+      <button type="button" onclick="App.saveChecklistItem()"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        추가하기
+      </button>
+    `;
+
+    this.showModal('체크리스트 항목 추가', content, { footer });
+  },
+
+  saveChecklistItem() {
+    const form = document.getElementById('checklistItemForm');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const today = Utils.formatDate(new Date());
+    const checklist = ChecklistManager.getChecklist(today);
+
+    const newItem = {
+      id: checklist.items.length + 1,
+      task: formData.get('task'),
+      priority: formData.get('priority'),
+      done: false
+    };
+
+    checklist.items.push(newItem);
+    db.update('checklists', checklist.id, checklist);
+
+    Utils.showSuccess('체크리스트 항목이 추가되었습니다.');
+    this.hideModal();
+    this.renderPage('checklist');
+  },
+
+  setupPageEvents(page) {
+    if (page === 'conversations') {
+      // 대화 분석 페이지는 별도 처리 불필요
+    }
+  },
+
+  analyzeConversation() {
+    const text = document.getElementById('conversationInput').value;
+    if (!text.trim()) {
+      Utils.showError('분석할 내용을 입력하세요.');
+      return;
+    }
+
+    const employeeId = document.getElementById('conversationEmployee').value;
+    const analysis = ConversationManager.analyze(text);
+    const resultDiv = document.getElementById('analysisResult');
+
+    let employeeInfo = '';
+    if (employeeId) {
+      const employee = EmployeeManager.get(employeeId);
+      if (employee) {
+        employeeInfo = `
+          <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg">
+                ${employee.name.charAt(0)}
+              </div>
+              <div>
+                <div class="font-bold text-gray-900">${employee.name}</div>
+                <div class="text-sm text-gray-600">${employee.position}</div>
+              </div>
+              <button onclick="App.viewEmployeeDetail('${employee.id}')"
+                      class="ml-auto text-sm text-blue-600 hover:text-blue-800 font-medium">
+                직원 정보 보기 →
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    resultDiv.innerHTML = `
+      <div class="bg-white rounded-lg shadow-md overflow-hidden animate-fade-in">
+        <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6">
+          <h3 class="text-xl font-bold flex items-center gap-2">
+            <span>🤖</span>
+            <span>AI 분석 결과</span>
+          </h3>
+        </div>
+
+        <div class="p-6 space-y-6">
+          ${employeeInfo}
+
+          <!-- 리스크 점수 -->
+          <div class="text-center p-6 rounded-lg ${analysis.riskScore >= 70 ? 'bg-red-50 border-2 border-red-300' : analysis.riskScore >= 50 ? 'bg-yellow-50 border-2 border-yellow-300' : 'bg-green-50 border-2 border-green-300'}">
+            <div class="text-sm font-medium text-gray-600 mb-2">전체 리스크 점수</div>
+            <div class="text-6xl font-bold mb-2 ${analysis.riskScore >= 70 ? 'text-red-600' : analysis.riskScore >= 50 ? 'text-yellow-600' : 'text-green-600'}">
+              ${analysis.riskScore}
+            </div>
+            <div class="text-gray-600">/ 100</div>
+            <div class="mt-3 inline-block px-4 py-2 rounded-full ${analysis.riskScore >= 70 ? 'bg-red-200 text-red-800' : analysis.riskScore >= 50 ? 'bg-yellow-200 text-yellow-800' : 'bg-green-200 text-green-800'} font-semibold">
+              ${analysis.riskScore >= 70 ? '🚨 즉시 조치 필요' : analysis.riskScore >= 50 ? '⚠️ 주의 요망' : '✅ 안전'}
+            </div>
+          </div>
+
+          <!-- 키워드 분석 -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border rounded-lg p-4">
+              <h5 class="font-bold mb-3 flex items-center gap-2">
+                <span class="text-red-600">🚨</span>
+                <span>위험 키워드 (${analysis.criticalKeywords.length}개)</span>
+              </h5>
+              ${analysis.criticalKeywords.length > 0 ? `
+                <div class="flex flex-wrap gap-2">
+                  ${analysis.criticalKeywords.map(keyword => `
+                    <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium">${keyword}</span>
+                  `).join('')}
+                </div>
+              ` : `
+                <p class="text-gray-500 text-sm">감지된 위험 키워드가 없습니다.</p>
+              `}
+            </div>
+
+            <div class="border rounded-lg p-4">
+              <h5 class="font-bold mb-3 flex items-center gap-2">
+                <span class="text-yellow-600">⚠️</span>
+                <span>주의 키워드 (${analysis.warningKeywords.length}개)</span>
+              </h5>
+              ${analysis.warningKeywords.length > 0 ? `
+                <div class="flex flex-wrap gap-2">
+                  ${analysis.warningKeywords.map(keyword => `
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">${keyword}</span>
+                  `).join('')}
+                </div>
+              ` : `
+                <p class="text-gray-500 text-sm">감지된 주의 키워드가 없습니다.</p>
+              `}
+            </div>
+          </div>
+
+          <!-- 주요 이슈 -->
+          <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded">
+            <h5 class="font-bold mb-3 flex items-center gap-2">
+              <span>📌</span>
+              <span>주요 이슈</span>
+            </h5>
+            <div class="space-y-2">
+              ${analysis.summary.mainIssues.map(issue => `
+                <div class="flex items-start gap-2">
+                  <span class="text-blue-600 mt-1">•</span>
+                  <span class="text-gray-700">${issue}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 권장 조치 -->
+          <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+            <h5 class="font-bold mb-3 flex items-center gap-2">
+              <span>💡</span>
+              <span>권장 조치 사항</span>
+            </h5>
+            <div class="space-y-2">
+              ${analysis.summary.recommendations.map((rec, idx) => `
+                <div class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold">
+                    ${idx + 1}
+                  </span>
+                  <span class="text-gray-700 flex-1">${rec}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- 액션 버튼 -->
+          <div class="flex gap-3 pt-4 border-t">
+            <button onclick="App.saveConversationAnalysis('${employeeId}', ${analysis.riskScore})"
+                    class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+              분석 결과 저장
+            </button>
+            <button onclick="App.downloadConversationReport('${employeeId}')"
+                    class="flex-1 bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+              보고서 다운로드
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 결과로 스크롤
+    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
+  saveConversationAnalysis(employeeId, riskScore) {
+    // 실제로는 DB에 저장해야 하지만, 여기서는 알림만 표시
+    Utils.showSuccess('대화 분석 결과가 저장되었습니다.');
+  },
+
+  downloadConversationReport(employeeId) {
+    const text = document.getElementById('conversationInput').value;
+    const analysis = ConversationManager.analyze(text);
+
+    let report = `대화 분석 보고서\n`;
+    report += `작성일: ${Utils.formatDate(new Date())}\n\n`;
+
+    if (employeeId) {
+      const employee = EmployeeManager.get(employeeId);
+      if (employee) {
+        report += `직원: ${employee.name} (${employee.position})\n\n`;
+      }
+    }
+
+    report += `=== 분석 결과 ===\n`;
+    report += `리스크 점수: ${analysis.riskScore}/100\n`;
+    report += `위험도: ${analysis.riskScore >= 70 ? '높음' : analysis.riskScore >= 50 ? '중간' : '낮음'}\n\n`;
+
+    report += `위험 키워드 (${analysis.criticalKeywords.length}개):\n`;
+    analysis.criticalKeywords.forEach(k => report += `  - ${k}\n`);
+    report += `\n`;
+
+    report += `주의 키워드 (${analysis.warningKeywords.length}개):\n`;
+    analysis.warningKeywords.forEach(k => report += `  - ${k}\n`);
+    report += `\n`;
+
+    report += `주요 이슈:\n`;
+    analysis.summary.mainIssues.forEach(i => report += `  - ${i}\n`);
+    report += `\n`;
+
+    report += `권장 조치:\n`;
+    analysis.summary.recommendations.forEach((r, idx) => report += `  ${idx + 1}. ${r}\n`);
+    report += `\n`;
+
+    report += `=== 원본 대화 ===\n`;
+    report += text;
+
+    const blob = new Blob([report], { type: 'text/plain;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `대화분석_${Utils.formatDate(new Date())}.txt`;
+    link.click();
+
+    Utils.showSuccess('보고서가 다운로드되었습니다.');
+  },
+
+  toggleChecklistItem(checklistId, itemId) {
+    ChecklistManager.toggleItem(checklistId, itemId);
+    this.renderPage('checklist');
+  },
+
+  exportAllData() {
+    const data = db.exportAll();
+    Utils.downloadJSON(data, `StartupHR_백업_${Utils.formatDate(new Date())}.json`);
+  },
+
+  addSampleAttendance() {
+    // 샘플 근태 데이터 추가 (첫 실행 시)
+    const attendance = db.getAll('attendance');
+    if (attendance.length === 0) {
+      const employees = db.getAll('employees');
+      employees.forEach(emp => {
+        AttendanceManager.addSampleData(emp.id, 5);
+      });
+    }
+  },
+
+  // ===== 차트 렌더링 =====
+  renderDashboardCharts(summary, legal) {
+    // 기존 차트 제거
+    if (this.charts.weeklyHours) this.charts.weeklyHours.destroy();
+    if (this.charts.riskDistribution) this.charts.riskDistribution.destroy();
+
+    // 주간 근무시간 차트
+    const weeklyCtx = document.getElementById('weeklyHoursChart');
+    if (weeklyCtx) {
+      this.charts.weeklyHours = new Chart(weeklyCtx, {
+        type: 'bar',
+        data: {
+          labels: summary.weeklyStats.map(s => s.employee.name),
+          datasets: [{
+            label: '주간 근무시간',
+            data: summary.weeklyStats.map(s => s.hours),
+            backgroundColor: summary.weeklyStats.map(s => {
+              if (s.check.status === 'danger') return 'rgba(220, 38, 38, 0.8)';
+              if (s.check.status === 'critical') return 'rgba(249, 115, 22, 0.8)';
+              if (s.check.status === 'warning') return 'rgba(234, 179, 8, 0.8)';
+              return 'rgba(34, 197, 94, 0.8)';
+            }),
+            borderColor: summary.weeklyStats.map(s => {
+              if (s.check.status === 'danger') return 'rgb(220, 38, 38)';
+              if (s.check.status === 'critical') return 'rgb(249, 115, 22)';
+              if (s.check.status === 'warning') return 'rgb(234, 179, 8)';
+              return 'rgb(34, 197, 94)';
+            }),
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const stat = summary.weeklyStats[context.dataIndex];
+                  return [
+                    `근무시간: ${stat.hours}시간`,
+                    `상태: ${stat.check.message}`
+                  ];
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 60,
+              ticks: {
+                callback: (value) => value + 'h'
+              },
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          },
+          plugins: {
+            annotation: {
+              annotations: {
+                line1: {
+                  type: 'line',
+                  yMin: 52,
+                  yMax: 52,
+                  borderColor: 'rgb(220, 38, 38)',
+                  borderWidth: 2,
+                  borderDash: [5, 5],
+                  label: {
+                    content: '법정 한계 (52시간)',
+                    enabled: true,
+                    position: 'end'
+                  }
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 법적 리스크 분포 차트
+    const riskCtx = document.getElementById('riskDistributionChart');
+    if (riskCtx) {
+      const riskLevels = { safe: 0, warning: 0, danger: 0 };
+      legal.allResults.forEach(result => {
+        if (result.totalScore < 50) riskLevels.safe++;
+        else if (result.totalScore < 70) riskLevels.warning++;
+        else riskLevels.danger++;
+      });
+
+      this.charts.riskDistribution = new Chart(riskCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['안전', '주의', '위험'],
+          datasets: [{
+            data: [riskLevels.safe, riskLevels.warning, riskLevels.danger],
+            backgroundColor: [
+              'rgba(34, 197, 94, 0.8)',
+              'rgba(234, 179, 8, 0.8)',
+              'rgba(220, 38, 38, 0.8)'
+            ],
+            borderColor: [
+              'rgb(34, 197, 94)',
+              'rgb(234, 179, 8)',
+              'rgb(220, 38, 38)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                font: { size: 12 }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const value = context.parsed;
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return `${context.label}: ${value}명 (${percentage}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    }
+  },
+
+  // ===== 모달 시스템 =====
+  showModal(title, content, options = {}) {
+    const modalHTML = `
+      <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="modal-content bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-slide-up">
+          <div class="modal-header bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex justify-between items-center">
+            <h2 class="text-2xl font-bold">${title}</h2>
+            <button onclick="App.hideModal()" class="text-white hover:text-gray-200 text-3xl leading-none">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body p-6 overflow-y-auto" style="max-height: calc(90vh - 180px);">
+            ${content}
+          </div>
+          ${options.footer ? `
+            <div class="modal-footer border-t p-4 flex justify-end gap-2">
+              ${options.footer}
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+
+    const container = document.getElementById('modal-container');
+    container.innerHTML = modalHTML;
+
+    // ESC 키로 닫기
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        this.hideModal();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+  },
+
+  hideModal() {
+    const container = document.getElementById('modal-container');
+    const modal = container.querySelector('.modal-overlay');
+
+    if (modal) {
+      modal.style.animation = 'fadeOut 0.2s ease-out';
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 200);
+    }
+  },
+
+  // ===== 직원 추가 모달 =====
+  showAddEmployeeModal(employeeId = null) {
+    const employee = employeeId ? EmployeeManager.get(employeeId) : null;
+    const isEdit = !!employee;
+
+    const content = `
+      <form id="employeeForm" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">이름 *</label>
+            <input type="text" name="name" value="${employee?.name || ''}" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="홍길동">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">직책 *</label>
+            <input type="text" name="position" value="${employee?.position || ''}" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="개발자">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">이메일</label>
+            <input type="email" name="email" value="${employee?.email || ''}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="example@company.com">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">전화번호</label>
+            <input type="tel" name="phone" value="${employee?.phone || ''}"
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="010-1234-5678">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">입사일 *</label>
+            <input type="date" name="hire_date" value="${employee?.hire_date || ''}" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">근무 형태 *</label>
+            <select name="employment_type" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              <option value="full-time" ${employee?.employment_type === 'full-time' ? 'selected' : ''}>정규직</option>
+              <option value="part-time" ${employee?.employment_type === 'part-time' ? 'selected' : ''}>파트타임</option>
+              <option value="contract" ${employee?.employment_type === 'contract' ? 'selected' : ''}>계약직</option>
+              <option value="intern" ${employee?.employment_type === 'intern' ? 'selected' : ''}>인턴</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">연봉 (만원)</label>
+          <input type="number" name="salary" value="${employee?.salary || ''}"
+                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                 placeholder="5000">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">상태</label>
+          <select name="status"
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            <option value="active" ${!employee || employee?.status === 'active' ? 'selected' : ''}>재직</option>
+            <option value="inactive" ${employee?.status === 'inactive' ? 'selected' : ''}>퇴사</option>
+          </select>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <p class="text-sm text-blue-800">
+            <strong>주의:</strong> 입사일과 근무 형태는 법적 문서 생성에 중요한 정보입니다.
+          </p>
+        </div>
+      </form>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        취소
+      </button>
+      <button type="button" onclick="App.saveEmployee('${employeeId || ''}')"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        ${isEdit ? '수정하기' : '추가하기'}
+      </button>
+    `;
+
+    this.showModal(isEdit ? '직원 정보 수정' : '직원 추가', content, { footer });
+  },
+
+  saveEmployee(employeeId) {
+    const form = document.getElementById('employeeForm');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    const formData = new FormData(form);
+    const data = {
+      name: formData.get('name'),
+      position: formData.get('position'),
+      email: formData.get('email') || '',
+      phone: formData.get('phone') || '',
+      hire_date: formData.get('hire_date'),
+      employment_type: formData.get('employment_type'),
+      salary: parseInt(formData.get('salary')) || 0,
+      status: formData.get('status')
+    };
+
+    if (employeeId) {
+      // 수정
+      EmployeeManager.update(employeeId, data);
+      Utils.showSuccess(`${data.name}님의 정보가 수정되었습니다.`);
+    } else {
+      // 추가
+      EmployeeManager.create(data);
+      Utils.showSuccess(`${data.name}님이 추가되었습니다.`);
+    }
+
+    this.hideModal();
+    this.renderPage('employees');
+  },
+
+  // ===== 직원 상세보기 =====
+  viewEmployeeDetail(id) {
+    const employee = EmployeeManager.get(id);
+    if (!employee) {
+      Utils.showError('직원 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    const detail = EmployeeManager.getDetail(id);
+    const legalCheck = LegalCheckManager.checkEmployee(id);
+
+    const content = `
+      <div class="space-y-6">
+        <!-- 기본 정보 -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg">
+          <div class="flex justify-between items-start mb-4">
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">${employee.name}</h3>
+              <p class="text-gray-600 mt-1">${employee.position}</p>
+            </div>
+            <span class="px-4 py-2 rounded-lg text-sm font-medium ${employee.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+              ${employee.status === 'active' ? '재직중' : '퇴사'}
+            </span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <div class="text-sm text-gray-600">이메일</div>
+              <div class="font-medium">${employee.email || '-'}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">전화번호</div>
+              <div class="font-medium">${employee.phone || '-'}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">입사일</div>
+              <div class="font-medium">${Utils.formatDate(employee.hire_date, 'YYYY.MM.DD')}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">근무 기간</div>
+              <div class="font-medium">${detail.workingDays}일</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">근무 형태</div>
+              <div class="font-medium">${employee.employment_type}</div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">연봉</div>
+              <div class="font-medium">${employee.salary ? employee.salary.toLocaleString() + '만원' : '-'}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 근태 정보 -->
+        <div>
+          <h4 class="font-bold text-lg mb-3">이번 주 근무시간</h4>
+          <div class="bg-white border rounded-lg p-4">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-2xl font-bold ${detail.hourCheck.color === 'red' ? 'text-red-600' : detail.hourCheck.color === 'orange' ? 'text-orange-500' : detail.hourCheck.color === 'yellow' ? 'text-yellow-600' : 'text-green-600'}">
+                ${detail.weeklyHours}시간
+              </span>
+              <span class="text-sm text-gray-600">/ 52시간</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+              <div class="h-3 rounded-full ${detail.hourCheck.status === 'danger' ? 'bg-red-600' : detail.hourCheck.status === 'critical' ? 'bg-orange-500' : detail.hourCheck.status === 'warning' ? 'bg-yellow-500' : 'bg-green-500'}"
+                   style="width: ${Math.min(100, (detail.weeklyHours / 52) * 100)}%"></div>
+            </div>
+            <div class="text-sm ${detail.hourCheck.color === 'red' ? 'text-red-600' : detail.hourCheck.color === 'orange' ? 'text-orange-500' : detail.hourCheck.color === 'yellow' ? 'text-yellow-600' : 'text-gray-600'}">
+              ${detail.hourCheck.message}
+            </div>
+          </div>
+        </div>
+
+        <!-- 법적 리스크 -->
+        <div>
+          <h4 class="font-bold text-lg mb-3">법적 리스크 분석</h4>
+          <div class="bg-white border rounded-lg p-4">
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-lg font-bold">총 점수</span>
+              <span class="text-3xl font-bold ${legalCheck.color === 'red' ? 'text-red-600' : legalCheck.color === 'yellow' || legalCheck.color === 'orange' ? 'text-yellow-600' : 'text-green-600'}">
+                ${legalCheck.totalScore}/100
+              </span>
+            </div>
+
+            <div class="space-y-3">
+              ${Object.values(legalCheck.risks).map(risk => `
+                <div class="border-l-4 ${risk.status === 'danger' ? 'border-red-500 bg-red-50' : risk.status === 'warning' ? 'border-yellow-500 bg-yellow-50' : 'border-green-500 bg-green-50'} p-3 rounded">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="font-medium">${risk.category}</span>
+                    <span class="font-bold ${risk.status === 'danger' ? 'text-red-600' : risk.status === 'warning' ? 'text-yellow-600' : 'text-green-600'}">
+                      ${risk.score}점
+                    </span>
+                  </div>
+                  <div class="text-sm text-gray-700">
+                    ${risk.issues.join('<br>')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- 계약서 정보 -->
+        <div>
+          <h4 class="font-bold text-lg mb-3">계약서</h4>
+          <div class="bg-white border rounded-lg p-4">
+            ${detail.hasContract ? `
+              <div class="flex items-center text-green-600 mb-2">
+                <span class="text-xl mr-2">✓</span>
+                <span class="font-medium">근로계약서 작성 완료</span>
+              </div>
+              <button onclick="ContractManager.download('${id}')"
+                      class="mt-2 text-sm text-blue-600 hover:text-blue-800">
+                계약서 다운로드 →
+              </button>
+            ` : `
+              <div class="flex items-center text-red-600 mb-2">
+                <span class="text-xl mr-2">⚠</span>
+                <span class="font-medium">근로계약서 미작성</span>
+              </div>
+              <button onclick="App.hideModal(); App.renderPage('contracts'); setTimeout(() => ContractManager.generate('${id}'), 300)"
+                      class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                계약서 생성하기 →
+              </button>
+            `}
+          </div>
+        </div>
+      </div>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.showAddEmployeeModal('${id}')"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        정보 수정
+      </button>
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        닫기
+      </button>
+    `;
+
+    this.showModal('직원 상세 정보', content, { footer });
+  },
+
+  // ===== 알림 시스템 =====
+  showNotifications() {
+    const briefing = ChecklistManager.generateDailyBriefing();
+    const allAlerts = [...briefing.urgent, ...briefing.important, ...briefing.normal];
+
+    if (allAlerts.length === 0) {
+      Utils.showSuccess('알림이 없습니다!');
+      return;
+    }
+
+    const content = `
+      <div class="space-y-3">
+        ${allAlerts.map((alert, idx) => `
+          <div class="p-4 rounded-lg ${alert.priority === 'urgent' ? 'bg-red-50 border border-red-200' : alert.priority === 'important' ? 'bg-yellow-50 border border-yellow-200' : 'bg-blue-50 border border-blue-200'}">
+            <div class="flex items-start">
+              <span class="text-2xl mr-3">${alert.icon}</span>
+              <div class="flex-1">
+                <h5 class="font-bold ${alert.priority === 'urgent' ? 'text-red-800' : alert.priority === 'important' ? 'text-yellow-800' : 'text-blue-800'}">
+                  ${alert.message}
+                </h5>
+                <p class="text-sm text-gray-700 mt-1">${alert.action}</p>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+        확인
+      </button>
+    `;
+
+    this.showModal(`알림 (${allAlerts.length}개)`, content, { footer });
+  },
+
+  // ===== 데이터 Import 기능 =====
+  importData() {
+    const content = `
+      <div class="space-y-4">
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p class="text-sm text-yellow-800">
+            <strong>주의:</strong> 데이터를 불러오면 기존 데이터가 덮어씌워집니다.
+            계속하기 전에 현재 데이터를 백업하는 것을 권장합니다.
+          </p>
+        </div>
+
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <input type="file" id="importFileInput" accept=".json" class="hidden">
+          <button onclick="document.getElementById('importFileInput').click()"
+                  class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+            JSON 파일 선택
+          </button>
+          <p class="text-sm text-gray-600 mt-3">
+            .json 파일을 선택하세요
+          </p>
+        </div>
+
+        <div id="importPreview" class="hidden">
+          <h4 class="font-bold mb-2">미리보기</h4>
+          <div id="importStats" class="bg-gray-50 rounded-lg p-4 text-sm"></div>
+        </div>
+      </div>
+    `;
+
+    const footer = `
+      <button type="button" onclick="App.hideModal()"
+              class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        취소
+      </button>
+      <button type="button" id="confirmImportBtn" onclick="App.confirmImport()" disabled
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+        불러오기
+      </button>
+    `;
+
+    this.showModal('데이터 불러오기', content, { footer });
+
+    // 파일 선택 이벤트
+    setTimeout(() => {
+      const fileInput = document.getElementById('importFileInput');
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const data = JSON.parse(event.target.result);
+              this.previewImportData(data);
+            } catch (error) {
+              Utils.showError('유효하지 않은 JSON 파일입니다.');
+            }
+          };
+          reader.readAsText(file);
+        }
+      });
+    }, 100);
+  },
+
+  previewImportData(data) {
+    const preview = document.getElementById('importPreview');
+    const stats = document.getElementById('importStats');
+    const confirmBtn = document.getElementById('confirmImportBtn');
+
+    let statsHTML = '<div class="space-y-2">';
+    let totalItems = 0;
+
+    for (const [table, items] of Object.entries(data)) {
+      if (Array.isArray(items)) {
+        statsHTML += `<div class="flex justify-between"><span>${table}:</span><span class="font-bold">${items.length}개</span></div>`;
+        totalItems += items.length;
+      }
+    }
+    statsHTML += `<div class="border-t pt-2 mt-2 flex justify-between"><span class="font-bold">총계:</span><span class="font-bold text-blue-600">${totalItems}개</span></div>`;
+    statsHTML += '</div>';
+
+    stats.innerHTML = statsHTML;
+    preview.classList.remove('hidden');
+    confirmBtn.disabled = false;
+
+    // 데이터 임시 저장
+    this._importData = data;
+  },
+
+  confirmImport() {
+    if (!this._importData) {
+      Utils.showError('불러올 데이터가 없습니다.');
+      return;
+    }
+
+    if (!confirm('정말 데이터를 불러오시겠습니까? 기존 데이터는 덮어씌워집니다.')) {
+      return;
+    }
+
+    try {
+      db.importAll(this._importData);
+      Utils.showSuccess('데이터를 성공적으로 불러왔습니다!');
+      this.hideModal();
+
+      // 페이지 새로고침하여 새 데이터 반영
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
+    } catch (error) {
+      Utils.showError('데이터 불러오기 실패: ' + error.message);
+    }
+  }
+};
+
+// DOM 로드 완료 시 앱 초기화
+document.addEventListener('DOMContentLoaded', () => {
+  App.init();
+});
+
+// Real-time clock
+function updateTime() {
+  const now = new Date();
+  const timeStr = now.toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  const timeEl = document.getElementById('time-text');
+  if (timeEl) {
+    timeEl.textContent = timeStr;
+  }
+}
+
+setInterval(updateTime, 1000);
+updateTime();
+
+// Dark Mode Toggle
+const darkModeToggle = document.getElementById('darkModeToggle');
+const html = document.documentElement;
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', savedTheme);
+updateDarkModeIcon();
+
+darkModeToggle.addEventListener('click', () => {
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateDarkModeIcon();
+});
+
+function updateDarkModeIcon() {
+  const theme = html.getAttribute('data-theme');
+  darkModeToggle.innerHTML = theme === 'dark'
+    ? '<span class="text-2xl">☀️</span>'
+    : '<span class="text-2xl">🌙</span>';
+}
+
+// Mobile Menu Toggle
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const sidebar = document.getElementById('sidebar');
+
+mobileMenuToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  const icon = mobileMenuToggle.querySelector('span');
+  icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+});
+
+// Close sidebar on outside click (mobile)
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768 &&
+      !sidebar.contains(e.target) &&
+      !mobileMenuToggle.contains(e.target) &&
+      sidebar.classList.contains('active')) {
+    sidebar.classList.remove('active');
+    mobileMenuToggle.querySelector('span').textContent = '☰';
+  }
+});
+
+// Close sidebar on menu click (mobile)
+document.querySelectorAll('[data-page]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+      sidebar.classList.remove('active');
+      mobileMenuToggle.querySelector('span').textContent = '☰';
+    }
+  });
+});
+  </script>
+
+</body>
+</html>
