@@ -115,6 +115,21 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Main Container - Fixed scroll issue */
+main {
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 4rem;
+}
+
+#content {
+  max-width: 1600px;
+  margin: 0 auto;
+  overflow: visible;
 }
 
 /* ===== Glassmorphism Cards ===== */
@@ -2325,6 +2340,512 @@ input:checked + .toggle-slider:before {
 
   .quick-actions-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ===== PREMIUM DESIGN SYSTEM (Notion/Linear/Figma Inspired) ===== */
+
+/* Enhanced Glass Card with Premium Feel */
+.glass-card-premium {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 10px 40px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-premium:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 15px 50px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Premium Employee/Item Cards */
+.premium-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.premium-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+.premium-card:hover::before {
+  transform: scaleX(1);
+}
+
+.premium-card:active {
+  transform: translateY(0);
+}
+
+/* Detail Modal - Notion Style */
+.detail-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fade-in 0.2s ease-out;
+  overflow-y: auto;
+}
+
+.detail-modal {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.detail-modal-header {
+  padding: 2rem;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+.detail-modal-title {
+  flex: 1;
+}
+
+.detail-modal-title h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.detail-modal-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.detail-modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: #6b7280;
+}
+
+.detail-modal-close:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.detail-modal-body {
+  padding: 0 2rem 2rem 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.detail-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.detail-modal-body::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.detail-modal-body::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.detail-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Premium Info Sections */
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.info-section-header {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.info-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.info-value {
+  font-size: 0.9375rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.info-value-large {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Status Badges - Premium Style */
+.status-badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-badge-premium::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-badge-premium.status-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge-premium.status-success::before {
+  background: #10b981;
+}
+
+.status-badge-premium.status-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge-premium.status-warning::before {
+  background: #f59e0b;
+}
+
+.status-badge-premium.status-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge-premium.status-danger::before {
+  background: #ef4444;
+}
+
+.status-badge-premium.status-info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge-premium.status-info::before {
+  background: #3b82f6;
+}
+
+/* Action Buttons - Premium */
+.action-group {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.btn-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.btn-premium-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-premium-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-premium-secondary {
+  background: white;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.btn-premium-secondary:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.btn-premium-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-premium-danger:hover {
+  background: #fecaca;
+}
+
+/* Premium Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.375rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #667eea 0%, transparent 100%);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -1.625rem;
+  top: 0.25rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.timeline-date {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-content {
+  background: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.timeline-title {
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.timeline-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Premium Stats Grid */
+.stats-grid-premium {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card-premium {
+  background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.stat-card-premium:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.stat-value-premium {
+  font-size: 2.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-label-premium {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Clickable Card Indicator */
+.clickable-card {
+  position: relative;
+}
+
+.clickable-card::after {
+  content: '→';
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  color: #9ca3af;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.clickable-card:hover::after {
+  opacity: 1;
+  right: 1rem;
+}
+
+/* Enhanced Divider */
+.divider-premium {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #e5e7eb 50%, transparent 100%);
+  margin: 2rem 0;
+}
+
+/* Mobile Responsive for Premium Design */
+@media (max-width: 768px) {
+  .detail-modal {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .detail-modal-header {
+    padding: 1.5rem;
+  }
+
+  .detail-modal-title h2 {
+    font-size: 1.5rem;
+  }
+
+  .detail-modal-body {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stats-grid-premium {
+    grid-template-columns: 1fr;
+  }
+
+  .action-group {
+    flex-direction: column;
+  }
+
+  .btn-premium {
+    width: 100%;
+    justify-content: center;
   }
 }
   </style>
@@ -4995,6 +5516,240 @@ const EmployeeManager = {
       .catch((error) => {
         Utils.showError('일부 사진 업로드에 실패했습니다.');
       });
+  },
+
+  /**
+   * 직원 상세 보기 모달
+   */
+  viewDetail(employeeId) {
+    const employee = db.get('employees', employeeId);
+    if (!employee) {
+      Utils.showError('직원 정보를 찾을 수 없습니다.');
+      return;
+    }
+
+    // 법적 체크 정보 가져오기
+    const legalCheck = LegalCheckManager.calculateRisk(employee);
+    const contracts = db.getAll('contracts').filter(c => c.employeeId === employeeId);
+    const attendance = db.getAll('attendance').filter(a => a.employeeId === employeeId);
+
+    // 이번 주 근무시간 계산
+    const weeklyHours = AttendanceManager.getWeeklyHours(employeeId);
+
+    const html = `
+      <div class="detail-modal-overlay" onclick="if(event.target === this) EmployeeManager.closeDetail()">
+        <div class="detail-modal">
+          <div class="detail-modal-header">
+            <div class="detail-modal-title">
+              <h2>${employee.name}</h2>
+              <div class="detail-modal-subtitle">
+                <span>${employee.position}</span>
+                <span>•</span>
+                <span>${employee.department}</span>
+                <span>•</span>
+                <span class="status-badge-premium ${employee.status === 'active' ? 'status-success' : employee.status === 'on_leave' ? 'status-warning' : 'status-danger'}">
+                  ${employee.status === 'active' ? '재직중' : employee.status === 'on_leave' ? '휴직' : '퇴사'}
+                </span>
+              </div>
+            </div>
+            <button class="detail-modal-close" onclick="EmployeeManager.closeDetail()">✕</button>
+          </div>
+
+          <div class="detail-modal-body">
+            <!-- 주요 통계 -->
+            <div class="stats-grid-premium">
+              <div class="stat-card-premium">
+                <div class="stat-value-premium">${weeklyHours.toFixed(1)}h</div>
+                <div class="stat-label-premium">이번 주 근무시간</div>
+              </div>
+              <div class="stat-card-premium">
+                <div class="stat-value-premium">${legalCheck.totalScore}</div>
+                <div class="stat-label-premium">법적 리스크 점수</div>
+              </div>
+              <div class="stat-card-premium">
+                <div class="stat-value-premium">${contracts.length}</div>
+                <div class="stat-label-premium">계약서 개수</div>
+              </div>
+              <div class="stat-card-premium">
+                <div class="stat-value-premium">${attendance.length}</div>
+                <div class="stat-label-premium">출근 기록</div>
+              </div>
+            </div>
+
+            <!-- 기본 정보 -->
+            <div class="info-section">
+              <div class="info-section-header">
+                👤 기본 정보
+              </div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">이름</div>
+                  <div class="info-value">${employee.name}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">이메일</div>
+                  <div class="info-value">${employee.email || '-'}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">전화번호</div>
+                  <div class="info-value">${employee.phone || '-'}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">생년월일</div>
+                  <div class="info-value">${employee.birthDate || '-'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider-premium"></div>
+
+            <!-- 근무 정보 -->
+            <div class="info-section">
+              <div class="info-section-header">
+                💼 근무 정보
+              </div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">부서</div>
+                  <div class="info-value">${employee.department}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">직책</div>
+                  <div class="info-value">${employee.position}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">입사일</div>
+                  <div class="info-value">${Utils.formatDate(new Date(employee.hireDate))}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">고용 형태</div>
+                  <div class="info-value">${employee.employmentType === 'full-time' ? '정규직' : employee.employmentType === 'contract' ? '계약직' : '인턴'}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider-premium"></div>
+
+            <!-- 급여 정보 -->
+            <div class="info-section">
+              <div class="info-section-header">
+                💰 급여 정보
+              </div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">연봉</div>
+                  <div class="info-value-large">${(employee.salary || 0).toLocaleString()}원</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider-premium"></div>
+
+            <!-- 법적 리스크 -->
+            <div class="info-section">
+              <div class="info-section-header">
+                ⚖️ 법적 리스크 분석
+              </div>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">근로계약서</div>
+                  <div class="info-value">
+                    <span class="status-badge-premium ${legalCheck.risks.contract.score >= 30 ? 'status-danger' : legalCheck.risks.contract.score >= 15 ? 'status-warning' : 'status-success'}">
+                      ${legalCheck.risks.contract.score}점
+                    </span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">주 52시간</div>
+                  <div class="info-value">
+                    <span class="status-badge-premium ${legalCheck.risks.workHours.score >= 30 ? 'status-danger' : legalCheck.risks.workHours.score >= 15 ? 'status-warning' : 'status-success'}">
+                      ${legalCheck.risks.workHours.score}점
+                    </span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">휴게시간</div>
+                  <div class="info-value">
+                    <span class="status-badge-premium ${legalCheck.risks.breakTime.score >= 30 ? 'status-danger' : legalCheck.risks.breakTime.score >= 15 ? 'status-warning' : 'status-success'}">
+                      ${legalCheck.risks.breakTime.score}점
+                    </span>
+                  </div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">연차 사용</div>
+                  <div class="info-value">
+                    <span class="status-badge-premium ${legalCheck.risks.vacation.score >= 30 ? 'status-danger' : legalCheck.risks.vacation.score >= 15 ? 'status-warning' : 'status-success'}">
+                      ${legalCheck.risks.vacation.score}점
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            ${contracts.length > 0 ? `
+              <div class="divider-premium"></div>
+
+              <!-- 계약 이력 -->
+              <div class="info-section">
+                <div class="info-section-header">
+                  📄 계약 이력
+                </div>
+                <div class="timeline">
+                  ${contracts.slice(0, 5).map(contract => `
+                    <div class="timeline-item">
+                      <div class="timeline-date">${Utils.formatDate(new Date(contract.startDate))}</div>
+                      <div class="timeline-content">
+                        <div class="timeline-title">${contract.type === 'regular' ? '정규직 계약' : contract.type === 'contract' ? '계약직 계약' : '인턴 계약'}</div>
+                        <div class="timeline-description">
+                          ${Utils.formatDate(new Date(contract.startDate))} ~ ${Utils.formatDate(new Date(contract.endDate))}
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- 액션 버튼 -->
+            <div class="action-group">
+              <button class="btn-premium btn-premium-primary" onclick="App.renderPage('employees'); EmployeeManager.closeDetail(); EmployeeManager.showEditForm('${employeeId}')">
+                ✏️ 정보 수정
+              </button>
+              <button class="btn-premium btn-premium-secondary" onclick="ContractManager.showCreateForm('${employeeId}'); EmployeeManager.closeDetail()">
+                📄 계약서 생성
+              </button>
+              <button class="btn-premium btn-premium-secondary" onclick="EmployeeManager.closeDetail()">
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // 모달 추가
+    const modalContainer = document.getElementById('modal-container') || document.body;
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'employee-detail-modal';
+    modalDiv.innerHTML = html;
+    modalContainer.appendChild(modalDiv);
+
+    // ESC 키로 닫기
+    document.addEventListener('keydown', this.handleDetailEscape);
+  },
+
+  closeDetail() {
+    const modal = document.getElementById('employee-detail-modal');
+    if (modal) {
+      modal.remove();
+    }
+    document.removeEventListener('keydown', this.handleDetailEscape);
+  },
+
+  handleDetailEscape(e) {
+    if (e.key === 'Escape') {
+      EmployeeManager.closeDetail();
+    }
   }
 };
 
@@ -8515,11 +9270,15 @@ const App = {
                   const detail = EmployeeManager.getDetail(emp.id);
                   const legalCheck = LegalCheckManager.checkEmployee(emp.id);
                   return `
-                    <tr class="hover:bg-gray-50 transition-colors employee-row"
+                    <tr class="hover:bg-blue-50 transition-colors employee-row cursor-pointer premium-card"
                         data-status="${emp.status}"
                         data-risky="${legalCheck.totalScore >= 70 ? 'true' : 'false'}"
                         data-name="${emp.name.toLowerCase()}"
-                        data-position="${emp.position.toLowerCase()}">
+                        data-position="${emp.position.toLowerCase()}"
+                        onclick="App.viewEmployeeDetail('${emp.id}')"
+                        style="border-left: 3px solid transparent;"
+                        onmouseover="this.style.borderLeftColor='#667eea'"
+                        onmouseout="this.style.borderLeftColor='transparent'">
                       <td class="px-6 py-4">
                         <div class="flex items-center">
                           <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold mr-3">
@@ -10199,6 +10958,11 @@ const App = {
 
   // ===== 직원 상세보기 =====
   viewEmployeeDetail(id) {
+    // 새로운 프리미엄 디자인 모달 사용
+    EmployeeManager.viewDetail(id);
+    return;
+
+    // 이전 코드 (사용 안 함)
     const employee = EmployeeManager.get(id);
     if (!employee) {
       Utils.showError('직원 정보를 찾을 수 없습니다.');

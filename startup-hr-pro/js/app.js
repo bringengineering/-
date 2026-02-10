@@ -449,11 +449,15 @@ const App = {
                   const detail = EmployeeManager.getDetail(emp.id);
                   const legalCheck = LegalCheckManager.checkEmployee(emp.id);
                   return `
-                    <tr class="hover:bg-gray-50 transition-colors employee-row"
+                    <tr class="hover:bg-blue-50 transition-colors employee-row cursor-pointer premium-card"
                         data-status="${emp.status}"
                         data-risky="${legalCheck.totalScore >= 70 ? 'true' : 'false'}"
                         data-name="${emp.name.toLowerCase()}"
-                        data-position="${emp.position.toLowerCase()}">
+                        data-position="${emp.position.toLowerCase()}"
+                        onclick="App.viewEmployeeDetail('${emp.id}')"
+                        style="border-left: 3px solid transparent;"
+                        onmouseover="this.style.borderLeftColor='#667eea'"
+                        onmouseout="this.style.borderLeftColor='transparent'">
                       <td class="px-6 py-4">
                         <div class="flex items-center">
                           <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold mr-3">
@@ -2133,6 +2137,11 @@ const App = {
 
   // ===== 직원 상세보기 =====
   viewEmployeeDetail(id) {
+    // 새로운 프리미엄 디자인 모달 사용
+    EmployeeManager.viewDetail(id);
+    return;
+
+    // 이전 코드 (사용 안 함)
     const employee = EmployeeManager.get(id);
     if (!employee) {
       Utils.showError('직원 정보를 찾을 수 없습니다.');
