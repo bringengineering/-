@@ -381,5 +381,367 @@ const Utils = {
   }
 };
 
+/**
+ * Photo Manager
+ * 프로필 사진 관리 시스템
+ */
+const PhotoManager = {
+  /**
+   * 사진 업로드
+   */
+  uploadPhoto(file, id, type = 'employee') {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject('파일이 없습니다.');
+        return;
+      }
+
+      // 파일 크기 체크 (5MB 제한)
+      if (file.size > 5 * 1024 * 1024) {
+        reject('파일 크기는 5MB 이하여야 합니다.');
+        return;
+      }
+
+      // 파일 타입 체크
+      if (!file.type.startsWith('image/')) {
+        reject('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const base64 = e.target.result;
+
+        // LocalStorage에 저장
+        const key = `photo_${type}_${id}`;
+        try {
+          localStorage.setItem(key, base64);
+          Utils.showSuccess('사진이 업로드되었습니다.');
+          resolve(base64);
+        } catch (error) {
+          if (error.name === 'QuotaExceededError') {
+            reject('저장 공간이 부족합니다. 다른 사진을 삭제하거나 더 작은 파일을 사용해주세요.');
+          } else {
+            reject('사진 저장 중 오류가 발생했습니다.');
+          }
+        }
+      };
+
+      reader.onerror = () => {
+        reject('파일 읽기 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsDataURL(file);
+    });
+  },
+
+  /**
+   * 사진 가져오기
+   */
+  getPhoto(id, type = 'employee') {
+    const key = `photo_${type}_${id}`;
+    return localStorage.getItem(key);
+  },
+
+  /**
+   * 사진 삭제
+   */
+  deletePhoto(id, type = 'employee') {
+    const key = `photo_${type}_${id}`;
+    localStorage.removeItem(key);
+    Utils.showSuccess('사진이 삭제되었습니다.');
+  },
+
+  /**
+   * 프로필 사진 HTML 생성
+   */
+  renderPhoto(id, name, size = 'default', type = 'employee') {
+    const photo = this.getPhoto(id, type);
+    const sizeClass = size === 'sm' ? 'profile-photo-sm' : size === 'lg' ? 'profile-photo-lg' : '';
+
+    if (photo) {
+      return `<img src="${photo}" alt="${name}" class="profile-photo ${sizeClass}">`;
+    } else {
+      // 이름의 첫 글자로 플레이스홀더 생성
+      const initial = name ? name.charAt(0).toUpperCase() : '?';
+      return `<div class="profile-photo profile-photo-placeholder ${sizeClass}">${initial}</div>`;
+    }
+  },
+
+  /**
+   * 사진 업로드 UI 생성
+   */
+  renderPhotoUpload(id, name, type = 'employee') {
+    const photo = this.getPhoto(id, type);
+    return `
+      <div class="profile-photo-upload">
+        <input type="file" accept="image/*" onchange="PhotoManager.handlePhotoUpload(this, '${id}', '${type}')">
+        ${this.renderPhoto(id, name, 'lg', type)}
+      </div>
+    `;
+  },
+
+  /**
+   * 사진 업로드 핸들러
+   */
+  handlePhotoUpload(input, id, type) {
+    const file = input.files[0];
+    if (file) {
+      this.uploadPhoto(file, id, type)
+        .then(() => {
+          // 페이지 다시 렌더링
+          if (typeof App !== 'undefined' && App.currentPage) {
+            App.renderPage(App.currentPage);
+          }
+        })
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  }
+};
+
+/**
+ * Notification Center
+ * 알림 센터 관리
+ */
+const NotificationCenter = {
+  notifications: [],
+  isOpen: false,
+
+  /**
+   * 초기화
+   */
+  init() {
+    // LocalStorage에서 알림 로드
+    const saved = localStorage.getItem('notifications');
+    if (saved) {
+      this.notifications = JSON.parse(saved);
+    }
+
+    // 알림 센터 UI 생성
+    this.render();
+
+    // 이벤트 리스너 등록
+    this.setupEventListeners();
+  },
+
+  /**
+   * 알림 추가
+   */
+  add(notification) {
+    const newNotification = {
+      id: Utils.randomId(),
+      title: notification.title,
+      description: notification.description,
+      type: notification.type || 'info', // info, success, warning, danger
+      read: false,
+      timestamp: new Date().toISOString(),
+      ...notification
+    };
+
+    this.notifications.unshift(newNotification);
+    this.save();
+    this.render();
+
+    // Toast 알림도 표시
+    if (notification.showToast !== false) {
+      Utils.showNotification(notification.title, notification.type);
+    }
+
+    return newNotification;
+  },
+
+  /**
+   * 알림 읽음 처리
+   */
+  markAsRead(id) {
+    const notification = this.notifications.find(n => n.id === id);
+    if (notification) {
+      notification.read = true;
+      this.save();
+      this.render();
+    }
+  },
+
+  /**
+   * 모든 알림 읽음 처리
+   */
+  markAllAsRead() {
+    this.notifications.forEach(n => n.read = true);
+    this.save();
+    this.render();
+  },
+
+  /**
+   * 알림 삭제
+   */
+  delete(id) {
+    this.notifications = this.notifications.filter(n => n.id !== id);
+    this.save();
+    this.render();
+  },
+
+  /**
+   * 모든 알림 삭제
+   */
+  clearAll() {
+    if (Utils.confirm('모든 알림을 삭제하시겠습니까?')) {
+      this.notifications = [];
+      this.save();
+      this.render();
+    }
+  },
+
+  /**
+   * LocalStorage에 저장
+   */
+  save() {
+    localStorage.setItem('notifications', JSON.stringify(this.notifications));
+  },
+
+  /**
+   * 읽지 않은 알림 개수
+   */
+  getUnreadCount() {
+    return this.notifications.filter(n => !n.read).length;
+  },
+
+  /**
+   * 알림 센터 토글
+   */
+  toggle() {
+    this.isOpen = !this.isOpen;
+    const center = document.getElementById('notification-center');
+    if (center) {
+      center.classList.toggle('active', this.isOpen);
+    }
+  },
+
+  /**
+   * 알림 센터 렌더링
+   */
+  render() {
+    let container = document.getElementById('notification-center');
+
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'notification-center';
+      container.className = 'notification-center';
+      document.body.appendChild(container);
+    }
+
+    const unreadCount = this.getUnreadCount();
+
+    container.innerHTML = `
+      <div class="notification-center-header">
+        <div>
+          <div class="font-semibold text-lg">알림</div>
+          <div class="text-sm opacity-90">${unreadCount}개의 읽지 않은 알림</div>
+        </div>
+        <button onclick="NotificationCenter.toggle()" class="text-white text-2xl hover:opacity-80">×</button>
+      </div>
+      <div class="notification-center-body">
+        ${this.notifications.length === 0 ? `
+          <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">📭</div>
+            <div>알림이 없습니다</div>
+          </div>
+        ` : this.notifications.map(n => `
+          <div class="notification-item ${n.read ? '' : 'unread'}"
+               onclick="NotificationCenter.markAsRead('${n.id}')">
+            <div class="notification-item-title">${n.title}</div>
+            <div class="notification-item-description">${n.description}</div>
+            <div class="notification-item-time">${Utils.timeAgo(n.timestamp)}</div>
+          </div>
+        `).join('')}
+      </div>
+      ${this.notifications.length > 0 ? `
+        <div class="p-4 border-t border-gray-200 flex gap-2">
+          <button onclick="NotificationCenter.markAllAsRead()"
+                  class="flex-1 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
+            모두 읽음
+          </button>
+          <button onclick="NotificationCenter.clearAll()"
+                  class="flex-1 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition">
+            모두 삭제
+          </button>
+        </div>
+      ` : ''}
+    `;
+
+    // 벨 아이콘 업데이트
+    this.updateBellIcon();
+  },
+
+  /**
+   * 벨 아이콘 업데이트
+   */
+  updateBellIcon() {
+    const bellBtn = document.getElementById('notification-bell');
+    if (bellBtn) {
+      const unreadCount = this.getUnreadCount();
+      const existingBadge = bellBtn.querySelector('.notification-badge');
+
+      if (unreadCount > 0) {
+        if (!existingBadge) {
+          const badge = document.createElement('span');
+          badge.className = 'notification-badge';
+          badge.textContent = unreadCount;
+          bellBtn.style.position = 'relative';
+          bellBtn.appendChild(badge);
+        } else {
+          existingBadge.textContent = unreadCount;
+        }
+      } else {
+        if (existingBadge) {
+          existingBadge.remove();
+        }
+      }
+    }
+  },
+
+  /**
+   * 이벤트 리스너 설정
+   */
+  setupEventListeners() {
+    // 외부 클릭 시 닫기
+    document.addEventListener('click', (e) => {
+      const center = document.getElementById('notification-center');
+      const bellBtn = document.getElementById('notification-bell');
+
+      if (this.isOpen && center && !center.contains(e.target) && e.target !== bellBtn && !bellBtn?.contains(e.target)) {
+        this.toggle();
+      }
+    });
+  },
+
+  /**
+   * 자동 알림 생성 (테스트용)
+   */
+  addTestNotifications() {
+    this.add({
+      title: '52시간 초과 경고',
+      description: '김철수님이 이번 주 52시간을 초과했습니다.',
+      type: 'danger'
+    });
+
+    this.add({
+      title: '계약 만료 예정',
+      description: '박영희님의 계약이 7일 후 만료됩니다.',
+      type: 'warning'
+    });
+
+    this.add({
+      title: '신규 직원 등록',
+      description: '이민수님이 팀에 합류했습니다.',
+      type: 'success'
+    });
+  }
+};
+
 // 전역 사용을 위한 export
 window.Utils = Utils;
+window.PhotoManager = PhotoManager;
+window.NotificationCenter = NotificationCenter;

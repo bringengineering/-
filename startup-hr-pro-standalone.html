@@ -4,17 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="스타트업 대표를 위한 프로페셔널 HR/법무 관리 플랫폼">
-  <title>StartupHR Pro - Professional Edition (Standalone)</title>
+  <title>StartupHR Pro v3.0 - Professional Edition</title>
 
-  <!-- External CDN Libraries (Required) -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- jsPDF CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
 
-  <!-- Inline CSS -->
   <style>
 /**
  * StartupHR Pro - Professional Design System
@@ -915,6 +918,978 @@ body {
   background: var(--gray-800);
   color: var(--gray-100);
 }
+
+/* ===== PROFESSIONAL HR PLATFORM STYLES ===== */
+
+/* Profile Photo Styles */
+.profile-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.profile-photo:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+.profile-photo-lg {
+  width: 120px;
+  height: 120px;
+}
+
+.profile-photo-sm {
+  width: 40px;
+  height: 40px;
+  border-width: 2px;
+}
+
+.profile-photo-placeholder {
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.profile-photo-upload {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profile-photo-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.profile-photo-upload:hover .profile-photo {
+  opacity: 0.8;
+}
+
+.profile-photo-upload::after {
+  content: '📷';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  font-size: 0.875rem;
+}
+
+/* Employee Card Styles */
+.employee-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+  border: 1px solid var(--gray-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.employee-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.employee-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-300);
+}
+
+.employee-card:hover::before {
+  opacity: 1;
+}
+
+.employee-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.employee-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.employee-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-200);
+}
+
+/* Grid and List View Toggle */
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-toggle-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.view-toggle-btn.active {
+  background: var(--primary-500);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+.view-toggle-btn:hover:not(.active) {
+  background: var(--gray-100);
+}
+
+/* Grid View */
+.employees-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* List View */
+.employees-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.employee-list-item {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 1px solid var(--gray-200);
+}
+
+.employee-list-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateX(4px);
+  border-color: var(--primary-300);
+}
+
+/* Advanced Search Panel */
+.search-panel {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+}
+
+.search-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all var(--transition-base);
+  background: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--gray-400);
+}
+
+/* Filter Pills */
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary-50);
+  color: var(--primary-700);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--primary-200);
+}
+
+.filter-pill-remove {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 0 0.25rem;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+}
+
+.filter-pill-remove:hover {
+  background: var(--primary-200);
+}
+
+/* Settings Page Styles */
+.settings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.settings-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--gray-200);
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.settings-tab {
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--gray-600);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+}
+
+.settings-tab.active {
+  color: var(--primary-600);
+  border-bottom-color: var(--primary-600);
+}
+
+.settings-tab:hover:not(.active) {
+  color: var(--gray-900);
+  background: var(--gray-50);
+}
+
+.settings-section {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+}
+
+.settings-section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.settings-section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.settings-section-description {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+.settings-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.settings-form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all var(--transition-base);
+}
+
+.settings-form-input:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Color Picker */
+.color-picker-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-picker {
+  width: 60px;
+  height: 60px;
+  border: 3px solid white;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.color-picker:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+.color-preview {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.5rem;
+}
+
+/* Logo Upload */
+.logo-upload-area {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 16/9;
+  border: 3px dashed var(--gray-300);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  background: var(--gray-50);
+  position: relative;
+  overflow: hidden;
+}
+
+.logo-upload-area:hover {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+}
+
+.logo-upload-area.has-image {
+  border-style: solid;
+  border-color: var(--primary-300);
+  background: white;
+}
+
+.logo-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.logo-upload-text {
+  text-align: center;
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--gray-300);
+  transition: var(--transition-base);
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: var(--transition-base);
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary-500);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(24px);
+}
+
+/* Notification Center */
+.notification-center {
+  position: fixed;
+  top: 70px;
+  right: 1rem;
+  width: 400px;
+  max-height: 600px;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-2xl);
+  z-index: var(--z-modal);
+  overflow: hidden;
+  display: none;
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.notification-center.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-center-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.notification-center-body {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.notification-item {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-100);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  position: relative;
+}
+
+.notification-item:hover {
+  background: var(--gray-50);
+}
+
+.notification-item.unread {
+  background: var(--primary-50);
+}
+
+.notification-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-500);
+}
+
+.notification-item-title {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.notification-item-description {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.25rem;
+}
+
+.notification-item-time {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--danger-500);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+/* Dashboard Widgets */
+.widget-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.widget {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.widget:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.widget-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.widget-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: 0.5rem;
+}
+
+.widget-change {
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.widget-change.positive {
+  color: var(--success-600);
+}
+
+.widget-change.negative {
+  color: var(--danger-600);
+}
+
+/* Animated Counter */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.counter {
+  animation: count-up 0.5s ease-out;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--gray-200);
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 2rem;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2.5rem;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+}
+
+.timeline-item-content {
+  background: white;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+}
+
+.timeline-item-time {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  margin-bottom: 0.25rem;
+}
+
+.timeline-item-title {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: 0.25rem;
+}
+
+.timeline-item-description {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+}
+
+/* Risk Gauge */
+.risk-gauge {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  margin: 0 auto;
+}
+
+.risk-gauge-arc {
+  width: 100%;
+  height: 100%;
+}
+
+.risk-gauge-value {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+/* Action Checklist */
+.action-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-base);
+}
+
+.action-item:hover {
+  border-color: var(--primary-300);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 0.25rem;
+  border: 2px solid var(--gray-300);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.action-checkbox:checked {
+  background: var(--success-500);
+  border-color: var(--success-500);
+}
+
+.action-item-text {
+  flex: 1;
+  color: var(--gray-700);
+}
+
+.action-item-text.completed {
+  text-decoration: line-through;
+  color: var(--gray-400);
+}
+
+/* Import/Export Area */
+.import-export-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.import-box,
+.export-box {
+  background: var(--gray-50);
+  border: 2px dashed var(--gray-300);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all var(--transition-base);
+  cursor: pointer;
+}
+
+.import-box:hover,
+.export-box:hover {
+  border-color: var(--primary-500);
+  background: var(--primary-50);
+}
+
+.import-icon,
+.export-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Sparkline Chart */
+.sparkline {
+  width: 100%;
+  height: 40px;
+}
+
+/* Quick Action Buttons */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: 0.75rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-action-btn:hover {
+  border-color: var(--primary-500);
+  color: var(--primary-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Bulk Actions Bar */
+.bulk-actions-bar {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gray-900);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  box-shadow: var(--shadow-2xl);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  animation: slide-up 0.3s ease-out;
+  z-index: var(--z-fixed);
+}
+
+.bulk-actions-count {
+  font-weight: 600;
+  padding-right: 1rem;
+  border-right: 1px solid var(--gray-700);
+}
+
+.bulk-action-btn {
+  padding: 0.5rem 1rem;
+  background: white;
+  color: var(--gray-900);
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.bulk-action-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Calendar View */
+.calendar-view {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  border: 1px solid var(--gray-200);
+}
+
+.calendar-day:hover {
+  background: var(--gray-50);
+  border-color: var(--primary-300);
+}
+
+.calendar-day.today {
+  background: var(--primary-500);
+  color: white;
+  font-weight: 600;
+}
+
+.calendar-day.has-event {
+  position: relative;
+}
+
+.calendar-day.has-event::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-500);
+}
+
+/* Responsive Updates */
+@media (max-width: 768px) {
+  .employees-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .notification-center {
+    width: calc(100vw - 2rem);
+    right: 1rem;
+  }
+
+  .import-export-area {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-tabs {
+    font-size: 0.875rem;
+  }
+
+  .settings-tab {
+    padding: 0.75rem 1rem;
+  }
+
+  .bulk-actions-bar {
+    left: 1rem;
+    right: 1rem;
+    transform: none;
+    border-radius: 1rem;
+  }
+
+  .calendar-grid {
+    gap: 0.25rem;
+  }
+
+  .calendar-day {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+  }
+}
   </style>
 </head>
 <body class="bg-gray-100 animated-bg">
@@ -945,7 +1920,7 @@ body {
         </h1>
         <p class="text-xs text-gray-300 mt-1">Professional Edition</p>
         <div class="mt-3 px-3 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full inline-block">
-          <span class="text-xs font-bold text-white">v2.0</span>
+          <span class="text-xs font-bold text-white">v3.0</span>
         </div>
       </div>
 
@@ -1002,6 +1977,13 @@ body {
               <span class="font-medium">체크리스트</span>
             </button>
           </li>
+          <li>
+            <button data-page="settings"
+                    class="nav-btn w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 transition-all flex items-center gap-3">
+              <span class="text-xl">⚙️</span>
+              <span class="font-medium">설정</span>
+            </button>
+          </li>
         </ul>
 
         <!-- 빠른 도구 -->
@@ -1009,18 +1991,20 @@ body {
           <h3 class="text-xs font-semibold text-gray-400 uppercase mb-3 px-4">빠른 도구</h3>
           <ul class="space-y-2">
             <li>
-              <button onclick="App.exportAllData()"
+              <button onclick="SettingsManager.exportAllData()"
                       class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all flex items-center gap-2">
                 <span>💾</span>
                 <span>데이터 백업</span>
               </button>
             </li>
             <li>
-              <button onclick="App.importData()"
+              <button onclick="document.getElementById('quickImport').click()"
                       class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all flex items-center gap-2">
                 <span>📥</span>
                 <span>데이터 불러오기</span>
               </button>
+              <input type="file" id="quickImport" accept=".json" style="display: none;"
+                     onchange="SettingsManager.importData(this.files[0])">
             </li>
             <li>
               <button onclick="if(confirm('정말 초기화하시겠습니까?')) { db.clearAll(); location.reload(); }"
@@ -1035,7 +2019,7 @@ body {
 
       <!-- 버전 정보 -->
       <div class="absolute bottom-0 w-full p-4 border-t border-white border-opacity-10">
-        <p class="text-xs text-gray-400 text-center">Professional Edition</p>
+        <p class="text-xs text-gray-400 text-center">Professional Edition v3.0</p>
         <p class="text-xs text-gray-500 text-center mt-1">Made with ❤️ by Claude</p>
       </div>
     </aside>
@@ -1052,10 +2036,9 @@ body {
             </h2>
           </div>
           <div class="flex items-center space-x-4">
-            <!-- 알림 -->
-            <button class="relative p-2 rounded-lg hover:bg-gray-100 transition-all" onclick="App.showNotifications()">
+            <!-- 알림 센터 -->
+            <button id="notification-bell" class="relative p-2 rounded-lg hover:bg-gray-100 transition-all" onclick="NotificationCenter.toggle()">
               <span class="text-2xl">🔔</span>
-              <span id="notification-badge" class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full animate-pulse-glow hidden"></span>
             </button>
             <!-- 프로필 -->
             <div class="flex items-center space-x-2">
@@ -1089,85 +2072,7 @@ body {
   <!-- Modal Container -->
   <div id="modal-container"></div>
 
-  <!-- 실시간 시계 -->
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeStr = now.toLocaleString('ko-KR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-      const timeEl = document.getElementById('time-text');
-      if (timeEl) {
-        timeEl.textContent = timeStr;
-      }
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const html = document.documentElement;
-
-    // 저장된 테마 불러오기
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', savedTheme);
-    updateDarkModeIcon();
-
-    darkModeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateDarkModeIcon();
-    });
-
-    function updateDarkModeIcon() {
-      const theme = html.getAttribute('data-theme');
-      darkModeToggle.innerHTML = theme === 'dark'
-        ? '<span class="text-2xl">☀️</span>'
-        : '<span class="text-2xl">🌙</span>';
-    }
-
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const sidebar = document.getElementById('sidebar');
-
-    mobileMenuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-      const icon = mobileMenuToggle.querySelector('span');
-      icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
-    });
-
-    // 사이드바 외부 클릭 시 닫기 (모바일)
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768 &&
-          !sidebar.contains(e.target) &&
-          !mobileMenuToggle.contains(e.target) &&
-          sidebar.classList.contains('active')) {
-        sidebar.classList.remove('active');
-        mobileMenuToggle.querySelector('span').textContent = '☰';
-      }
-    });
-
-    // 메뉴 클릭 시 사이드바 닫기 (모바일)
-    document.querySelectorAll('[data-page]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
-          sidebar.classList.remove('active');
-          mobileMenuToggle.querySelector('span').textContent = '☰';
-        }
-      });
-    });
-  </script>
-
-  <!-- Combined JavaScript (All Modules Inlined) -->
+  <!-- JavaScript -->
   <script>
 /**
  * StartupHR Pro - Data Manager
@@ -1399,7 +2304,6 @@ class DataManager {
 
 // 전역 인스턴스 생성
 const db = new DataManager();
-
 /**
  * StartupHR Pro - Utility Functions
  * 공통 유틸리티 함수 모음
@@ -1783,9 +2687,1259 @@ const Utils = {
   }
 };
 
+/**
+ * Photo Manager
+ * 프로필 사진 관리 시스템
+ */
+const PhotoManager = {
+  /**
+   * 사진 업로드
+   */
+  uploadPhoto(file, id, type = 'employee') {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        reject('파일이 없습니다.');
+        return;
+      }
+
+      // 파일 크기 체크 (5MB 제한)
+      if (file.size > 5 * 1024 * 1024) {
+        reject('파일 크기는 5MB 이하여야 합니다.');
+        return;
+      }
+
+      // 파일 타입 체크
+      if (!file.type.startsWith('image/')) {
+        reject('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const base64 = e.target.result;
+
+        // LocalStorage에 저장
+        const key = `photo_${type}_${id}`;
+        try {
+          localStorage.setItem(key, base64);
+          Utils.showSuccess('사진이 업로드되었습니다.');
+          resolve(base64);
+        } catch (error) {
+          if (error.name === 'QuotaExceededError') {
+            reject('저장 공간이 부족합니다. 다른 사진을 삭제하거나 더 작은 파일을 사용해주세요.');
+          } else {
+            reject('사진 저장 중 오류가 발생했습니다.');
+          }
+        }
+      };
+
+      reader.onerror = () => {
+        reject('파일 읽기 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsDataURL(file);
+    });
+  },
+
+  /**
+   * 사진 가져오기
+   */
+  getPhoto(id, type = 'employee') {
+    const key = `photo_${type}_${id}`;
+    return localStorage.getItem(key);
+  },
+
+  /**
+   * 사진 삭제
+   */
+  deletePhoto(id, type = 'employee') {
+    const key = `photo_${type}_${id}`;
+    localStorage.removeItem(key);
+    Utils.showSuccess('사진이 삭제되었습니다.');
+  },
+
+  /**
+   * 프로필 사진 HTML 생성
+   */
+  renderPhoto(id, name, size = 'default', type = 'employee') {
+    const photo = this.getPhoto(id, type);
+    const sizeClass = size === 'sm' ? 'profile-photo-sm' : size === 'lg' ? 'profile-photo-lg' : '';
+
+    if (photo) {
+      return `<img src="${photo}" alt="${name}" class="profile-photo ${sizeClass}">`;
+    } else {
+      // 이름의 첫 글자로 플레이스홀더 생성
+      const initial = name ? name.charAt(0).toUpperCase() : '?';
+      return `<div class="profile-photo profile-photo-placeholder ${sizeClass}">${initial}</div>`;
+    }
+  },
+
+  /**
+   * 사진 업로드 UI 생성
+   */
+  renderPhotoUpload(id, name, type = 'employee') {
+    const photo = this.getPhoto(id, type);
+    return `
+      <div class="profile-photo-upload">
+        <input type="file" accept="image/*" onchange="PhotoManager.handlePhotoUpload(this, '${id}', '${type}')">
+        ${this.renderPhoto(id, name, 'lg', type)}
+      </div>
+    `;
+  },
+
+  /**
+   * 사진 업로드 핸들러
+   */
+  handlePhotoUpload(input, id, type) {
+    const file = input.files[0];
+    if (file) {
+      this.uploadPhoto(file, id, type)
+        .then(() => {
+          // 페이지 다시 렌더링
+          if (typeof App !== 'undefined' && App.currentPage) {
+            App.renderPage(App.currentPage);
+          }
+        })
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  }
+};
+
+/**
+ * Notification Center
+ * 알림 센터 관리
+ */
+const NotificationCenter = {
+  notifications: [],
+  isOpen: false,
+
+  /**
+   * 초기화
+   */
+  init() {
+    // LocalStorage에서 알림 로드
+    const saved = localStorage.getItem('notifications');
+    if (saved) {
+      this.notifications = JSON.parse(saved);
+    }
+
+    // 알림 센터 UI 생성
+    this.render();
+
+    // 이벤트 리스너 등록
+    this.setupEventListeners();
+  },
+
+  /**
+   * 알림 추가
+   */
+  add(notification) {
+    const newNotification = {
+      id: Utils.randomId(),
+      title: notification.title,
+      description: notification.description,
+      type: notification.type || 'info', // info, success, warning, danger
+      read: false,
+      timestamp: new Date().toISOString(),
+      ...notification
+    };
+
+    this.notifications.unshift(newNotification);
+    this.save();
+    this.render();
+
+    // Toast 알림도 표시
+    if (notification.showToast !== false) {
+      Utils.showNotification(notification.title, notification.type);
+    }
+
+    return newNotification;
+  },
+
+  /**
+   * 알림 읽음 처리
+   */
+  markAsRead(id) {
+    const notification = this.notifications.find(n => n.id === id);
+    if (notification) {
+      notification.read = true;
+      this.save();
+      this.render();
+    }
+  },
+
+  /**
+   * 모든 알림 읽음 처리
+   */
+  markAllAsRead() {
+    this.notifications.forEach(n => n.read = true);
+    this.save();
+    this.render();
+  },
+
+  /**
+   * 알림 삭제
+   */
+  delete(id) {
+    this.notifications = this.notifications.filter(n => n.id !== id);
+    this.save();
+    this.render();
+  },
+
+  /**
+   * 모든 알림 삭제
+   */
+  clearAll() {
+    if (Utils.confirm('모든 알림을 삭제하시겠습니까?')) {
+      this.notifications = [];
+      this.save();
+      this.render();
+    }
+  },
+
+  /**
+   * LocalStorage에 저장
+   */
+  save() {
+    localStorage.setItem('notifications', JSON.stringify(this.notifications));
+  },
+
+  /**
+   * 읽지 않은 알림 개수
+   */
+  getUnreadCount() {
+    return this.notifications.filter(n => !n.read).length;
+  },
+
+  /**
+   * 알림 센터 토글
+   */
+  toggle() {
+    this.isOpen = !this.isOpen;
+    const center = document.getElementById('notification-center');
+    if (center) {
+      center.classList.toggle('active', this.isOpen);
+    }
+  },
+
+  /**
+   * 알림 센터 렌더링
+   */
+  render() {
+    let container = document.getElementById('notification-center');
+
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'notification-center';
+      container.className = 'notification-center';
+      document.body.appendChild(container);
+    }
+
+    const unreadCount = this.getUnreadCount();
+
+    container.innerHTML = `
+      <div class="notification-center-header">
+        <div>
+          <div class="font-semibold text-lg">알림</div>
+          <div class="text-sm opacity-90">${unreadCount}개의 읽지 않은 알림</div>
+        </div>
+        <button onclick="NotificationCenter.toggle()" class="text-white text-2xl hover:opacity-80">×</button>
+      </div>
+      <div class="notification-center-body">
+        ${this.notifications.length === 0 ? `
+          <div class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">📭</div>
+            <div>알림이 없습니다</div>
+          </div>
+        ` : this.notifications.map(n => `
+          <div class="notification-item ${n.read ? '' : 'unread'}"
+               onclick="NotificationCenter.markAsRead('${n.id}')">
+            <div class="notification-item-title">${n.title}</div>
+            <div class="notification-item-description">${n.description}</div>
+            <div class="notification-item-time">${Utils.timeAgo(n.timestamp)}</div>
+          </div>
+        `).join('')}
+      </div>
+      ${this.notifications.length > 0 ? `
+        <div class="p-4 border-t border-gray-200 flex gap-2">
+          <button onclick="NotificationCenter.markAllAsRead()"
+                  class="flex-1 px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition">
+            모두 읽음
+          </button>
+          <button onclick="NotificationCenter.clearAll()"
+                  class="flex-1 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition">
+            모두 삭제
+          </button>
+        </div>
+      ` : ''}
+    `;
+
+    // 벨 아이콘 업데이트
+    this.updateBellIcon();
+  },
+
+  /**
+   * 벨 아이콘 업데이트
+   */
+  updateBellIcon() {
+    const bellBtn = document.getElementById('notification-bell');
+    if (bellBtn) {
+      const unreadCount = this.getUnreadCount();
+      const existingBadge = bellBtn.querySelector('.notification-badge');
+
+      if (unreadCount > 0) {
+        if (!existingBadge) {
+          const badge = document.createElement('span');
+          badge.className = 'notification-badge';
+          badge.textContent = unreadCount;
+          bellBtn.style.position = 'relative';
+          bellBtn.appendChild(badge);
+        } else {
+          existingBadge.textContent = unreadCount;
+        }
+      } else {
+        if (existingBadge) {
+          existingBadge.remove();
+        }
+      }
+    }
+  },
+
+  /**
+   * 이벤트 리스너 설정
+   */
+  setupEventListeners() {
+    // 외부 클릭 시 닫기
+    document.addEventListener('click', (e) => {
+      const center = document.getElementById('notification-center');
+      const bellBtn = document.getElementById('notification-bell');
+
+      if (this.isOpen && center && !center.contains(e.target) && e.target !== bellBtn && !bellBtn?.contains(e.target)) {
+        this.toggle();
+      }
+    });
+  },
+
+  /**
+   * 자동 알림 생성 (테스트용)
+   */
+  addTestNotifications() {
+    this.add({
+      title: '52시간 초과 경고',
+      description: '김철수님이 이번 주 52시간을 초과했습니다.',
+      type: 'danger'
+    });
+
+    this.add({
+      title: '계약 만료 예정',
+      description: '박영희님의 계약이 7일 후 만료됩니다.',
+      type: 'warning'
+    });
+
+    this.add({
+      title: '신규 직원 등록',
+      description: '이민수님이 팀에 합류했습니다.',
+      type: 'success'
+    });
+  }
+};
+
 // 전역 사용을 위한 export
 window.Utils = Utils;
+window.PhotoManager = PhotoManager;
+window.NotificationCenter = NotificationCenter;
+/**
+ * StartupHR Pro - Settings Manager
+ * 설정 관리 시스템
+ */
 
+const SettingsManager = {
+  /**
+   * 기본 설정값
+   */
+  defaults: {
+    company: {
+      name: 'StartupHR Pro',
+      logo: null,
+      primaryColor: '#3b82f6',
+      secondaryColor: '#8b5cf6',
+      address: '',
+      phone: '',
+      businessNumber: ''
+    },
+    user: {
+      name: '대표님',
+      email: '',
+      phone: '',
+      photo: null,
+      position: '대표이사'
+    },
+    notifications: {
+      email: true,
+      push: true,
+      weekly52h: true,
+      contractExpiry: true,
+      legalRisk: true,
+      dailyBriefing: true
+    },
+    dashboard: {
+      widgets: ['stats', 'charts', 'alerts', 'recent'],
+      layout: 'default',
+      theme: 'light'
+    },
+    system: {
+      language: 'ko',
+      timezone: 'Asia/Seoul',
+      dateFormat: 'YYYY-MM-DD',
+      autoSave: true,
+      autoBackup: false
+    }
+  },
+
+  /**
+   * 설정 로드
+   */
+  load() {
+    const saved = localStorage.getItem('settings');
+    if (saved) {
+      try {
+        return { ...this.defaults, ...JSON.parse(saved) };
+      } catch (e) {
+        console.error('설정 로드 실패:', e);
+        return this.defaults;
+      }
+    }
+    return this.defaults;
+  },
+
+  /**
+   * 설정 저장
+   */
+  save(settings) {
+    try {
+      localStorage.setItem('settings', JSON.stringify(settings));
+      Utils.showSuccess('설정이 저장되었습니다.');
+      return true;
+    } catch (e) {
+      console.error('설정 저장 실패:', e);
+      Utils.showError('설정 저장에 실패했습니다.');
+      return false;
+    }
+  },
+
+  /**
+   * 회사 정보 업데이트
+   */
+  updateCompany(data) {
+    const settings = this.load();
+    settings.company = { ...settings.company, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 사용자 정보 업데이트
+   */
+  updateUser(data) {
+    const settings = this.load();
+    settings.user = { ...settings.user, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 알림 설정 업데이트
+   */
+  updateNotifications(data) {
+    const settings = this.load();
+    settings.notifications = { ...settings.notifications, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 대시보드 설정 업데이트
+   */
+  updateDashboard(data) {
+    const settings = this.load();
+    settings.dashboard = { ...settings.dashboard, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 시스템 설정 업데이트
+   */
+  updateSystem(data) {
+    const settings = this.load();
+    settings.system = { ...settings.system, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 로고 업로드
+   */
+  uploadLogo(file) {
+    return PhotoManager.uploadPhoto(file, 'company', 'logo')
+      .then(base64 => {
+        return this.updateCompany({ logo: base64 });
+      });
+  },
+
+  /**
+   * 색상 업데이트
+   */
+  updateColors(primary, secondary) {
+    const success = this.updateCompany({
+      primaryColor: primary,
+      secondaryColor: secondary
+    });
+
+    if (success) {
+      // CSS 변수 업데이트
+      document.documentElement.style.setProperty('--primary-500', primary);
+      document.documentElement.style.setProperty('--secondary-500', secondary);
+    }
+
+    return success;
+  },
+
+  /**
+   * 테마 변경
+   */
+  updateTheme(theme) {
+    const success = this.updateDashboard({ theme });
+
+    if (success) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    return success;
+  },
+
+  /**
+   * 모든 데이터 내보내기
+   */
+  exportAllData() {
+    const data = {
+      settings: this.load(),
+      employees: db.getAll('employees'),
+      contracts: db.getAll('contracts'),
+      attendance: db.getAll('attendance'),
+      communications: db.getAll('communications'),
+      warnings: db.getAll('warnings'),
+      checklist: db.getAll('checklist'),
+      exportDate: new Date().toISOString(),
+      version: '3.0'
+    };
+
+    const filename = `startuphr-backup-${Utils.formatDate(new Date(), 'YYYY-MM-DD')}.json`;
+    Utils.downloadJSON(data, filename);
+
+    NotificationCenter.add({
+      title: '데이터 내보내기 완료',
+      description: `${filename} 파일로 저장되었습니다.`,
+      type: 'success'
+    });
+  },
+
+  /**
+   * 데이터 가져오기
+   */
+  importData(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          // 데이터 유효성 검사
+          if (!data.version || !data.exportDate) {
+            reject('올바른 백업 파일이 아닙니다.');
+            return;
+          }
+
+          // 확인
+          if (!Utils.confirm('기존 데이터를 모두 덮어쓰시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            reject('사용자가 취소했습니다.');
+            return;
+          }
+
+          // 데이터 복원
+          if (data.settings) {
+            this.save(data.settings);
+          }
+
+          if (data.employees) {
+            localStorage.setItem('employees', JSON.stringify(data.employees));
+          }
+
+          if (data.contracts) {
+            localStorage.setItem('contracts', JSON.stringify(data.contracts));
+          }
+
+          if (data.attendance) {
+            localStorage.setItem('attendance', JSON.stringify(data.attendance));
+          }
+
+          if (data.communications) {
+            localStorage.setItem('communications', JSON.stringify(data.communications));
+          }
+
+          if (data.warnings) {
+            localStorage.setItem('warnings', JSON.stringify(data.warnings));
+          }
+
+          if (data.checklist) {
+            localStorage.setItem('checklist', JSON.stringify(data.checklist));
+          }
+
+          Utils.showSuccess('데이터를 성공적으로 가져왔습니다. 페이지를 새로고침합니다.');
+
+          NotificationCenter.add({
+            title: '데이터 가져오기 완료',
+            description: '모든 데이터가 복원되었습니다.',
+            type: 'success'
+          });
+
+          // 페이지 새로고침
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+
+          resolve(data);
+        } catch (error) {
+          console.error('데이터 가져오기 실패:', error);
+          reject('파일 읽기 중 오류가 발생했습니다.');
+        }
+      };
+
+      reader.onerror = () => {
+        reject('파일 읽기 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsText(file);
+    });
+  },
+
+  /**
+   * 설정 초기화
+   */
+  resetToDefault() {
+    if (Utils.confirm('모든 설정을 초기화하시겠습니까? 데이터는 유지됩니다.')) {
+      this.save(this.defaults);
+      Utils.showSuccess('설정이 초기화되었습니다. 페이지를 새로고침합니다.');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  },
+
+  /**
+   * 모든 데이터 삭제
+   */
+  deleteAllData() {
+    const confirmText = '정말로 모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.\n\n계속하려면 "DELETE"를 입력하세요.';
+    const userInput = prompt(confirmText);
+
+    if (userInput === 'DELETE') {
+      // 모든 데이터 삭제
+      localStorage.clear();
+
+      Utils.showSuccess('모든 데이터가 삭제되었습니다. 페이지를 새로고침합니다.');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else if (userInput !== null) {
+      Utils.showError('입력이 올바르지 않습니다.');
+    }
+  },
+
+  /**
+   * 설정 페이지 렌더링
+   */
+  renderSettingsPage() {
+    const settings = this.load();
+
+    return `
+      <div class="settings-container">
+        <div class="mb-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">⚙️ 설정</h1>
+          <p class="text-gray-600">StartupHR Pro 설정을 관리하세요</p>
+        </div>
+
+        <!-- 설정 탭 -->
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="company">
+            🏢 회사 정보
+          </button>
+          <button class="settings-tab" data-tab="user">
+            👤 내 프로필
+          </button>
+          <button class="settings-tab" data-tab="notifications">
+            🔔 알림 설정
+          </button>
+          <button class="settings-tab" data-tab="dashboard">
+            📊 대시보드
+          </button>
+          <button class="settings-tab" data-tab="data">
+            💾 데이터 관리
+          </button>
+          <button class="settings-tab" data-tab="system">
+            🔧 시스템
+          </button>
+        </div>
+
+        <!-- 회사 정보 -->
+        <div id="tab-company" class="settings-tab-content">
+          ${this.renderCompanySettings(settings.company)}
+        </div>
+
+        <!-- 사용자 프로필 -->
+        <div id="tab-user" class="settings-tab-content" style="display: none;">
+          ${this.renderUserSettings(settings.user)}
+        </div>
+
+        <!-- 알림 설정 -->
+        <div id="tab-notifications" class="settings-tab-content" style="display: none;">
+          ${this.renderNotificationSettings(settings.notifications)}
+        </div>
+
+        <!-- 대시보드 설정 -->
+        <div id="tab-dashboard" class="settings-tab-content" style="display: none;">
+          ${this.renderDashboardSettings(settings.dashboard)}
+        </div>
+
+        <!-- 데이터 관리 -->
+        <div id="tab-data" class="settings-tab-content" style="display: none;">
+          ${this.renderDataManagement()}
+        </div>
+
+        <!-- 시스템 설정 -->
+        <div id="tab-system" class="settings-tab-content" style="display: none;">
+          ${this.renderSystemSettings(settings.system)}
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 회사 정보 설정 렌더링
+   */
+  renderCompanySettings(company) {
+    const logo = company.logo || PhotoManager.getPhoto('company', 'logo');
+
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">회사 정보</div>
+            <div class="settings-section-description">회사의 기본 정보를 설정하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">회사 로고</label>
+          <div class="logo-upload-area ${logo ? 'has-image' : ''}" onclick="document.getElementById('logoUpload').click()">
+            <input type="file" id="logoUpload" accept="image/*" style="display: none;"
+                   onchange="SettingsManager.handleLogoUpload(this)">
+            ${logo ? `<img src="${logo}" class="logo-preview" alt="Company Logo">` : `
+              <div class="logo-upload-text">
+                <div class="text-4xl mb-2">🖼️</div>
+                <div class="font-medium">클릭하여 로고 업로드</div>
+                <div class="text-xs text-gray-500 mt-1">PNG, JPG (최대 5MB)</div>
+              </div>
+            `}
+          </div>
+          ${logo ? `<button class="btn btn-ghost mt-2" onclick="SettingsManager.removeLogo()">로고 삭제</button>` : ''}
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">회사명</label>
+          <input type="text" id="companyName" class="settings-form-input"
+                 value="${company.name}" placeholder="회사명을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">사업자등록번호</label>
+          <input type="text" id="businessNumber" class="settings-form-input"
+                 value="${company.businessNumber || ''}" placeholder="000-00-00000">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">주소</label>
+          <input type="text" id="companyAddress" class="settings-form-input"
+                 value="${company.address || ''}" placeholder="회사 주소를 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">전화번호</label>
+          <input type="tel" id="companyPhone" class="settings-form-input"
+                 value="${company.phone || ''}" placeholder="02-0000-0000">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">브랜드 색상</label>
+          <div class="color-picker-group">
+            <div>
+              <label class="text-sm text-gray-600">Primary Color</label>
+              <div class="color-picker">
+                <input type="color" id="primaryColor" class="color-preview"
+                       value="${company.primaryColor}"
+                       onchange="SettingsManager.updateColorPreview('primary', this.value)">
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Secondary Color</label>
+              <div class="color-picker">
+                <input type="color" id="secondaryColor" class="color-preview"
+                       value="${company.secondaryColor}"
+                       onchange="SettingsManager.updateColorPreview('secondary', this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveCompanySettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 사용자 설정 렌더링
+   */
+  renderUserSettings(user) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">내 프로필</div>
+            <div class="settings-section-description">사용자 정보를 관리하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">프로필 사진</label>
+          <div class="flex items-center gap-4">
+            ${PhotoManager.renderPhotoUpload('user', user.name, 'user')}
+            <div class="text-sm text-gray-600">
+              <div class="font-medium mb-1">사진을 클릭하여 변경</div>
+              <div class="text-xs">JPG, PNG (최대 5MB)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">이름</label>
+          <input type="text" id="userName" class="settings-form-input"
+                 value="${user.name}" placeholder="이름을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">직책</label>
+          <input type="text" id="userPosition" class="settings-form-input"
+                 value="${user.position}" placeholder="직책을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">이메일</label>
+          <input type="email" id="userEmail" class="settings-form-input"
+                 value="${user.email || ''}" placeholder="email@example.com">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">전화번호</label>
+          <input type="tel" id="userPhone" class="settings-form-input"
+                 value="${user.phone || ''}" placeholder="010-0000-0000">
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveUserSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 알림 설정 렌더링
+   */
+  renderNotificationSettings(notifications) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">알림 설정</div>
+            <div class="settings-section-description">받을 알림을 선택하세요</div>
+          </div>
+        </div>
+
+        ${this.renderToggleSetting('email', '이메일 알림', '중요한 알림을 이메일로 받습니다', notifications.email)}
+        ${this.renderToggleSetting('push', '푸시 알림', '브라우저 푸시 알림을 받습니다', notifications.push)}
+        ${this.renderToggleSetting('weekly52h', '52시간 초과 알림', '주 52시간 초과 시 즉시 알림', notifications.weekly52h)}
+        ${this.renderToggleSetting('contractExpiry', '계약 만료 알림', '계약 만료 7일 전 알림', notifications.contractExpiry)}
+        ${this.renderToggleSetting('legalRisk', '법적 리스크 알림', '높은 법적 리스크 감지 시 알림', notifications.legalRisk)}
+        ${this.renderToggleSetting('dailyBriefing', '일일 브리핑', '매일 오전 HR 브리핑 수신', notifications.dailyBriefing)}
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveNotificationSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 대시보드 설정 렌더링
+   */
+  renderDashboardSettings(dashboard) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">대시보드 설정</div>
+            <div class="settings-section-description">대시보드를 개인화하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">테마</label>
+          <div class="flex gap-3">
+            <button class="btn ${dashboard.theme === 'light' ? 'btn-primary' : 'btn-ghost'}"
+                    onclick="SettingsManager.updateTheme('light')">
+              ☀️ 라이트 모드
+            </button>
+            <button class="btn ${dashboard.theme === 'dark' ? 'btn-primary' : 'btn-ghost'}"
+                    onclick="SettingsManager.updateTheme('dark')">
+              🌙 다크 모드
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">위젯 표시</label>
+          <div class="space-y-2">
+            ${this.renderCheckboxSetting('stats', '📊 통계 카드', dashboard.widgets.includes('stats'))}
+            ${this.renderCheckboxSetting('charts', '📈 차트', dashboard.widgets.includes('charts'))}
+            ${this.renderCheckboxSetting('alerts', '⚠️ 알림', dashboard.widgets.includes('alerts'))}
+            ${this.renderCheckboxSetting('recent', '🕐 최근 활동', dashboard.widgets.includes('recent'))}
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveDashboardSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 데이터 관리 렌더링
+   */
+  renderDataManagement() {
+    const stats = {
+      employees: db.getAll('employees').length,
+      contracts: db.getAll('contracts').length,
+      attendance: db.getAll('attendance').length,
+      total: 0
+    };
+    stats.total = stats.employees + stats.contracts + stats.attendance;
+
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">데이터 관리</div>
+            <div class="settings-section-description">데이터를 백업하고 복원하세요</div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div class="font-semibold text-blue-900 mb-2">📊 현재 데이터 현황</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.employees}</div>
+              <div class="text-sm text-blue-800">직원</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.contracts}</div>
+              <div class="text-sm text-blue-800">계약서</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.attendance}</div>
+              <div class="text-sm text-blue-800">근태 기록</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.total}</div>
+              <div class="text-sm text-blue-800">전체</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="import-export-area">
+          <div class="export-box" onclick="SettingsManager.exportAllData()">
+            <div class="export-icon">💾</div>
+            <div class="font-semibold text-lg mb-2">데이터 내보내기</div>
+            <div class="text-sm text-gray-600">
+              모든 데이터를 JSON 파일로 저장합니다
+            </div>
+          </div>
+
+          <div class="import-box" onclick="document.getElementById('importFile').click()">
+            <input type="file" id="importFile" accept=".json" style="display: none;"
+                   onchange="SettingsManager.handleImport(this)">
+            <div class="import-icon">📥</div>
+            <div class="font-semibold text-lg mb-2">데이터 가져오기</div>
+            <div class="text-sm text-gray-600">
+              백업 파일에서 데이터를 복원합니다
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+          <div class="font-semibold text-yellow-900 mb-2">⚠️ 위험 구역</div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-medium text-yellow-900">설정 초기화</div>
+                <div class="text-sm text-yellow-800">설정을 기본값으로 되돌립니다 (데이터 유지)</div>
+              </div>
+              <button class="btn btn-warning" onclick="SettingsManager.resetToDefault()">
+                초기화
+              </button>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-medium text-red-900">모든 데이터 삭제</div>
+                <div class="text-sm text-red-800">⚠️ 복구 불가능! 모든 데이터가 영구 삭제됩니다</div>
+              </div>
+              <button class="btn btn-danger" onclick="SettingsManager.deleteAllData()">
+                전체 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 시스템 설정 렌더링
+   */
+  renderSystemSettings(system) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">시스템 설정</div>
+            <div class="settings-section-description">시스템 기본 설정을 관리하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">언어</label>
+          <select id="systemLanguage" class="settings-form-input">
+            <option value="ko" ${system.language === 'ko' ? 'selected' : ''}>한국어</option>
+            <option value="en" ${system.language === 'en' ? 'selected' : ''}>English</option>
+          </select>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">시간대</label>
+          <select id="systemTimezone" class="settings-form-input">
+            <option value="Asia/Seoul" ${system.timezone === 'Asia/Seoul' ? 'selected' : ''}>Asia/Seoul (KST)</option>
+            <option value="UTC" ${system.timezone === 'UTC' ? 'selected' : ''}>UTC</option>
+          </select>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">날짜 형식</label>
+          <select id="systemDateFormat" class="settings-form-input">
+            <option value="YYYY-MM-DD" ${system.dateFormat === 'YYYY-MM-DD' ? 'selected' : ''}>YYYY-MM-DD</option>
+            <option value="YYYY.MM.DD" ${system.dateFormat === 'YYYY.MM.DD' ? 'selected' : ''}>YYYY.MM.DD</option>
+            <option value="MM/DD/YYYY" ${system.dateFormat === 'MM/DD/YYYY' ? 'selected' : ''}>MM/DD/YYYY</option>
+          </select>
+        </div>
+
+        ${this.renderToggleSetting('autoSave', '자동 저장', '변경사항을 자동으로 저장합니다', system.autoSave)}
+        ${this.renderToggleSetting('autoBackup', '자동 백업', '매일 자동으로 데이터를 백업합니다', system.autoBackup)}
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveSystemSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 토글 설정 렌더링 헬퍼
+   */
+  renderToggleSetting(id, title, description, checked) {
+    return `
+      <div class="flex items-center justify-between py-3 border-b border-gray-200">
+        <div>
+          <div class="font-medium text-gray-900">${title}</div>
+          <div class="text-sm text-gray-600">${description}</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="${id}" ${checked ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `;
+  },
+
+  /**
+   * 체크박스 설정 렌더링 헬퍼
+   */
+  renderCheckboxSetting(id, label, checked) {
+    return `
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" id="widget-${id}" class="action-checkbox" ${checked ? 'checked' : ''}>
+        <span class="text-gray-700">${label}</span>
+      </label>
+    `;
+  },
+
+  // ===== 이벤트 핸들러 =====
+
+  handleLogoUpload(input) {
+    const file = input.files[0];
+    if (file) {
+      this.uploadLogo(file)
+        .then(() => {
+          App.renderPage('settings');
+        })
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  },
+
+  removeLogo() {
+    if (Utils.confirm('로고를 삭제하시겠습니까?')) {
+      PhotoManager.deletePhoto('company', 'logo');
+      this.updateCompany({ logo: null });
+      App.renderPage('settings');
+    }
+  },
+
+  updateColorPreview(type, value) {
+    // 실시간 미리보기
+    if (type === 'primary') {
+      document.documentElement.style.setProperty('--primary-500', value);
+    } else if (type === 'secondary') {
+      document.documentElement.style.setProperty('--secondary-500', value);
+    }
+  },
+
+  handleImport(input) {
+    const file = input.files[0];
+    if (file) {
+      this.importData(file)
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  },
+
+  // ===== 저장 함수들 =====
+
+  saveCompanySettings() {
+    const data = {
+      name: document.getElementById('companyName').value,
+      businessNumber: document.getElementById('businessNumber').value,
+      address: document.getElementById('companyAddress').value,
+      phone: document.getElementById('companyPhone').value,
+      primaryColor: document.getElementById('primaryColor').value,
+      secondaryColor: document.getElementById('secondaryColor').value
+    };
+
+    if (this.updateCompany(data)) {
+      this.updateColors(data.primaryColor, data.secondaryColor);
+    }
+  },
+
+  saveUserSettings() {
+    const data = {
+      name: document.getElementById('userName').value,
+      position: document.getElementById('userPosition').value,
+      email: document.getElementById('userEmail').value,
+      phone: document.getElementById('userPhone').value
+    };
+
+    this.updateUser(data);
+  },
+
+  saveNotificationSettings() {
+    const data = {
+      email: document.getElementById('email').checked,
+      push: document.getElementById('push').checked,
+      weekly52h: document.getElementById('weekly52h').checked,
+      contractExpiry: document.getElementById('contractExpiry').checked,
+      legalRisk: document.getElementById('legalRisk').checked,
+      dailyBriefing: document.getElementById('dailyBriefing').checked
+    };
+
+    this.updateNotifications(data);
+  },
+
+  saveDashboardSettings() {
+    const widgets = [];
+    ['stats', 'charts', 'alerts', 'recent'].forEach(widget => {
+      if (document.getElementById(`widget-${widget}`)?.checked) {
+        widgets.push(widget);
+      }
+    });
+
+    const settings = this.load();
+    this.updateDashboard({
+      ...settings.dashboard,
+      widgets
+    });
+  },
+
+  saveSystemSettings() {
+    const data = {
+      language: document.getElementById('systemLanguage').value,
+      timezone: document.getElementById('systemTimezone').value,
+      dateFormat: document.getElementById('systemDateFormat').value,
+      autoSave: document.getElementById('autoSave').checked,
+      autoBackup: document.getElementById('autoBackup').checked
+    };
+
+    this.updateSystem(data);
+  }
+};
+
+// 전역 사용을 위한 export
+window.SettingsManager = SettingsManager;
 /**
  * StartupHR Pro - Employee Management Module
  * 직원 관리 시스템
@@ -2080,11 +4234,312 @@ const EmployeeManager = {
       riskyEmployees: risky,
       expiringContracts: expiring
     };
+  },
+
+  // ===== 고급 기능 =====
+
+  /**
+   * 고급 검색 및 필터링
+   */
+  advancedSearch(filters) {
+    let employees = this.getAll();
+
+    // 키워드 검색
+    if (filters.keyword) {
+      const lower = filters.keyword.toLowerCase();
+      employees = employees.filter(e =>
+        e.name.toLowerCase().includes(lower) ||
+        e.email.toLowerCase().includes(lower) ||
+        e.position.toLowerCase().includes(lower) ||
+        e.phone.toLowerCase().includes(lower)
+      );
+    }
+
+    // 상태 필터
+    if (filters.status && filters.status !== 'all') {
+      employees = employees.filter(e => e.status === filters.status);
+    }
+
+    // 계약 타입 필터
+    if (filters.contractType && filters.contractType !== 'all') {
+      employees = employees.filter(e => e.contract_type === filters.contractType);
+    }
+
+    // 직책 필터
+    if (filters.position && filters.position !== 'all') {
+      employees = employees.filter(e => e.position === filters.position);
+    }
+
+    // 입사일 범위
+    if (filters.hireDateFrom) {
+      employees = employees.filter(e =>
+        new Date(e.hire_date) >= new Date(filters.hireDateFrom)
+      );
+    }
+
+    if (filters.hireDateTo) {
+      employees = employees.filter(e =>
+        new Date(e.hire_date) <= new Date(filters.hireDateTo)
+      );
+    }
+
+    // 리스크 필터
+    if (filters.riskLevel && filters.riskLevel !== 'all') {
+      const riskyEmployees = this.getRiskyEmployees();
+      const riskyIds = riskyEmployees
+        .filter(r => {
+          if (filters.riskLevel === 'high') return r.riskScore >= 60;
+          if (filters.riskLevel === 'medium') return r.riskScore >= 30 && r.riskScore < 60;
+          if (filters.riskLevel === 'low') return r.riskScore < 30;
+          return true;
+        })
+        .map(r => r.employee.id);
+
+      employees = employees.filter(e => riskyIds.includes(e.id));
+    }
+
+    // 정렬
+    if (filters.sortBy) {
+      employees = this.sortEmployees(employees, filters.sortBy, filters.sortOrder || 'asc');
+    }
+
+    return employees;
+  },
+
+  /**
+   * 직원 정렬
+   */
+  sortEmployees(employees, sortBy, order = 'asc') {
+    const sorted = [...employees].sort((a, b) => {
+      let aVal, bVal;
+
+      switch (sortBy) {
+        case 'name':
+          aVal = a.name;
+          bVal = b.name;
+          break;
+        case 'hire_date':
+          aVal = new Date(a.hire_date);
+          bVal = new Date(b.hire_date);
+          break;
+        case 'position':
+          aVal = a.position;
+          bVal = b.position;
+          break;
+        case 'status':
+          aVal = a.status;
+          bVal = b.status;
+          break;
+        default:
+          return 0;
+      }
+
+      if (aVal < bVal) return order === 'asc' ? -1 : 1;
+      if (aVal > bVal) return order === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  },
+
+  /**
+   * 고유 값 추출 (필터용)
+   */
+  getUniqueValues(field) {
+    const employees = this.getAll();
+    const values = new Set(employees.map(e => e[field]).filter(Boolean));
+    return Array.from(values).sort();
+  },
+
+  /**
+   * 일괄 삭제
+   */
+  bulkDelete(ids) {
+    if (!Utils.confirm(`${ids.length}명의 직원을 삭제하시겠습니까?`)) {
+      return false;
+    }
+
+    let successCount = 0;
+    ids.forEach(id => {
+      if (db.delete('employees', id)) {
+        successCount++;
+      }
+    });
+
+    Utils.showSuccess(`${successCount}명의 직원이 삭제되었습니다.`);
+    return successCount;
+  },
+
+  /**
+   * 일괄 상태 변경
+   */
+  bulkUpdateStatus(ids, status) {
+    let successCount = 0;
+    ids.forEach(id => {
+      if (db.update('employees', id, { status })) {
+        successCount++;
+      }
+    });
+
+    Utils.showSuccess(`${successCount}명의 상태가 업데이트되었습니다.`);
+    return successCount;
+  },
+
+  /**
+   * CSV 내보내기
+   */
+  exportToCSV(employees = null) {
+    const data = employees || this.getAll();
+
+    if (data.length === 0) {
+      Utils.showError('내보낼 데이터가 없습니다.');
+      return;
+    }
+
+    // CSV 헤더
+    const headers = ['이름', '이메일', '전화번호', '직책', '입사일', '계약타입', '상태'];
+    const rows = data.map(e => [
+      e.name,
+      e.email,
+      e.phone,
+      e.position,
+      e.hire_date,
+      e.contract_type,
+      e.status
+    ]);
+
+    // CSV 생성
+    const csv = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    // UTF-8 BOM 추가 (한글 깨짐 방지)
+    const BOM = '\uFEFF';
+    const filename = `employees-${Utils.formatDate(new Date(), 'YYYY-MM-DD')}.csv`;
+
+    Utils.downloadFile(BOM + csv, filename, 'text/csv;charset=utf-8;');
+
+    NotificationCenter.add({
+      title: '직원 데이터 내보내기 완료',
+      description: `${data.length}명의 직원 정보가 ${filename}로 저장되었습니다.`,
+      type: 'success'
+    });
+  },
+
+  /**
+   * CSV 가져오기
+   */
+  importFromCSV(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const text = e.target.result;
+          const lines = text.split('\n').filter(line => line.trim());
+
+          if (lines.length < 2) {
+            reject('CSV 파일이 비어있습니다.');
+            return;
+          }
+
+          // 헤더 제거
+          const dataLines = lines.slice(1);
+          let successCount = 0;
+
+          dataLines.forEach(line => {
+            const values = line.split(',').map(v => v.trim());
+
+            if (values.length >= 6) {
+              const employeeData = {
+                name: values[0],
+                email: values[1],
+                phone: values[2],
+                position: values[3],
+                hire_date: values[4],
+                contract_type: values[5]
+              };
+
+              try {
+                this.add(employeeData);
+                successCount++;
+              } catch (error) {
+                console.error('직원 추가 실패:', employeeData, error);
+              }
+            }
+          });
+
+          Utils.showSuccess(`${successCount}명의 직원이 추가되었습니다.`);
+          resolve(successCount);
+        } catch (error) {
+          console.error('CSV 파싱 실패:', error);
+          reject('CSV 파일 읽기 중 오류가 발생했습니다.');
+        }
+      };
+
+      reader.onerror = () => {
+        reject('파일 읽기 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsText(file);
+    });
+  },
+
+  /**
+   * 저장된 검색 관리
+   */
+  savedSearches: {
+    getAll() {
+      const saved = localStorage.getItem('saved_searches');
+      return saved ? JSON.parse(saved) : [];
+    },
+
+    save(name, filters) {
+      const searches = this.getAll();
+      searches.push({
+        id: Utils.randomId(),
+        name,
+        filters,
+        createdAt: new Date().toISOString()
+      });
+      localStorage.setItem('saved_searches', JSON.stringify(searches));
+      Utils.showSuccess(`검색 조건 "${name}"이 저장되었습니다.`);
+    },
+
+    delete(id) {
+      const searches = this.getAll().filter(s => s.id !== id);
+      localStorage.setItem('saved_searches', JSON.stringify(searches));
+      Utils.showSuccess('저장된 검색이 삭제되었습니다.');
+    },
+
+    apply(id) {
+      const searches = this.getAll();
+      const search = searches.find(s => s.id === id);
+      return search ? search.filters : null;
+    }
+  },
+
+  /**
+   * 프로필 사진 일괄 업로드
+   */
+  bulkUploadPhotos(files) {
+    // files는 {employeeId: file} 형식의 객체
+    const promises = Object.entries(files).map(([id, file]) => {
+      return PhotoManager.uploadPhoto(file, id, 'employee');
+    });
+
+    return Promise.all(promises)
+      .then(() => {
+        Utils.showSuccess('사진이 모두 업로드되었습니다.');
+      })
+      .catch((error) => {
+        Utils.showError('일부 사진 업로드에 실패했습니다.');
+      });
   }
 };
 
 window.EmployeeManager = EmployeeManager;
-
 /**
  * StartupHR Pro - Contract Management Module
  * 계약서 자동 생성 및 관리
@@ -2475,7 +4930,6 @@ ${Utils.formatDate(new Date(), 'YYYY년 MM월 DD일')}
 };
 
 window.ContractManager = ContractManager;
-
 /**
  * StartupHR Pro - Attendance Management Module
  * 근태 관리 시스템 (52시간 체크 포함)
@@ -2802,7 +5256,6 @@ const AttendanceManager = {
 };
 
 window.AttendanceManager = AttendanceManager;
-
 /**
  * StartupHR Pro - Legal Risk Check Module
  * 법적 리스크 자동 체크 시스템
@@ -3194,7 +5647,380 @@ ${risk.actions.length > 0 ? risk.actions.map(action => `  - ${action}`).join('\n
 };
 
 window.LegalCheckManager = LegalCheckManager;
+/**
+ * StartupHR Pro - Conversation Analysis Module
+ * 대화 분석 및 녹취록 관리
+ */
 
+const ConversationManager = {
+  /**
+   * 대화 기록 추가
+   */
+  add(employeeId, transcript) {
+    const analysis = this.analyze(transcript);
+
+    const conversation = db.add('conversations', {
+      employee_id: employeeId,
+      date: new Date().toISOString(),
+      duration: analysis.estimatedMinutes,
+      transcript_text: transcript,
+      risk_score: analysis.riskScore,
+      critical_count: analysis.criticalKeywords.length,
+      warning_count: analysis.warningKeywords.length,
+      summary: analysis.summary,
+      keywords_detected: analysis.allKeywords
+    });
+
+    // 하이라이트 저장
+    analysis.highlights.forEach(highlight => {
+      db.add('conversation_highlights', {
+        conversation_id: conversation.id,
+        text_snippet: highlight.text,
+        risk_level: highlight.level,
+        keyword: highlight.keyword,
+        recommendation: highlight.recommendation
+      });
+    });
+
+    if (analysis.riskScore >= 70) {
+      Utils.showError('🚨 고위험 대화 패턴 감지! 즉시 조치가 필요합니다.');
+    }
+
+    Utils.showSuccess('대화가 분석되었습니다.');
+    return conversation;
+  },
+
+  /**
+   * 대화 내용 분석
+   */
+  analyze(text) {
+    // 감정적 표현 감지
+    const emotional = Utils.detectEmotionalWords(text);
+
+    // 법적 리스크 키워드 감지
+    const legal = Utils.detectLegalRisks(text);
+
+    // 모든 키워드
+    const allKeywords = [
+      ...emotional.critical,
+      ...emotional.warning,
+      ...emotional.inappropriate,
+      ...legal.critical,
+      ...legal.warning,
+      ...legal.important
+    ];
+
+    // 리스크 점수 계산
+    const emotionalScore = emotional.critical.length * 20 +
+                          emotional.warning.length * 10 +
+                          emotional.inappropriate.length * 25;
+
+    const riskScore = Math.min(100, emotionalScore + legal.riskScore);
+
+    // 하이라이트 생성
+    const highlights = [];
+
+    emotional.critical.forEach(keyword => {
+      highlights.push({
+        text: this.extractContext(text, keyword),
+        level: 'critical',
+        keyword,
+        recommendation: '감정적 표현 대신 객관적 사실로 전환 필요'
+      });
+    });
+
+    legal.critical.forEach(keyword => {
+      highlights.push({
+        text: this.extractContext(text, keyword),
+        level: 'critical',
+        keyword,
+        recommendation: '법적 리스크 - 즉시 정정 및 서면 정리 필요'
+      });
+    });
+
+    // 대화 길이 추정 (300자 = 1분 가정)
+    const estimatedMinutes = Math.ceil(text.length / 300);
+
+    // 요약 생성
+    const summary = this.generateSummary(text, allKeywords, riskScore);
+
+    return {
+      estimatedMinutes,
+      riskScore,
+      criticalKeywords: [...emotional.critical, ...legal.critical],
+      warningKeywords: [...emotional.warning, ...legal.warning],
+      allKeywords,
+      highlights,
+      summary,
+      emotional,
+      legal
+    };
+  },
+
+  /**
+   * 키워드 문맥 추출
+   */
+  extractContext(text, keyword, contextLength = 50) {
+    const index = text.indexOf(keyword);
+    if (index === -1) return keyword;
+
+    const start = Math.max(0, index - contextLength);
+    const end = Math.min(text.length, index + keyword.length + contextLength);
+
+    let snippet = text.substring(start, end);
+
+    if (start > 0) snippet = '...' + snippet;
+    if (end < text.length) snippet = snippet + '...';
+
+    return snippet;
+  },
+
+  /**
+   * 요약 생성
+   */
+  generateSummary(text, keywords, riskScore) {
+    return {
+      wordCount: text.length,
+      keywordCount: keywords.length,
+      riskLevel: riskScore >= 70 ? 'critical' :
+                 riskScore >= 50 ? 'high' :
+                 riskScore >= 30 ? 'medium' : 'low',
+      mainIssues: this.extractMainIssues(keywords),
+      recommendations: this.getRecommendations(riskScore, keywords)
+    };
+  },
+
+  /**
+   * 주요 이슈 추출
+   */
+  extractMainIssues(keywords) {
+    const issues = [];
+
+    if (keywords.some(k => k.includes('52시간') || k.includes('주말'))) {
+      issues.push('근로시간 관련 논의');
+    }
+
+    if (keywords.some(k => k.includes('환불') || k.includes('교육비'))) {
+      issues.push('교육비 환불 문제');
+    }
+
+    if (keywords.some(k => k.includes('퇴사') || k.includes('해고'))) {
+      issues.push('퇴사 관련 논의');
+    }
+
+    if (keywords.some(k => ['배신', '서운', '이기적'].includes(k))) {
+      issues.push('감정적 갈등');
+    }
+
+    return issues.length > 0 ? issues : ['일반 대화'];
+  },
+
+  /**
+   * 권장사항 생성
+   */
+  getRecommendations(riskScore, keywords) {
+    const recommendations = [];
+
+    if (riskScore >= 70) {
+      recommendations.push('❌ 즉시 대화 중단');
+      recommendations.push('✅ 내용을 서면으로 정리하여 발송');
+      recommendations.push('✅ 노무사 긴급 상담');
+      recommendations.push('✅ 증거 패키지 준비');
+    } else if (riskScore >= 50) {
+      recommendations.push('⚠️ 대화 내용 서면화');
+      recommendations.push('✅ 감정적 표현 자제');
+      recommendations.push('✅ 객관적 사실만 전달');
+    } else if (riskScore >= 30) {
+      recommendations.push('ℹ️ 대화 기록 보관');
+      recommendations.push('✅ 필요시 서면 보충');
+    } else {
+      recommendations.push('✅ 정상 범위의 대화');
+    }
+
+    return recommendations;
+  },
+
+  /**
+   * 10분 룰 체크
+   */
+  check10MinuteRule(startTime) {
+    const now = new Date();
+    const start = new Date(startTime);
+    const diffMinutes = (now - start) / (1000 * 60);
+
+    if (diffMinutes >= 10) {
+      return {
+        exceeded: true,
+        minutes: Math.round(diffMinutes),
+        warning: '⏱️ 10분이 경과했습니다. 대화를 종료하고 서면으로 정리하시겠습니까?'
+      };
+    }
+
+    return {
+      exceeded: false,
+      minutes: Math.round(diffMinutes),
+      remaining: 10 - Math.round(diffMinutes)
+    };
+  },
+
+  /**
+   * 직원별 대화 기록 조회
+   */
+  getByEmployee(employeeId) {
+    return db.find('conversations', c => c.employee_id === employeeId)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  },
+
+  /**
+   * 대화 상세
+   */
+  getDetail(conversationId) {
+    const conversation = db.getById('conversations', conversationId);
+    if (!conversation) return null;
+
+    const employee = db.getById('employees', conversation.employee_id);
+    const highlights = db.find('conversation_highlights', h =>
+      h.conversation_id === conversationId
+    );
+
+    return {
+      ...conversation,
+      employee,
+      highlights
+    };
+  },
+
+  /**
+   * 증거 패키지 생성
+   */
+  generateEvidencePackage(employeeId) {
+    const employee = db.getById('employees', employeeId);
+    const conversations = this.getByEmployee(employeeId);
+    const attendance = db.find('attendance', a => a.employee_id === employeeId);
+    const contracts = db.find('contracts', c => c.employee_id === employeeId);
+    const warnings = db.find('warnings', w => w.employee_id === employeeId);
+    const communications = db.find('communications', c => c.employee_id === employeeId);
+
+    const package = `
+========================================
+법적 증거 패키지
+========================================
+
+직원명: ${employee.name}
+직책: ${employee.position}
+입사일: ${Utils.formatDate(employee.hire_date)}
+생성일: ${Utils.formatDate(new Date(), 'YYYY-MM-DD HH:mm')}
+
+========================================
+1. 대화 녹취 기록 (${conversations.length}건)
+========================================
+
+${conversations.map((conv, idx) => `
+[${idx + 1}] ${Utils.formatDate(conv.date, 'YYYY-MM-DD HH:mm')}
+길이: ${conv.duration}분
+리스크 점수: ${conv.risk_score}/100
+주요 이슈: ${conv.summary.mainIssues.join(', ')}
+
+전문:
+${conv.transcript_text}
+
+분석 결과:
+- 위험 키워드: ${conv.critical_count}개
+- 주의 키워드: ${conv.warning_count}개
+
+권장조치:
+${conv.summary.recommendations.map(r => `  - ${r}`).join('\n')}
+
+${'='.repeat(40)}
+`).join('\n')}
+
+========================================
+2. 근태 기록 (${attendance.length}건)
+========================================
+
+${attendance.map(a => `${Utils.formatDate(a.date)} | ${a.clock_in} ~ ${a.clock_out} | ${a.work_hours}시간 | ${a.work_type}`).join('\n')}
+
+========================================
+3. 계약서 (${contracts.length}건)
+========================================
+
+${contracts.map((c, idx) => `[${idx + 1}] ${c.contract_type} | ${Utils.formatDate(c.start_date)} ~ ${c.end_date || '무기한'} | ${Utils.formatCurrency(c.salary)}`).join('\n')}
+
+========================================
+4. 경고 기록 (${warnings.length}건)
+========================================
+
+${warnings.map(w => `[${Utils.formatDate(w.issued_date)}] ${w.warning_type} - ${w.description}`).join('\n')}
+
+========================================
+5. 소통 기록 (${communications.length}건)
+========================================
+
+${communications.map(c => `[${Utils.formatDate(c.date)}] ${c.comm_type} - ${c.subject}`).join('\n')}
+
+========================================
+종합 의견
+========================================
+
+${this.generateFinalOpinion(employee, conversations, attendance, warnings)}
+
+========================================
+`.trim();
+
+    return package;
+  },
+
+  /**
+   * 종합 의견 생성
+   */
+  generateFinalOpinion(employee, conversations, attendance, warnings) {
+    const totalRiskScore = conversations.reduce((sum, c) => sum + c.risk_score, 0) /
+                           (conversations.length || 1);
+
+    const weeklyHours = AttendanceManager.getWeeklyHours(employee.id);
+
+    let opinion = `직원 ${employee.name}님에 대한 종합 분석 결과:\n\n`;
+
+    if (totalRiskScore >= 70) {
+      opinion += '🔴 고위험 상태\n';
+      opinion += '- 대화 내용에서 심각한 법적 리스크 발견\n';
+      opinion += '- 조기 정리 또는 노무사 상담 강력 권장\n\n';
+    }
+
+    if (weeklyHours.check.status === 'danger') {
+      opinion += '🔴 52시간 위반\n';
+      opinion += `- 주 ${weeklyHours.totalHours}시간 근무\n`;
+      opinion += '- 근로기준법 위반 상태\n\n';
+    }
+
+    if (warnings.length >= 3) {
+      opinion += `🟠 경고 ${warnings.length}회 누적\n`;
+      opinion += '- 개선 의지 확인 필요\n\n';
+    }
+
+    opinion += '권장 조치:\n';
+    opinion += '1. 모든 향후 소통은 서면으로만 진행\n';
+    opinion += '2. 감정적 표현 일체 배제\n';
+    opinion += '3. 필요시 노무사 동석 하 면담\n';
+    opinion += '4. 법적 절차 대비 증거 자료 지속 수집\n';
+
+    return opinion;
+  },
+
+  /**
+   * 증거 패키지 다운로드
+   */
+  downloadEvidencePackage(employeeId) {
+    const package = this.generateEvidencePackage(employeeId);
+    const employee = db.getById('employees', employeeId);
+    const filename = `증거패키지_${employee.name}_${Utils.formatDate(new Date())}.txt`;
+
+    Utils.downloadFile(package, filename, 'text/plain; charset=utf-8');
+    Utils.showSuccess('증거 패키지가 다운로드되었습니다.');
+  }
+};
+
+window.ConversationManager = ConversationManager;
 /**
  * StartupHR Pro - Daily Checklist Module
  * 일일 체크리스트 및 브리핑 시스템
@@ -3598,382 +6424,6 @@ ${report.yesterday.summary.map(a => `[${a.time}] ${a.type} - ${a.subject}`).join
 };
 
 window.ChecklistManager = ChecklistManager;
-
-/**
- * StartupHR Pro - Conversation Analysis Module
- * 대화 분석 및 녹취록 관리
- */
-
-const ConversationManager = {
-  /**
-   * 대화 기록 추가
-   */
-  add(employeeId, transcript) {
-    const analysis = this.analyze(transcript);
-
-    const conversation = db.add('conversations', {
-      employee_id: employeeId,
-      date: new Date().toISOString(),
-      duration: analysis.estimatedMinutes,
-      transcript_text: transcript,
-      risk_score: analysis.riskScore,
-      critical_count: analysis.criticalKeywords.length,
-      warning_count: analysis.warningKeywords.length,
-      summary: analysis.summary,
-      keywords_detected: analysis.allKeywords
-    });
-
-    // 하이라이트 저장
-    analysis.highlights.forEach(highlight => {
-      db.add('conversation_highlights', {
-        conversation_id: conversation.id,
-        text_snippet: highlight.text,
-        risk_level: highlight.level,
-        keyword: highlight.keyword,
-        recommendation: highlight.recommendation
-      });
-    });
-
-    if (analysis.riskScore >= 70) {
-      Utils.showError('🚨 고위험 대화 패턴 감지! 즉시 조치가 필요합니다.');
-    }
-
-    Utils.showSuccess('대화가 분석되었습니다.');
-    return conversation;
-  },
-
-  /**
-   * 대화 내용 분석
-   */
-  analyze(text) {
-    // 감정적 표현 감지
-    const emotional = Utils.detectEmotionalWords(text);
-
-    // 법적 리스크 키워드 감지
-    const legal = Utils.detectLegalRisks(text);
-
-    // 모든 키워드
-    const allKeywords = [
-      ...emotional.critical,
-      ...emotional.warning,
-      ...emotional.inappropriate,
-      ...legal.critical,
-      ...legal.warning,
-      ...legal.important
-    ];
-
-    // 리스크 점수 계산
-    const emotionalScore = emotional.critical.length * 20 +
-                          emotional.warning.length * 10 +
-                          emotional.inappropriate.length * 25;
-
-    const riskScore = Math.min(100, emotionalScore + legal.riskScore);
-
-    // 하이라이트 생성
-    const highlights = [];
-
-    emotional.critical.forEach(keyword => {
-      highlights.push({
-        text: this.extractContext(text, keyword),
-        level: 'critical',
-        keyword,
-        recommendation: '감정적 표현 대신 객관적 사실로 전환 필요'
-      });
-    });
-
-    legal.critical.forEach(keyword => {
-      highlights.push({
-        text: this.extractContext(text, keyword),
-        level: 'critical',
-        keyword,
-        recommendation: '법적 리스크 - 즉시 정정 및 서면 정리 필요'
-      });
-    });
-
-    // 대화 길이 추정 (300자 = 1분 가정)
-    const estimatedMinutes = Math.ceil(text.length / 300);
-
-    // 요약 생성
-    const summary = this.generateSummary(text, allKeywords, riskScore);
-
-    return {
-      estimatedMinutes,
-      riskScore,
-      criticalKeywords: [...emotional.critical, ...legal.critical],
-      warningKeywords: [...emotional.warning, ...legal.warning],
-      allKeywords,
-      highlights,
-      summary,
-      emotional,
-      legal
-    };
-  },
-
-  /**
-   * 키워드 문맥 추출
-   */
-  extractContext(text, keyword, contextLength = 50) {
-    const index = text.indexOf(keyword);
-    if (index === -1) return keyword;
-
-    const start = Math.max(0, index - contextLength);
-    const end = Math.min(text.length, index + keyword.length + contextLength);
-
-    let snippet = text.substring(start, end);
-
-    if (start > 0) snippet = '...' + snippet;
-    if (end < text.length) snippet = snippet + '...';
-
-    return snippet;
-  },
-
-  /**
-   * 요약 생성
-   */
-  generateSummary(text, keywords, riskScore) {
-    return {
-      wordCount: text.length,
-      keywordCount: keywords.length,
-      riskLevel: riskScore >= 70 ? 'critical' :
-                 riskScore >= 50 ? 'high' :
-                 riskScore >= 30 ? 'medium' : 'low',
-      mainIssues: this.extractMainIssues(keywords),
-      recommendations: this.getRecommendations(riskScore, keywords)
-    };
-  },
-
-  /**
-   * 주요 이슈 추출
-   */
-  extractMainIssues(keywords) {
-    const issues = [];
-
-    if (keywords.some(k => k.includes('52시간') || k.includes('주말'))) {
-      issues.push('근로시간 관련 논의');
-    }
-
-    if (keywords.some(k => k.includes('환불') || k.includes('교육비'))) {
-      issues.push('교육비 환불 문제');
-    }
-
-    if (keywords.some(k => k.includes('퇴사') || k.includes('해고'))) {
-      issues.push('퇴사 관련 논의');
-    }
-
-    if (keywords.some(k => ['배신', '서운', '이기적'].includes(k))) {
-      issues.push('감정적 갈등');
-    }
-
-    return issues.length > 0 ? issues : ['일반 대화'];
-  },
-
-  /**
-   * 권장사항 생성
-   */
-  getRecommendations(riskScore, keywords) {
-    const recommendations = [];
-
-    if (riskScore >= 70) {
-      recommendations.push('❌ 즉시 대화 중단');
-      recommendations.push('✅ 내용을 서면으로 정리하여 발송');
-      recommendations.push('✅ 노무사 긴급 상담');
-      recommendations.push('✅ 증거 패키지 준비');
-    } else if (riskScore >= 50) {
-      recommendations.push('⚠️ 대화 내용 서면화');
-      recommendations.push('✅ 감정적 표현 자제');
-      recommendations.push('✅ 객관적 사실만 전달');
-    } else if (riskScore >= 30) {
-      recommendations.push('ℹ️ 대화 기록 보관');
-      recommendations.push('✅ 필요시 서면 보충');
-    } else {
-      recommendations.push('✅ 정상 범위의 대화');
-    }
-
-    return recommendations;
-  },
-
-  /**
-   * 10분 룰 체크
-   */
-  check10MinuteRule(startTime) {
-    const now = new Date();
-    const start = new Date(startTime);
-    const diffMinutes = (now - start) / (1000 * 60);
-
-    if (diffMinutes >= 10) {
-      return {
-        exceeded: true,
-        minutes: Math.round(diffMinutes),
-        warning: '⏱️ 10분이 경과했습니다. 대화를 종료하고 서면으로 정리하시겠습니까?'
-      };
-    }
-
-    return {
-      exceeded: false,
-      minutes: Math.round(diffMinutes),
-      remaining: 10 - Math.round(diffMinutes)
-    };
-  },
-
-  /**
-   * 직원별 대화 기록 조회
-   */
-  getByEmployee(employeeId) {
-    return db.find('conversations', c => c.employee_id === employeeId)
-      .sort((a, b) => new Date(b.date) - new Date(a.date));
-  },
-
-  /**
-   * 대화 상세
-   */
-  getDetail(conversationId) {
-    const conversation = db.getById('conversations', conversationId);
-    if (!conversation) return null;
-
-    const employee = db.getById('employees', conversation.employee_id);
-    const highlights = db.find('conversation_highlights', h =>
-      h.conversation_id === conversationId
-    );
-
-    return {
-      ...conversation,
-      employee,
-      highlights
-    };
-  },
-
-  /**
-   * 증거 패키지 생성
-   */
-  generateEvidencePackage(employeeId) {
-    const employee = db.getById('employees', employeeId);
-    const conversations = this.getByEmployee(employeeId);
-    const attendance = db.find('attendance', a => a.employee_id === employeeId);
-    const contracts = db.find('contracts', c => c.employee_id === employeeId);
-    const warnings = db.find('warnings', w => w.employee_id === employeeId);
-    const communications = db.find('communications', c => c.employee_id === employeeId);
-
-    const package = `
-========================================
-법적 증거 패키지
-========================================
-
-직원명: ${employee.name}
-직책: ${employee.position}
-입사일: ${Utils.formatDate(employee.hire_date)}
-생성일: ${Utils.formatDate(new Date(), 'YYYY-MM-DD HH:mm')}
-
-========================================
-1. 대화 녹취 기록 (${conversations.length}건)
-========================================
-
-${conversations.map((conv, idx) => `
-[${idx + 1}] ${Utils.formatDate(conv.date, 'YYYY-MM-DD HH:mm')}
-길이: ${conv.duration}분
-리스크 점수: ${conv.risk_score}/100
-주요 이슈: ${conv.summary.mainIssues.join(', ')}
-
-전문:
-${conv.transcript_text}
-
-분석 결과:
-- 위험 키워드: ${conv.critical_count}개
-- 주의 키워드: ${conv.warning_count}개
-
-권장조치:
-${conv.summary.recommendations.map(r => `  - ${r}`).join('\n')}
-
-${'='.repeat(40)}
-`).join('\n')}
-
-========================================
-2. 근태 기록 (${attendance.length}건)
-========================================
-
-${attendance.map(a => `${Utils.formatDate(a.date)} | ${a.clock_in} ~ ${a.clock_out} | ${a.work_hours}시간 | ${a.work_type}`).join('\n')}
-
-========================================
-3. 계약서 (${contracts.length}건)
-========================================
-
-${contracts.map((c, idx) => `[${idx + 1}] ${c.contract_type} | ${Utils.formatDate(c.start_date)} ~ ${c.end_date || '무기한'} | ${Utils.formatCurrency(c.salary)}`).join('\n')}
-
-========================================
-4. 경고 기록 (${warnings.length}건)
-========================================
-
-${warnings.map(w => `[${Utils.formatDate(w.issued_date)}] ${w.warning_type} - ${w.description}`).join('\n')}
-
-========================================
-5. 소통 기록 (${communications.length}건)
-========================================
-
-${communications.map(c => `[${Utils.formatDate(c.date)}] ${c.comm_type} - ${c.subject}`).join('\n')}
-
-========================================
-종합 의견
-========================================
-
-${this.generateFinalOpinion(employee, conversations, attendance, warnings)}
-
-========================================
-`.trim();
-
-    return package;
-  },
-
-  /**
-   * 종합 의견 생성
-   */
-  generateFinalOpinion(employee, conversations, attendance, warnings) {
-    const totalRiskScore = conversations.reduce((sum, c) => sum + c.risk_score, 0) /
-                           (conversations.length || 1);
-
-    const weeklyHours = AttendanceManager.getWeeklyHours(employee.id);
-
-    let opinion = `직원 ${employee.name}님에 대한 종합 분석 결과:\n\n`;
-
-    if (totalRiskScore >= 70) {
-      opinion += '🔴 고위험 상태\n';
-      opinion += '- 대화 내용에서 심각한 법적 리스크 발견\n';
-      opinion += '- 조기 정리 또는 노무사 상담 강력 권장\n\n';
-    }
-
-    if (weeklyHours.check.status === 'danger') {
-      opinion += '🔴 52시간 위반\n';
-      opinion += `- 주 ${weeklyHours.totalHours}시간 근무\n`;
-      opinion += '- 근로기준법 위반 상태\n\n';
-    }
-
-    if (warnings.length >= 3) {
-      opinion += `🟠 경고 ${warnings.length}회 누적\n`;
-      opinion += '- 개선 의지 확인 필요\n\n';
-    }
-
-    opinion += '권장 조치:\n';
-    opinion += '1. 모든 향후 소통은 서면으로만 진행\n';
-    opinion += '2. 감정적 표현 일체 배제\n';
-    opinion += '3. 필요시 노무사 동석 하 면담\n';
-    opinion += '4. 법적 절차 대비 증거 자료 지속 수집\n';
-
-    return opinion;
-  },
-
-  /**
-   * 증거 패키지 다운로드
-   */
-  downloadEvidencePackage(employeeId) {
-    const package = this.generateEvidencePackage(employeeId);
-    const employee = db.getById('employees', employeeId);
-    const filename = `증거패키지_${employee.name}_${Utils.formatDate(new Date())}.txt`;
-
-    Utils.downloadFile(package, filename, 'text/plain; charset=utf-8');
-    Utils.showSuccess('증거 패키지가 다운로드되었습니다.');
-  }
-};
-
-window.ConversationManager = ConversationManager;
-
 /**
  * StartupHR Pro - Main Application
  * SPA 라우팅 및 UI 렌더링
@@ -4057,6 +6507,9 @@ const App = {
         break;
       case 'checklist':
         content.innerHTML = this.renderChecklist();
+        break;
+      case 'settings':
+        content.innerHTML = SettingsManager.renderSettingsPage();
         break;
       default:
         content.innerHTML = this.renderDashboard();
@@ -5455,6 +7908,26 @@ const App = {
     if (page === 'conversations') {
       // 대화 분석 페이지는 별도 처리 불필요
     }
+
+    if (page === 'settings') {
+      // 설정 탭 전환
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          const targetTab = e.target.dataset.tab;
+
+          // 모든 탭 비활성화
+          document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.settings-tab-content').forEach(c => c.style.display = 'none');
+
+          // 선택된 탭 활성화
+          e.target.classList.add('active');
+          const content = document.getElementById(`tab-${targetTab}`);
+          if (content) {
+            content.style.display = 'block';
+          }
+        });
+      });
+    }
   },
 
   analyzeConversation() {
@@ -6293,6 +8766,91 @@ const App = {
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
+
+    // 초기화
+    document.addEventListener('DOMContentLoaded', () => {
+      // NotificationCenter 초기화
+      NotificationCenter.init();
+
+      // App 초기화
+      App.init();
+
+      // 실시간 시계
+      function updateTime() {
+        const now = new Date();
+        const timeStr = now.toLocaleString('ko-KR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          weekday: 'long',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+        const timeEl = document.getElementById('time-text');
+        if (timeEl) {
+          timeEl.textContent = timeStr;
+        }
+      }
+
+      setInterval(updateTime, 1000);
+      updateTime();
+
+      // Dark Mode Toggle
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const html = document.documentElement;
+
+      // 저장된 테마 불러오기
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      html.setAttribute('data-theme', savedTheme);
+      updateDarkModeIcon();
+
+      darkModeToggle.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateDarkModeIcon();
+      });
+
+      function updateDarkModeIcon() {
+        const theme = html.getAttribute('data-theme');
+        darkModeToggle.innerHTML = theme === 'dark'
+          ? '<span class="text-2xl">☀️</span>'
+          : '<span class="text-2xl">🌙</span>';
+      }
+
+      // Mobile Menu Toggle
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const sidebar = document.getElementById('sidebar');
+
+      mobileMenuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+        const icon = mobileMenuToggle.querySelector('span');
+        icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+      });
+
+      // 사이드바 외부 클릭 시 닫기 (모바일)
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 &&
+            !sidebar.contains(e.target) &&
+            !mobileMenuToggle.contains(e.target) &&
+            sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+          mobileMenuToggle.querySelector('span').textContent = '☰';
+        }
+      });
+
+      // 메뉴 클릭 시 사이드바 닫기 (모바일)
+      document.querySelectorAll('[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            mobileMenuToggle.querySelector('span').textContent = '☰';
+          }
+        });
+      });
+    });
   </script>
 
 </body>

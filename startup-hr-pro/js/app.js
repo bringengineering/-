@@ -82,6 +82,9 @@ const App = {
       case 'checklist':
         content.innerHTML = this.renderChecklist();
         break;
+      case 'settings':
+        content.innerHTML = SettingsManager.renderSettingsPage();
+        break;
       default:
         content.innerHTML = this.renderDashboard();
     }
@@ -1478,6 +1481,26 @@ const App = {
   setupPageEvents(page) {
     if (page === 'conversations') {
       // 대화 분석 페이지는 별도 처리 불필요
+    }
+
+    if (page === 'settings') {
+      // 설정 탭 전환
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          const targetTab = e.target.dataset.tab;
+
+          // 모든 탭 비활성화
+          document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.settings-tab-content').forEach(c => c.style.display = 'none');
+
+          // 선택된 탭 활성화
+          e.target.classList.add('active');
+          const content = document.getElementById(`tab-${targetTab}`);
+          if (content) {
+            content.style.display = 'block';
+          }
+        });
+      });
     }
   },
 
