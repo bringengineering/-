@@ -97,21 +97,43 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-attachment: fixed;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100vh;
 }
 
-/* Main Container - Fixed scroll issue */
+/* Main Container - 스크롤 완전 수정 */
 main {
-  min-height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  height: 100vh !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
   padding-bottom: 4rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 스크롤바 디자인 */
+main::-webkit-scrollbar {
+  width: 12px;
+}
+
+main::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 6px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.8);
 }
 
 #content {
   max-width: 1600px;
   margin: 0 auto;
   overflow: visible;
+  min-height: calc(100vh + 200px);
 }
 
 /* ===== Glassmorphism Cards ===== */

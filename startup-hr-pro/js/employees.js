@@ -790,10 +790,10 @@ const EmployeeManager = {
 
             <!-- 액션 버튼 -->
             <div class="action-group">
-              <button class="btn-premium btn-premium-primary" onclick="App.renderPage('employees'); EmployeeManager.closeDetail(); EmployeeManager.showEditForm('${employeeId}')">
+              <button class="btn-premium btn-premium-primary" onclick="EmployeeManager.closeDetail(); App.showAddEmployeeModal('${employeeId}')">
                 ✏️ 정보 수정
               </button>
-              <button class="btn-premium btn-premium-secondary" onclick="ContractManager.showCreateForm('${employeeId}'); EmployeeManager.closeDetail()">
+              <button class="btn-premium btn-premium-secondary" onclick="EmployeeManager.closeDetail(); ContractManager.showCreateForm('${employeeId}')">
                 📄 계약서 생성
               </button>
               <button class="btn-premium btn-premium-secondary" onclick="EmployeeManager.closeDetail()">
