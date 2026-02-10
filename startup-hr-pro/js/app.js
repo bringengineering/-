@@ -62,7 +62,8 @@ const App = {
 
     switch (page) {
       case 'dashboard':
-        content.innerHTML = this.renderDashboard();
+        content.innerHTML = DashboardWidgets.renderDashboard();
+        DashboardWidgets.initWidgets();
         break;
       case 'employees':
         content.innerHTML = this.renderEmployees();
@@ -85,8 +86,12 @@ const App = {
       case 'settings':
         content.innerHTML = SettingsManager.renderSettingsPage();
         break;
+      case 'email-templates':
+        content.innerHTML = EmailTemplates.renderTemplatesPage();
+        break;
       default:
-        content.innerHTML = this.renderDashboard();
+        content.innerHTML = DashboardWidgets.renderDashboard();
+        DashboardWidgets.initWidgets();
     }
 
     // 페이지별 이벤트 리스너
