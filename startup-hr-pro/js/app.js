@@ -10,6 +10,11 @@ const App = {
   init() {
     console.log('🚀 StartupHR Pro 시작');
 
+    // UI 초기화
+    this.initClock();
+    this.initDarkMode();
+    this.initMobileMenu();
+
     // 이벤트 리스너 등록
     this.setupEventListeners();
 
@@ -21,6 +26,86 @@ const App = {
 
     // 모달 외부 클릭 시 닫기 설정
     this.setupModalCloseOnOutsideClick();
+  },
+
+  initClock() {
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      const timeEl = document.getElementById('time-text');
+      if (timeEl) {
+        timeEl.textContent = timeStr;
+      }
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  },
+
+  initDarkMode() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+
+    // 저장된 테마 불러오기
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    this.updateDarkModeIcon();
+
+    darkModeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      this.updateDarkModeIcon();
+    });
+  },
+
+  updateDarkModeIcon() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+    const theme = html.getAttribute('data-theme');
+    darkModeToggle.innerHTML = theme === 'dark'
+      ? '<span class="text-2xl">☀️</span>'
+      : '<span class="text-2xl">🌙</span>';
+  },
+
+  initMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      const icon = mobileMenuToggle.querySelector('span');
+      icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+    });
+
+    // 사이드바 외부 클릭 시 닫기 (모바일)
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 &&
+          !sidebar.contains(e.target) &&
+          !mobileMenuToggle.contains(e.target) &&
+          sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        mobileMenuToggle.querySelector('span').textContent = '☰';
+      }
+    });
+
+    // 메뉴 클릭 시 사이드바 닫기 (모바일)
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+          mobileMenuToggle.querySelector('span').textContent = '☰';
+        }
+      });
+    });
   },
 
   setupEventListeners() {

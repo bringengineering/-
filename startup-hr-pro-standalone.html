@@ -2528,84 +2528,6 @@ input:checked + .toggle-slider:before {
   <script src="js/email-templates.js"></script>
   <script src="js/app.js"></script>
 
-  <!-- 실시간 시계 -->
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeStr = now.toLocaleString('ko-KR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        weekday: 'long',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      });
-      const timeEl = document.getElementById('time-text');
-      if (timeEl) {
-        timeEl.textContent = timeStr;
-      }
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const html = document.documentElement;
-
-    // 저장된 테마 불러오기
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', savedTheme);
-    updateDarkModeIcon();
-
-    darkModeToggle.addEventListener('click', () => {
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateDarkModeIcon();
-    });
-
-    function updateDarkModeIcon() {
-      const theme = html.getAttribute('data-theme');
-      darkModeToggle.innerHTML = theme === 'dark'
-        ? '<span class="text-2xl">☀️</span>'
-        : '<span class="text-2xl">🌙</span>';
-    }
-
-    // Mobile Menu Toggle
-    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-    const sidebar = document.getElementById('sidebar');
-
-    mobileMenuToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-      const icon = mobileMenuToggle.querySelector('span');
-      icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
-    });
-
-    // 사이드바 외부 클릭 시 닫기 (모바일)
-    document.addEventListener('click', (e) => {
-      if (window.innerWidth <= 768 &&
-          !sidebar.contains(e.target) &&
-          !mobileMenuToggle.contains(e.target) &&
-          sidebar.classList.contains('active')) {
-        sidebar.classList.remove('active');
-        mobileMenuToggle.querySelector('span').textContent = '☰';
-      }
-    });
-
-    // 메뉴 클릭 시 사이드바 닫기 (모바일)
-    document.querySelectorAll('[data-page]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
-          sidebar.classList.remove('active');
-          mobileMenuToggle.querySelector('span').textContent = '☰';
-        }
-      });
-    });
-  </script>
-
   <!-- Combined JavaScript (All Modules Inlined) -->
   <script>
 /**
@@ -3586,6 +3508,896 @@ const NotificationCenter = {
 window.Utils = Utils;
 window.PhotoManager = PhotoManager;
 window.NotificationCenter = NotificationCenter;
+
+/**
+ * StartupHR Pro - Settings Manager
+ * 설정 관리 시스템
+ */
+
+const SettingsManager = {
+  /**
+   * 기본 설정값
+   */
+  defaults: {
+    company: {
+      name: 'StartupHR Pro',
+      logo: null,
+      primaryColor: '#3b82f6',
+      secondaryColor: '#8b5cf6',
+      address: '',
+      phone: '',
+      businessNumber: ''
+    },
+    user: {
+      name: '대표님',
+      email: '',
+      phone: '',
+      photo: null,
+      position: '대표이사'
+    },
+    notifications: {
+      email: true,
+      push: true,
+      weekly52h: true,
+      contractExpiry: true,
+      legalRisk: true,
+      dailyBriefing: true
+    },
+    dashboard: {
+      widgets: ['stats', 'charts', 'alerts', 'recent'],
+      layout: 'default',
+      theme: 'light'
+    },
+    system: {
+      language: 'ko',
+      timezone: 'Asia/Seoul',
+      dateFormat: 'YYYY-MM-DD',
+      autoSave: true,
+      autoBackup: false
+    }
+  },
+
+  /**
+   * 설정 로드
+   */
+  load() {
+    const saved = localStorage.getItem('settings');
+    if (saved) {
+      try {
+        return { ...this.defaults, ...JSON.parse(saved) };
+      } catch (e) {
+        console.error('설정 로드 실패:', e);
+        return this.defaults;
+      }
+    }
+    return this.defaults;
+  },
+
+  /**
+   * 설정 저장
+   */
+  save(settings) {
+    try {
+      localStorage.setItem('settings', JSON.stringify(settings));
+      Utils.showSuccess('설정이 저장되었습니다.');
+      return true;
+    } catch (e) {
+      console.error('설정 저장 실패:', e);
+      Utils.showError('설정 저장에 실패했습니다.');
+      return false;
+    }
+  },
+
+  /**
+   * 회사 정보 업데이트
+   */
+  updateCompany(data) {
+    const settings = this.load();
+    settings.company = { ...settings.company, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 사용자 정보 업데이트
+   */
+  updateUser(data) {
+    const settings = this.load();
+    settings.user = { ...settings.user, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 알림 설정 업데이트
+   */
+  updateNotifications(data) {
+    const settings = this.load();
+    settings.notifications = { ...settings.notifications, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 대시보드 설정 업데이트
+   */
+  updateDashboard(data) {
+    const settings = this.load();
+    settings.dashboard = { ...settings.dashboard, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 시스템 설정 업데이트
+   */
+  updateSystem(data) {
+    const settings = this.load();
+    settings.system = { ...settings.system, ...data };
+    return this.save(settings);
+  },
+
+  /**
+   * 로고 업로드
+   */
+  uploadLogo(file) {
+    return PhotoManager.uploadPhoto(file, 'company', 'logo')
+      .then(base64 => {
+        return this.updateCompany({ logo: base64 });
+      });
+  },
+
+  /**
+   * 색상 업데이트
+   */
+  updateColors(primary, secondary) {
+    const success = this.updateCompany({
+      primaryColor: primary,
+      secondaryColor: secondary
+    });
+
+    if (success) {
+      // CSS 변수 업데이트
+      document.documentElement.style.setProperty('--primary-500', primary);
+      document.documentElement.style.setProperty('--secondary-500', secondary);
+    }
+
+    return success;
+  },
+
+  /**
+   * 테마 변경
+   */
+  updateTheme(theme) {
+    const success = this.updateDashboard({ theme });
+
+    if (success) {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    return success;
+  },
+
+  /**
+   * 모든 데이터 내보내기
+   */
+  exportAllData() {
+    const data = {
+      settings: this.load(),
+      employees: db.getAll('employees'),
+      contracts: db.getAll('contracts'),
+      attendance: db.getAll('attendance'),
+      communications: db.getAll('communications'),
+      warnings: db.getAll('warnings'),
+      checklist: db.getAll('checklist'),
+      exportDate: new Date().toISOString(),
+      version: '3.0'
+    };
+
+    const filename = `startuphr-backup-${Utils.formatDate(new Date(), 'YYYY-MM-DD')}.json`;
+    Utils.downloadJSON(data, filename);
+
+    NotificationCenter.add({
+      title: '데이터 내보내기 완료',
+      description: `${filename} 파일로 저장되었습니다.`,
+      type: 'success'
+    });
+  },
+
+  /**
+   * 데이터 가져오기
+   */
+  importData(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+
+          // 데이터 유효성 검사
+          if (!data.version || !data.exportDate) {
+            reject('올바른 백업 파일이 아닙니다.');
+            return;
+          }
+
+          // 확인
+          if (!Utils.confirm('기존 데이터를 모두 덮어쓰시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            reject('사용자가 취소했습니다.');
+            return;
+          }
+
+          // 데이터 복원
+          if (data.settings) {
+            this.save(data.settings);
+          }
+
+          if (data.employees) {
+            localStorage.setItem('employees', JSON.stringify(data.employees));
+          }
+
+          if (data.contracts) {
+            localStorage.setItem('contracts', JSON.stringify(data.contracts));
+          }
+
+          if (data.attendance) {
+            localStorage.setItem('attendance', JSON.stringify(data.attendance));
+          }
+
+          if (data.communications) {
+            localStorage.setItem('communications', JSON.stringify(data.communications));
+          }
+
+          if (data.warnings) {
+            localStorage.setItem('warnings', JSON.stringify(data.warnings));
+          }
+
+          if (data.checklist) {
+            localStorage.setItem('checklist', JSON.stringify(data.checklist));
+          }
+
+          Utils.showSuccess('데이터를 성공적으로 가져왔습니다. 페이지를 새로고침합니다.');
+
+          NotificationCenter.add({
+            title: '데이터 가져오기 완료',
+            description: '모든 데이터가 복원되었습니다.',
+            type: 'success'
+          });
+
+          // 페이지 새로고침
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+
+          resolve(data);
+        } catch (error) {
+          console.error('데이터 가져오기 실패:', error);
+          reject('파일 읽기 중 오류가 발생했습니다.');
+        }
+      };
+
+      reader.onerror = () => {
+        reject('파일 읽기 중 오류가 발생했습니다.');
+      };
+
+      reader.readAsText(file);
+    });
+  },
+
+  /**
+   * 설정 초기화
+   */
+  resetToDefault() {
+    if (Utils.confirm('모든 설정을 초기화하시겠습니까? 데이터는 유지됩니다.')) {
+      this.save(this.defaults);
+      Utils.showSuccess('설정이 초기화되었습니다. 페이지를 새로고침합니다.');
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  },
+
+  /**
+   * 모든 데이터 삭제
+   */
+  deleteAllData() {
+    const confirmText = '정말로 모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.\n\n계속하려면 "DELETE"를 입력하세요.';
+    const userInput = prompt(confirmText);
+
+    if (userInput === 'DELETE') {
+      // 모든 데이터 삭제
+      localStorage.clear();
+
+      Utils.showSuccess('모든 데이터가 삭제되었습니다. 페이지를 새로고침합니다.');
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else if (userInput !== null) {
+      Utils.showError('입력이 올바르지 않습니다.');
+    }
+  },
+
+  /**
+   * 설정 페이지 렌더링
+   */
+  renderSettingsPage() {
+    const settings = this.load();
+
+    return `
+      <div class="settings-container">
+        <div class="mb-6">
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">⚙️ 설정</h1>
+          <p class="text-gray-600">StartupHR Pro 설정을 관리하세요</p>
+        </div>
+
+        <!-- 설정 탭 -->
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="company">
+            🏢 회사 정보
+          </button>
+          <button class="settings-tab" data-tab="user">
+            👤 내 프로필
+          </button>
+          <button class="settings-tab" data-tab="notifications">
+            🔔 알림 설정
+          </button>
+          <button class="settings-tab" data-tab="dashboard">
+            📊 대시보드
+          </button>
+          <button class="settings-tab" data-tab="data">
+            💾 데이터 관리
+          </button>
+          <button class="settings-tab" data-tab="system">
+            🔧 시스템
+          </button>
+        </div>
+
+        <!-- 회사 정보 -->
+        <div id="tab-company" class="settings-tab-content">
+          ${this.renderCompanySettings(settings.company)}
+        </div>
+
+        <!-- 사용자 프로필 -->
+        <div id="tab-user" class="settings-tab-content" style="display: none;">
+          ${this.renderUserSettings(settings.user)}
+        </div>
+
+        <!-- 알림 설정 -->
+        <div id="tab-notifications" class="settings-tab-content" style="display: none;">
+          ${this.renderNotificationSettings(settings.notifications)}
+        </div>
+
+        <!-- 대시보드 설정 -->
+        <div id="tab-dashboard" class="settings-tab-content" style="display: none;">
+          ${this.renderDashboardSettings(settings.dashboard)}
+        </div>
+
+        <!-- 데이터 관리 -->
+        <div id="tab-data" class="settings-tab-content" style="display: none;">
+          ${this.renderDataManagement()}
+        </div>
+
+        <!-- 시스템 설정 -->
+        <div id="tab-system" class="settings-tab-content" style="display: none;">
+          ${this.renderSystemSettings(settings.system)}
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 회사 정보 설정 렌더링
+   */
+  renderCompanySettings(company) {
+    const logo = company.logo || PhotoManager.getPhoto('company', 'logo');
+
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">회사 정보</div>
+            <div class="settings-section-description">회사의 기본 정보를 설정하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">회사 로고</label>
+          <div class="logo-upload-area ${logo ? 'has-image' : ''}" onclick="document.getElementById('logoUpload').click()">
+            <input type="file" id="logoUpload" accept="image/*" style="display: none;"
+                   onchange="SettingsManager.handleLogoUpload(this)">
+            ${logo ? `<img src="${logo}" class="logo-preview" alt="Company Logo">` : `
+              <div class="logo-upload-text">
+                <div class="text-4xl mb-2">🖼️</div>
+                <div class="font-medium">클릭하여 로고 업로드</div>
+                <div class="text-xs text-gray-500 mt-1">PNG, JPG (최대 5MB)</div>
+              </div>
+            `}
+          </div>
+          ${logo ? `<button class="btn btn-ghost mt-2" onclick="SettingsManager.removeLogo()">로고 삭제</button>` : ''}
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">회사명</label>
+          <input type="text" id="companyName" class="settings-form-input"
+                 value="${company.name}" placeholder="회사명을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">사업자등록번호</label>
+          <input type="text" id="businessNumber" class="settings-form-input"
+                 value="${company.businessNumber || ''}" placeholder="000-00-00000">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">주소</label>
+          <input type="text" id="companyAddress" class="settings-form-input"
+                 value="${company.address || ''}" placeholder="회사 주소를 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">전화번호</label>
+          <input type="tel" id="companyPhone" class="settings-form-input"
+                 value="${company.phone || ''}" placeholder="02-0000-0000">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">브랜드 색상</label>
+          <div class="color-picker-group">
+            <div>
+              <label class="text-sm text-gray-600">Primary Color</label>
+              <div class="color-picker">
+                <input type="color" id="primaryColor" class="color-preview"
+                       value="${company.primaryColor}"
+                       onchange="SettingsManager.updateColorPreview('primary', this.value)">
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray-600">Secondary Color</label>
+              <div class="color-picker">
+                <input type="color" id="secondaryColor" class="color-preview"
+                       value="${company.secondaryColor}"
+                       onchange="SettingsManager.updateColorPreview('secondary', this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveCompanySettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 사용자 설정 렌더링
+   */
+  renderUserSettings(user) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">내 프로필</div>
+            <div class="settings-section-description">사용자 정보를 관리하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">프로필 사진</label>
+          <div class="flex items-center gap-4">
+            ${PhotoManager.renderPhotoUpload('user', user.name, 'user')}
+            <div class="text-sm text-gray-600">
+              <div class="font-medium mb-1">사진을 클릭하여 변경</div>
+              <div class="text-xs">JPG, PNG (최대 5MB)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">이름</label>
+          <input type="text" id="userName" class="settings-form-input"
+                 value="${user.name}" placeholder="이름을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">직책</label>
+          <input type="text" id="userPosition" class="settings-form-input"
+                 value="${user.position}" placeholder="직책을 입력하세요">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">이메일</label>
+          <input type="email" id="userEmail" class="settings-form-input"
+                 value="${user.email || ''}" placeholder="email@example.com">
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">전화번호</label>
+          <input type="tel" id="userPhone" class="settings-form-input"
+                 value="${user.phone || ''}" placeholder="010-0000-0000">
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveUserSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 알림 설정 렌더링
+   */
+  renderNotificationSettings(notifications) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">알림 설정</div>
+            <div class="settings-section-description">받을 알림을 선택하세요</div>
+          </div>
+        </div>
+
+        ${this.renderToggleSetting('email', '이메일 알림', '중요한 알림을 이메일로 받습니다', notifications.email)}
+        ${this.renderToggleSetting('push', '푸시 알림', '브라우저 푸시 알림을 받습니다', notifications.push)}
+        ${this.renderToggleSetting('weekly52h', '52시간 초과 알림', '주 52시간 초과 시 즉시 알림', notifications.weekly52h)}
+        ${this.renderToggleSetting('contractExpiry', '계약 만료 알림', '계약 만료 7일 전 알림', notifications.contractExpiry)}
+        ${this.renderToggleSetting('legalRisk', '법적 리스크 알림', '높은 법적 리스크 감지 시 알림', notifications.legalRisk)}
+        ${this.renderToggleSetting('dailyBriefing', '일일 브리핑', '매일 오전 HR 브리핑 수신', notifications.dailyBriefing)}
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveNotificationSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 대시보드 설정 렌더링
+   */
+  renderDashboardSettings(dashboard) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">대시보드 설정</div>
+            <div class="settings-section-description">대시보드를 개인화하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">테마</label>
+          <div class="flex gap-3">
+            <button class="btn ${dashboard.theme === 'light' ? 'btn-primary' : 'btn-ghost'}"
+                    onclick="SettingsManager.updateTheme('light')">
+              ☀️ 라이트 모드
+            </button>
+            <button class="btn ${dashboard.theme === 'dark' ? 'btn-primary' : 'btn-ghost'}"
+                    onclick="SettingsManager.updateTheme('dark')">
+              🌙 다크 모드
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">위젯 표시</label>
+          <div class="space-y-2">
+            ${this.renderCheckboxSetting('stats', '📊 통계 카드', dashboard.widgets.includes('stats'))}
+            ${this.renderCheckboxSetting('charts', '📈 차트', dashboard.widgets.includes('charts'))}
+            ${this.renderCheckboxSetting('alerts', '⚠️ 알림', dashboard.widgets.includes('alerts'))}
+            ${this.renderCheckboxSetting('recent', '🕐 최근 활동', dashboard.widgets.includes('recent'))}
+          </div>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveDashboardSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 데이터 관리 렌더링
+   */
+  renderDataManagement() {
+    const stats = {
+      employees: db.getAll('employees').length,
+      contracts: db.getAll('contracts').length,
+      attendance: db.getAll('attendance').length,
+      total: 0
+    };
+    stats.total = stats.employees + stats.contracts + stats.attendance;
+
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">데이터 관리</div>
+            <div class="settings-section-description">데이터를 백업하고 복원하세요</div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div class="font-semibold text-blue-900 mb-2">📊 현재 데이터 현황</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.employees}</div>
+              <div class="text-sm text-blue-800">직원</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.contracts}</div>
+              <div class="text-sm text-blue-800">계약서</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.attendance}</div>
+              <div class="text-sm text-blue-800">근태 기록</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-blue-600">${stats.total}</div>
+              <div class="text-sm text-blue-800">전체</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="import-export-area">
+          <div class="export-box" onclick="SettingsManager.exportAllData()">
+            <div class="export-icon">💾</div>
+            <div class="font-semibold text-lg mb-2">데이터 내보내기</div>
+            <div class="text-sm text-gray-600">
+              모든 데이터를 JSON 파일로 저장합니다
+            </div>
+          </div>
+
+          <div class="import-box" onclick="document.getElementById('importFile').click()">
+            <input type="file" id="importFile" accept=".json" style="display: none;"
+                   onchange="SettingsManager.handleImport(this)">
+            <div class="import-icon">📥</div>
+            <div class="font-semibold text-lg mb-2">데이터 가져오기</div>
+            <div class="text-sm text-gray-600">
+              백업 파일에서 데이터를 복원합니다
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+          <div class="font-semibold text-yellow-900 mb-2">⚠️ 위험 구역</div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-medium text-yellow-900">설정 초기화</div>
+                <div class="text-sm text-yellow-800">설정을 기본값으로 되돌립니다 (데이터 유지)</div>
+              </div>
+              <button class="btn btn-warning" onclick="SettingsManager.resetToDefault()">
+                초기화
+              </button>
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="font-medium text-red-900">모든 데이터 삭제</div>
+                <div class="text-sm text-red-800">⚠️ 복구 불가능! 모든 데이터가 영구 삭제됩니다</div>
+              </div>
+              <button class="btn btn-danger" onclick="SettingsManager.deleteAllData()">
+                전체 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 시스템 설정 렌더링
+   */
+  renderSystemSettings(system) {
+    return `
+      <div class="settings-section">
+        <div class="settings-section-header">
+          <div>
+            <div class="settings-section-title">시스템 설정</div>
+            <div class="settings-section-description">시스템 기본 설정을 관리하세요</div>
+          </div>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">언어</label>
+          <select id="systemLanguage" class="settings-form-input">
+            <option value="ko" ${system.language === 'ko' ? 'selected' : ''}>한국어</option>
+            <option value="en" ${system.language === 'en' ? 'selected' : ''}>English</option>
+          </select>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">시간대</label>
+          <select id="systemTimezone" class="settings-form-input">
+            <option value="Asia/Seoul" ${system.timezone === 'Asia/Seoul' ? 'selected' : ''}>Asia/Seoul (KST)</option>
+            <option value="UTC" ${system.timezone === 'UTC' ? 'selected' : ''}>UTC</option>
+          </select>
+        </div>
+
+        <div class="settings-form-group">
+          <label class="settings-form-label">날짜 형식</label>
+          <select id="systemDateFormat" class="settings-form-input">
+            <option value="YYYY-MM-DD" ${system.dateFormat === 'YYYY-MM-DD' ? 'selected' : ''}>YYYY-MM-DD</option>
+            <option value="YYYY.MM.DD" ${system.dateFormat === 'YYYY.MM.DD' ? 'selected' : ''}>YYYY.MM.DD</option>
+            <option value="MM/DD/YYYY" ${system.dateFormat === 'MM/DD/YYYY' ? 'selected' : ''}>MM/DD/YYYY</option>
+          </select>
+        </div>
+
+        ${this.renderToggleSetting('autoSave', '자동 저장', '변경사항을 자동으로 저장합니다', system.autoSave)}
+        ${this.renderToggleSetting('autoBackup', '자동 백업', '매일 자동으로 데이터를 백업합니다', system.autoBackup)}
+
+        <div class="flex gap-3 mt-6">
+          <button class="btn btn-primary" onclick="SettingsManager.saveSystemSettings()">
+            💾 저장
+          </button>
+          <button class="btn btn-ghost" onclick="App.renderPage('dashboard')">
+            취소
+          </button>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 토글 설정 렌더링 헬퍼
+   */
+  renderToggleSetting(id, title, description, checked) {
+    return `
+      <div class="flex items-center justify-between py-3 border-b border-gray-200">
+        <div>
+          <div class="font-medium text-gray-900">${title}</div>
+          <div class="text-sm text-gray-600">${description}</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="${id}" ${checked ? 'checked' : ''}>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    `;
+  },
+
+  /**
+   * 체크박스 설정 렌더링 헬퍼
+   */
+  renderCheckboxSetting(id, label, checked) {
+    return `
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" id="widget-${id}" class="action-checkbox" ${checked ? 'checked' : ''}>
+        <span class="text-gray-700">${label}</span>
+      </label>
+    `;
+  },
+
+  // ===== 이벤트 핸들러 =====
+
+  handleLogoUpload(input) {
+    const file = input.files[0];
+    if (file) {
+      this.uploadLogo(file)
+        .then(() => {
+          App.renderPage('settings');
+        })
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  },
+
+  removeLogo() {
+    if (Utils.confirm('로고를 삭제하시겠습니까?')) {
+      PhotoManager.deletePhoto('company', 'logo');
+      this.updateCompany({ logo: null });
+      App.renderPage('settings');
+    }
+  },
+
+  updateColorPreview(type, value) {
+    // 실시간 미리보기
+    if (type === 'primary') {
+      document.documentElement.style.setProperty('--primary-500', value);
+    } else if (type === 'secondary') {
+      document.documentElement.style.setProperty('--secondary-500', value);
+    }
+  },
+
+  handleImport(input) {
+    const file = input.files[0];
+    if (file) {
+      this.importData(file)
+        .catch((error) => {
+          Utils.showError(error);
+        });
+    }
+  },
+
+  // ===== 저장 함수들 =====
+
+  saveCompanySettings() {
+    const data = {
+      name: document.getElementById('companyName').value,
+      businessNumber: document.getElementById('businessNumber').value,
+      address: document.getElementById('companyAddress').value,
+      phone: document.getElementById('companyPhone').value,
+      primaryColor: document.getElementById('primaryColor').value,
+      secondaryColor: document.getElementById('secondaryColor').value
+    };
+
+    if (this.updateCompany(data)) {
+      this.updateColors(data.primaryColor, data.secondaryColor);
+    }
+  },
+
+  saveUserSettings() {
+    const data = {
+      name: document.getElementById('userName').value,
+      position: document.getElementById('userPosition').value,
+      email: document.getElementById('userEmail').value,
+      phone: document.getElementById('userPhone').value
+    };
+
+    this.updateUser(data);
+  },
+
+  saveNotificationSettings() {
+    const data = {
+      email: document.getElementById('email').checked,
+      push: document.getElementById('push').checked,
+      weekly52h: document.getElementById('weekly52h').checked,
+      contractExpiry: document.getElementById('contractExpiry').checked,
+      legalRisk: document.getElementById('legalRisk').checked,
+      dailyBriefing: document.getElementById('dailyBriefing').checked
+    };
+
+    this.updateNotifications(data);
+  },
+
+  saveDashboardSettings() {
+    const widgets = [];
+    ['stats', 'charts', 'alerts', 'recent'].forEach(widget => {
+      if (document.getElementById(`widget-${widget}`)?.checked) {
+        widgets.push(widget);
+      }
+    });
+
+    const settings = this.load();
+    this.updateDashboard({
+      ...settings.dashboard,
+      widgets
+    });
+  },
+
+  saveSystemSettings() {
+    const data = {
+      language: document.getElementById('systemLanguage').value,
+      timezone: document.getElementById('systemTimezone').value,
+      dateFormat: document.getElementById('systemDateFormat').value,
+      autoSave: document.getElementById('autoSave').checked,
+      autoBackup: document.getElementById('autoBackup').checked
+    };
+
+    this.updateSystem(data);
+  }
+};
+
+// 전역 사용을 위한 export
+window.SettingsManager = SettingsManager;
 
 /**
  * StartupHR Pro - Employee Management Module
@@ -6078,6 +6890,1181 @@ ${this.generateFinalOpinion(employee, conversations, attendance, warnings)}
 window.ConversationManager = ConversationManager;
 
 /**
+ * StartupHR Pro - Dashboard Widget System
+ * 드래그앤드롭 가능한 위젯 시스템
+ */
+
+const DashboardWidgets = {
+  /**
+   * 사용 가능한 위젯 정의
+   */
+  availableWidgets: {
+    stats: {
+      id: 'stats',
+      title: '📊 주요 통계',
+      size: 'large',
+      render: function() {
+        const summary = EmployeeManager.getDashboardSummary();
+        const attendance = AttendanceManager.getDashboardSummary();
+        const legal = LegalCheckManager.getDashboardSummary();
+
+        return `
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card">
+              <div class="stat-value">${summary.active}명</div>
+              <div class="stat-label">총 직원</div>
+              <div class="stat-icon">👥</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">${attendance.avgHours}h</div>
+              <div class="stat-label">평균 근무시간</div>
+              <div class="stat-icon">⏰</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value ${legal.avgScore >= 70 ? 'text-red-600' : 'text-green-600'}">${legal.avgScore}/100</div>
+              <div class="stat-label">법적 리스크</div>
+              <div class="stat-icon">⚖️</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value ${summary.risky > 0 ? 'text-red-600' : 'text-green-600'}">${summary.risky}명</div>
+              <div class="stat-label">위험 직원</div>
+              <div class="stat-icon">${summary.risky > 0 ? '⚠️' : '✅'}</div>
+            </div>
+          </div>
+        `;
+      }
+    },
+
+    weeklyChart: {
+      id: 'weeklyChart',
+      title: '📈 주간 근무시간',
+      size: 'medium',
+      render: function() {
+        return `
+          <div class="chart-container">
+            <canvas id="widget-weeklyChart" class="widget-chart"></canvas>
+          </div>
+        `;
+      },
+      afterRender: function() {
+        const summary = EmployeeManager.getDashboardSummary();
+        const ctx = document.getElementById('widget-weeklyChart');
+        if (ctx && typeof Chart !== 'undefined') {
+          new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: summary.weeklyStats.map(s => s.employee.name),
+              datasets: [{
+                label: '주간 근무시간',
+                data: summary.weeklyStats.map(s => s.hours),
+                backgroundColor: summary.weeklyStats.map(s =>
+                  s.hours > 52 ? 'rgba(239, 68, 68, 0.6)' :
+                  s.hours > 48 ? 'rgba(251, 191, 36, 0.6)' :
+                  'rgba(16, 185, 129, 0.6)'
+                )
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 60
+                }
+              }
+            }
+          });
+        }
+      }
+    },
+
+    riskGauge: {
+      id: 'riskGauge',
+      title: '⚖️ 법적 리스크 현황',
+      size: 'medium',
+      render: function() {
+        const legal = LegalCheckManager.getDashboardSummary();
+        const percentage = legal.avgScore;
+        const color = percentage >= 70 ? '#ef4444' : percentage >= 50 ? '#f59e0b' : '#10b981';
+
+        return `
+          <div class="risk-gauge-container">
+            <svg class="risk-gauge" viewBox="0 0 200 120">
+              <path d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none" stroke="#e5e7eb" stroke-width="20" stroke-linecap="round"/>
+              <path d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none" stroke="${color}" stroke-width="20" stroke-linecap="round"
+                    stroke-dasharray="${percentage * 2.51} 251.2"
+                    class="risk-gauge-fill"/>
+              <text x="100" y="90" text-anchor="middle" class="risk-gauge-value">${percentage}</text>
+              <text x="100" y="110" text-anchor="middle" class="risk-gauge-label">리스크 점수</text>
+            </svg>
+            <div class="risk-status" style="color: ${color}">
+              ${percentage >= 70 ? '⚠️ 높은 리스크' : percentage >= 50 ? '⚡ 주의 필요' : '✅ 양호'}
+            </div>
+          </div>
+        `;
+      }
+    },
+
+    recentActivity: {
+      id: 'recentActivity',
+      title: '🕐 최근 활동',
+      size: 'medium',
+      render: function() {
+        const activities = this.getRecentActivities();
+
+        return `
+          <div class="activity-list">
+            ${activities.map(activity => `
+              <div class="activity-item">
+                <div class="activity-icon">${activity.icon}</div>
+                <div class="activity-content">
+                  <div class="activity-title">${activity.title}</div>
+                  <div class="activity-time">${activity.time}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      },
+      getRecentActivities: function() {
+        // 최근 활동 로그 생성
+        const activities = [];
+        const employees = db.getAll('employees');
+        const contracts = db.getAll('contracts');
+        const attendance = db.getAll('attendance');
+
+        // 최근 직원 추가
+        employees.slice(-3).reverse().forEach(emp => {
+          activities.push({
+            icon: '👤',
+            title: `${emp.name} 직원 등록`,
+            time: Utils.timeAgo(new Date(emp.createdAt))
+          });
+        });
+
+        // 최근 계약서
+        contracts.slice(-2).reverse().forEach(contract => {
+          const emp = employees.find(e => e.id === contract.employeeId);
+          activities.push({
+            icon: '📄',
+            title: `${emp?.name || '직원'} 계약서 생성`,
+            time: Utils.timeAgo(new Date(contract.createdAt))
+          });
+        });
+
+        return activities.slice(0, 5);
+      }
+    },
+
+    upcomingTasks: {
+      id: 'upcomingTasks',
+      title: '✅ 다가오는 작업',
+      size: 'small',
+      render: function() {
+        const tasks = ChecklistManager.getUpcomingTasks();
+
+        return `
+          <div class="task-list">
+            ${tasks.length > 0 ? tasks.map(task => `
+              <div class="task-item">
+                <input type="checkbox" ${task.completed ? 'checked' : ''}
+                       onchange="ChecklistManager.toggleTask('${task.id}'); DashboardWidgets.refreshWidget('upcomingTasks');">
+                <span class="${task.completed ? 'line-through text-gray-400' : ''}">${task.title}</span>
+                ${task.urgent ? '<span class="urgent-badge">긴급</span>' : ''}
+              </div>
+            `).join('') : '<div class="empty-state">완료된 작업이 없습니다</div>'}
+          </div>
+        `;
+      }
+    },
+
+    contractExpiry: {
+      id: 'contractExpiry',
+      title: '📄 계약 만료 예정',
+      size: 'small',
+      render: function() {
+        const expiringContracts = ContractManager.getExpiringContracts(30);
+
+        return `
+          <div class="contract-expiry-list">
+            ${expiringContracts.length > 0 ? expiringContracts.slice(0, 5).map(contract => {
+              const daysLeft = Math.ceil((new Date(contract.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+              return `
+                <div class="contract-expiry-item ${daysLeft <= 7 ? 'urgent' : ''}">
+                  <div class="employee-name">${contract.employeeName}</div>
+                  <div class="days-left ${daysLeft <= 7 ? 'text-red-600' : 'text-yellow-600'}">
+                    ${daysLeft}일 남음
+                  </div>
+                </div>
+              `;
+            }).join('') : '<div class="empty-state">만료 예정 계약 없음</div>'}
+          </div>
+        `;
+      }
+    },
+
+    quickActions: {
+      id: 'quickActions',
+      title: '⚡ 빠른 작업',
+      size: 'small',
+      render: function() {
+        return `
+          <div class="quick-actions-grid">
+            <button onclick="App.renderPage('employees')" class="quick-action-btn">
+              <span class="action-icon">👥</span>
+              <span class="action-label">직원 관리</span>
+            </button>
+            <button onclick="App.renderPage('contracts')" class="quick-action-btn">
+              <span class="action-icon">📄</span>
+              <span class="action-label">계약서</span>
+            </button>
+            <button onclick="App.renderPage('attendance')" class="quick-action-btn">
+              <span class="action-icon">⏰</span>
+              <span class="action-label">근태 기록</span>
+            </button>
+            <button onclick="App.renderPage('legal')" class="quick-action-btn">
+              <span class="action-icon">⚖️</span>
+              <span class="action-label">법적 체크</span>
+            </button>
+          </div>
+        `;
+      }
+    }
+  },
+
+  /**
+   * 위젯 레이아웃 로드
+   */
+  loadLayout() {
+    const saved = localStorage.getItem('dashboard-layout');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('레이아웃 로드 실패:', e);
+      }
+    }
+
+    // 기본 레이아웃
+    return ['stats', 'weeklyChart', 'riskGauge', 'recentActivity', 'upcomingTasks'];
+  },
+
+  /**
+   * 위젯 레이아웃 저장
+   */
+  saveLayout(layout) {
+    localStorage.setItem('dashboard-layout', JSON.stringify(layout));
+    Utils.showSuccess('대시보드 레이아웃이 저장되었습니다.');
+  },
+
+  /**
+   * 대시보드 렌더링
+   */
+  renderDashboard() {
+    const layout = this.loadLayout();
+    const editMode = localStorage.getItem('dashboard-edit-mode') === 'true';
+
+    let html = `
+      <div class="dashboard-header">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">📊 대시보드</h1>
+          <p class="text-gray-600 mt-1">${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</p>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="DashboardWidgets.toggleEditMode()"
+                  class="btn ${editMode ? 'btn-primary' : 'btn-ghost'}">
+            ${editMode ? '✅ 편집 완료' : '⚙️ 레이아웃 편집'}
+          </button>
+          <button onclick="DashboardWidgets.addWidget()"
+                  class="btn btn-ghost"
+                  ${editMode ? '' : 'style="display:none"'}>
+            ➕ 위젯 추가
+          </button>
+        </div>
+      </div>
+
+      <div id="dashboard-widgets" class="dashboard-widgets-grid ${editMode ? 'edit-mode' : ''}">
+    `;
+
+    layout.forEach((widgetId, index) => {
+      const widget = this.availableWidgets[widgetId];
+      if (widget) {
+        html += this.renderWidget(widget, index, editMode);
+      }
+    });
+
+    html += `</div>`;
+
+    return html;
+  },
+
+  /**
+   * 개별 위젯 렌더링
+   */
+  renderWidget(widget, index, editMode) {
+    return `
+      <div class="dashboard-widget widget-${widget.size}"
+           data-widget-id="${widget.id}"
+           data-index="${index}"
+           draggable="${editMode}">
+        <div class="widget-header">
+          <h3 class="widget-title">${widget.title}</h3>
+          <div class="widget-actions">
+            ${editMode ? `
+              <button onclick="DashboardWidgets.removeWidget('${widget.id}')"
+                      class="widget-action-btn" title="삭제">
+                ✕
+              </button>
+              <button class="widget-drag-handle" title="드래그하여 이동">
+                ⋮⋮
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <div class="widget-content">
+          ${widget.render()}
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 편집 모드 토글
+   */
+  toggleEditMode() {
+    const currentMode = localStorage.getItem('dashboard-edit-mode') === 'true';
+    localStorage.setItem('dashboard-edit-mode', (!currentMode).toString());
+    App.renderPage('dashboard');
+
+    if (!currentMode) {
+      Utils.showInfo('위젯을 드래그하여 위치를 변경하거나 ✕를 눌러 삭제할 수 있습니다.');
+      this.enableDragAndDrop();
+    }
+  },
+
+  /**
+   * 드래그앤드롭 활성화
+   */
+  enableDragAndDrop() {
+    const container = document.getElementById('dashboard-widgets');
+    if (!container) return;
+
+    let draggedElement = null;
+
+    container.addEventListener('dragstart', (e) => {
+      if (e.target.classList.contains('dashboard-widget')) {
+        draggedElement = e.target;
+        e.target.style.opacity = '0.5';
+      }
+    });
+
+    container.addEventListener('dragend', (e) => {
+      if (e.target.classList.contains('dashboard-widget')) {
+        e.target.style.opacity = '1';
+      }
+    });
+
+    container.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const afterElement = this.getDragAfterElement(container, e.clientY);
+      if (afterElement == null) {
+        container.appendChild(draggedElement);
+      } else {
+        container.insertBefore(draggedElement, afterElement);
+      }
+    });
+
+    container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      this.saveCurrentLayout();
+    });
+  },
+
+  /**
+   * 드래그 위치 계산
+   */
+  getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.dashboard-widget:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+      const box = child.getBoundingClientRect();
+      const offset = y - box.top - box.height / 2;
+
+      if (offset < 0 && offset > closest.offset) {
+        return { offset: offset, element: child };
+      } else {
+        return closest;
+      }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+  },
+
+  /**
+   * 현재 레이아웃 저장
+   */
+  saveCurrentLayout() {
+    const widgets = document.querySelectorAll('.dashboard-widget');
+    const layout = Array.from(widgets).map(w => w.dataset.widgetId);
+    this.saveLayout(layout);
+  },
+
+  /**
+   * 위젯 추가
+   */
+  addWidget() {
+    const currentLayout = this.loadLayout();
+    const availableToAdd = Object.keys(this.availableWidgets).filter(id => !currentLayout.includes(id));
+
+    if (availableToAdd.length === 0) {
+      Utils.showInfo('모든 위젯이 이미 추가되었습니다.');
+      return;
+    }
+
+    const html = `
+      <div class="widget-selector-modal">
+        <h3 class="text-xl font-bold mb-4">위젯 추가</h3>
+        <div class="widget-selector-grid">
+          ${availableToAdd.map(id => {
+            const widget = this.availableWidgets[id];
+            return `
+              <div class="widget-selector-item" onclick="DashboardWidgets.confirmAddWidget('${id}')">
+                <div class="text-2xl mb-2">${widget.title.split(' ')[0]}</div>
+                <div class="font-medium">${widget.title}</div>
+                <div class="text-xs text-gray-500 mt-1">${widget.size}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+
+    App.showModal('위젯 추가', html);
+  },
+
+  /**
+   * 위젯 추가 확인
+   */
+  confirmAddWidget(widgetId) {
+    const layout = this.loadLayout();
+    layout.push(widgetId);
+    this.saveLayout(layout);
+    App.hideModal();
+    App.renderPage('dashboard');
+  },
+
+  /**
+   * 위젯 제거
+   */
+  removeWidget(widgetId) {
+    if (Utils.confirm('이 위젯을 제거하시겠습니까?')) {
+      const layout = this.loadLayout();
+      const newLayout = layout.filter(id => id !== widgetId);
+      this.saveLayout(newLayout);
+      App.renderPage('dashboard');
+    }
+  },
+
+  /**
+   * 위젯 새로고침
+   */
+  refreshWidget(widgetId) {
+    const widget = this.availableWidgets[widgetId];
+    if (!widget) return;
+
+    const element = document.querySelector(`[data-widget-id="${widgetId}"] .widget-content`);
+    if (element) {
+      element.innerHTML = widget.render();
+      if (widget.afterRender) {
+        setTimeout(() => widget.afterRender(), 100);
+      }
+    }
+  },
+
+  /**
+   * 초기화 - 모든 위젯의 afterRender 실행
+   */
+  initWidgets() {
+    setTimeout(() => {
+      const layout = this.loadLayout();
+      layout.forEach(widgetId => {
+        const widget = this.availableWidgets[widgetId];
+        if (widget && widget.afterRender) {
+          widget.afterRender();
+        }
+      });
+
+      // 편집 모드라면 드래그앤드롭 활성화
+      if (localStorage.getItem('dashboard-edit-mode') === 'true') {
+        this.enableDragAndDrop();
+      }
+    }, 100);
+  }
+};
+
+// 전역 사용을 위한 export
+window.DashboardWidgets = DashboardWidgets;
+
+/**
+ * StartupHR Pro - Email Template System
+ * 자동화된 HR 이메일 템플릿
+ */
+
+const EmailTemplates = {
+  /**
+   * 이메일 템플릿 정의
+   */
+  templates: {
+    contractExpiry: {
+      id: 'contractExpiry',
+      name: '계약 만료 알림',
+      subject: '[{companyName}] 계약 만료 알림 - {employeeName}님',
+      body: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">계약 만료 알림</h1>
+          </div>
+
+          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px; color: #374151;">안녕하세요, {employeeName}님</p>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #d97706; font-weight: bold;">⚠️ 계약 만료 예정</p>
+              <p style="margin: 10px 0 0 0; color: #374151;">
+                현재 계약이 <strong style="color: #ef4444;">{daysLeft}일</strong> 후 만료 예정입니다.
+              </p>
+              <p style="margin: 10px 0 0 0; color: #6b7280; font-size: 14px;">
+                만료일: {endDate}
+              </p>
+            </div>
+
+            <p style="font-size: 14px; color: #6b7280;">
+              계약 연장 또는 갱신이 필요하신 경우, HR 담당자에게 문의해 주세요.
+            </p>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af;">
+                {companyName} HR 팀<br>
+                이메일: {companyEmail} | 전화: {companyPhone}
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    welcome: {
+      id: 'welcome',
+      name: '신입 환영 이메일',
+      subject: '[{companyName}] 환영합니다, {employeeName}님!',
+      body: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">🎉 환영합니다!</h1>
+          </div>
+
+          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px; color: #374151;">안녕하세요, {employeeName}님</p>
+
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6;">
+              {companyName}의 일원이 되신 것을 진심으로 환영합니다!<br>
+              {position}으로서 함께 성장해 나갈 수 있기를 기대합니다.
+            </p>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 15px 0; color: #1f2937;">📋 입사 정보</h3>
+              <ul style="list-style: none; padding: 0; margin: 0; color: #374151;">
+                <li style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                  <strong>입사일:</strong> {startDate}
+                </li>
+                <li style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                  <strong>부서:</strong> {department}
+                </li>
+                <li style="padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                  <strong>직책:</strong> {position}
+                </li>
+                <li style="padding: 8px 0;">
+                  <strong>고용 형태:</strong> {employmentType}
+                </li>
+              </ul>
+            </div>
+
+            <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #bfdbfe;">
+              <h3 style="margin: 0 0 10px 0; color: #1e40af;">✅ 첫 출근 준비물</h3>
+              <ul style="color: #1e3a8a; line-height: 1.8;">
+                <li>신분증 사본</li>
+                <li>계좌번호 (급여 입금용)</li>
+                <li>증명사진 2매</li>
+                <li>졸업증명서 (필요시)</li>
+              </ul>
+            </div>
+
+            <p style="font-size: 14px; color: #6b7280;">
+              궁금하신 사항이 있으시면 언제든지 HR 팀으로 연락 주세요.
+            </p>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af;">
+                {companyName} HR 팀<br>
+                이메일: {companyEmail} | 전화: {companyPhone}
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    weeklyOvertime: {
+      id: 'weeklyOvertime',
+      name: '주 52시간 초과 경고',
+      subject: '[긴급] 주 52시간 초과 - {employeeName}님',
+      body: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">⚠️ 긴급: 근로시간 초과</h1>
+          </div>
+
+          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px; color: #374151;">안녕하세요, {employeeName}님</p>
+
+            <div style="background: #fee2e2; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ef4444;">
+              <p style="margin: 0; color: #991b1b; font-weight: bold;">🚨 주 52시간 초과</p>
+              <p style="margin: 10px 0 0 0; color: #374151;">
+                이번 주 총 근무시간: <strong style="color: #ef4444; font-size: 18px;">{weeklyHours}시간</strong>
+              </p>
+              <p style="margin: 10px 0 0 0; color: #dc2626;">
+                법정 기준 52시간을 <strong>{overtimeHours}시간</strong> 초과하였습니다.
+              </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 15px 0; color: #1f2937;">📊 주간 근무 현황</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #f3f4f6;">
+                  <th style="padding: 10px; text-align: left; border-bottom: 2px solid #e5e7eb;">항목</th>
+                  <th style="padding: 10px; text-align: right; border-bottom: 2px solid #e5e7eb;">시간</th>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #f3f4f6;">정규 근무</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6;">40시간</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #f3f4f6;">연장 근무</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6; color: #f59e0b;">{overtimeHours}시간</td>
+                </tr>
+                <tr style="font-weight: bold; background: #fef3c7;">
+                  <td style="padding: 10px;">총 근무시간</td>
+                  <td style="padding: 10px; text-align: right; color: #ef4444;">{weeklyHours}시간</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="background: #fffbeb; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #fef3c7;">
+              <h3 style="margin: 0 0 10px 0; color: #92400e;">⚡ 조치 사항</h3>
+              <ul style="color: #78350f; line-height: 1.8; margin: 0;">
+                <li>즉시 근무를 중단하고 휴식을 취해 주세요</li>
+                <li>이번 주 추가 근무는 금지됩니다</li>
+                <li>다음 주 근무시간을 조정할 예정입니다</li>
+                <li>근로기준법 준수를 위해 필수적인 조치입니다</li>
+              </ul>
+            </div>
+
+            <p style="font-size: 14px; color: #dc2626; font-weight: bold;">
+              ⚠️ 법적 리스크 방지를 위해 즉시 조치가 필요합니다.
+            </p>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af;">
+                {companyName} HR 팀<br>
+                이메일: {companyEmail} | 전화: {companyPhone}
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    legalRiskAlert: {
+      id: 'legalRiskAlert',
+      name: '법적 리스크 알림',
+      subject: '[중요] 법적 리스크 감지 - {employeeName}님 관련',
+      body: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">⚖️ 법적 리스크 알림</h1>
+          </div>
+
+          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+            <p style="font-size: 16px; color: #374151;">HR 담당자님께</p>
+
+            <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e; font-weight: bold;">⚠️ 높은 법적 리스크 감지</p>
+              <p style="margin: 10px 0 0 0; color: #374151;">
+                직원: <strong>{employeeName}</strong> ({position})<br>
+                리스크 점수: <strong style="color: #dc2626; font-size: 18px;">{riskScore}/100</strong>
+              </p>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 15px 0; color: #1f2937;">🔍 감지된 리스크 항목</h3>
+              <div style="color: #374151;">
+                {riskItems}
+              </div>
+            </div>
+
+            <div style="background: #eff6ff; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #bfdbfe;">
+              <h3 style="margin: 0 0 10px 0; color: #1e40af;">✅ 권장 조치사항</h3>
+              <ul style="color: #1e3a8a; line-height: 1.8;">
+                <li>법무 담당자와 상담</li>
+                <li>근로계약서 재검토</li>
+                <li>근무시간 조정 계획 수립</li>
+                <li>직원과의 1:1 면담 진행</li>
+              </ul>
+            </div>
+
+            <p style="font-size: 14px; color: #dc2626; font-weight: bold;">
+              ⚠️ 조기 대응이 중요합니다. 빠른 조치를 권장합니다.
+            </p>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af;">
+                {companyName} HR 시스템<br>
+                자동 생성된 알림입니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    monthlyReport: {
+      id: 'monthlyReport',
+      name: '월간 HR 리포트',
+      subject: '[{companyName}] {month}월 HR 리포트',
+      body: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+            <h1 style="color: white; margin: 0;">📊 월간 HR 리포트</h1>
+            <p style="color: white; margin: 10px 0 0 0; opacity: 0.9;">{month}월</p>
+          </div>
+
+          <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+            <h2 style="color: #1f2937; margin: 0 0 20px 0;">주요 지표</h2>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+              <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 32px; font-weight: bold; color: #3b82f6;">{totalEmployees}</div>
+                <div style="font-size: 14px; color: #6b7280; margin-top: 5px;">총 직원 수</div>
+              </div>
+              <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="font-size: 32px; font-weight: bold; color: #10b981;">{avgWorkHours}</div>
+                <div style="font-size: 14px; color: #6b7280; margin-top: 5px;">평균 근무시간</div>
+              </div>
+            </div>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 15px 0; color: #1f2937;">📈 월간 통계</h3>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #f3f4f6;">신규 입사</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6; color: #10b981; font-weight: bold;">{newHires}명</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #f3f4f6;">퇴사</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6; color: #ef4444; font-weight: bold;">{resignations}명</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px; border-bottom: 1px solid #f3f4f6;">계약 갱신</td>
+                  <td style="padding: 10px; text-align: right; border-bottom: 1px solid #f3f4f6; color: #3b82f6; font-weight: bold;">{contractRenewals}건</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px;">법적 이슈</td>
+                  <td style="padding: 10px; text-align: right; color: #f59e0b; font-weight: bold;">{legalIssues}건</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="background: ${'{legalIssues}' > 0 ? '#fef3c7' : '#d1fae5'}; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid ${'{legalIssues}' > 0 ? '#fef3c7' : '#a7f3d0'};">
+              <h3 style="margin: 0 0 10px 0; color: ${'{legalIssues}' > 0 ? '#92400e' : '#065f46'};">
+                ${'{legalIssues}' > 0 ? '⚠️ 주의사항' : '✅ 우수한 관리 상태'}
+              </h3>
+              <p style="margin: 0; color: ${'{legalIssues}' > 0 ? '#78350f' : '#047857'}; line-height: 1.6;">
+                ${'{legalIssues}' > 0 ? '이번 달 법적 이슈가 발생했습니다. 조속한 대응이 필요합니다.' : '이번 달 법적 이슈가 없었습니다. 현재의 관리 방식을 유지하세요.'}
+              </p>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+              <p style="font-size: 12px; color: #9ca3af;">
+                {companyName} StartupHR Pro<br>
+                자동 생성 리포트
+              </p>
+            </div>
+          </div>
+        </div>
+      `
+    }
+  },
+
+  /**
+   * 템플릿 렌더링 (변수 치환)
+   */
+  render(templateId, variables) {
+    const template = this.templates[templateId];
+    if (!template) {
+      console.error(`템플릿을 찾을 수 없습니다: ${templateId}`);
+      return null;
+    }
+
+    let subject = template.subject;
+    let body = template.body;
+
+    // 변수 치환
+    Object.keys(variables).forEach(key => {
+      const regex = new RegExp(`{${key}}`, 'g');
+      subject = subject.replace(regex, variables[key]);
+      body = body.replace(regex, variables[key]);
+    });
+
+    return {
+      subject,
+      body
+    };
+  },
+
+  /**
+   * 이메일 미리보기
+   */
+  preview(templateId, variables) {
+    const email = this.render(templateId, variables);
+    if (!email) return;
+
+    const html = `
+      <div class="email-preview-modal">
+        <div class="email-preview-header">
+          <h3 class="text-xl font-bold">📧 이메일 미리보기</h3>
+          <div class="text-sm text-gray-600 mt-2">
+            <strong>제목:</strong> ${email.subject}
+          </div>
+        </div>
+        <div class="email-preview-body">
+          ${email.body}
+        </div>
+        <div class="email-preview-actions">
+          <button onclick="EmailTemplates.copyToClipboard('${templateId}', ${JSON.stringify(variables).replace(/"/g, '&quot;')})"
+                  class="btn btn-ghost">
+            📋 HTML 복사
+          </button>
+          <button onclick="EmailTemplates.downloadHTML('${templateId}', ${JSON.stringify(variables).replace(/"/g, '&quot;')})"
+                  class="btn btn-primary">
+            💾 HTML 다운로드
+          </button>
+        </div>
+      </div>
+    `;
+
+    App.showModal('이메일 미리보기', html);
+  },
+
+  /**
+   * HTML 클립보드 복사
+   */
+  copyToClipboard(templateId, variables) {
+    const email = this.render(templateId, variables);
+    if (!email) return;
+
+    const fullHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${email.subject}</title>
+</head>
+<body>
+  ${email.body}
+</body>
+</html>
+    `;
+
+    navigator.clipboard.writeText(fullHTML).then(() => {
+      Utils.showSuccess('HTML이 클립보드에 복사되었습니다!');
+    }).catch(err => {
+      Utils.showError('복사 실패: ' + err);
+    });
+  },
+
+  /**
+   * HTML 파일 다운로드
+   */
+  downloadHTML(templateId, variables) {
+    const email = this.render(templateId, variables);
+    if (!email) return;
+
+    const fullHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${email.subject}</title>
+</head>
+<body>
+  ${email.body}
+</body>
+</html>
+    `;
+
+    const blob = new Blob([fullHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `email-${templateId}-${Date.now()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    Utils.showSuccess('이메일 HTML 파일이 다운로드되었습니다!');
+  },
+
+  /**
+   * 자동 이메일 스케줄링
+   */
+  scheduleAutomatedEmails() {
+    // 계약 만료 알림 (7일 전)
+    const contracts = db.getAll('contracts');
+    const today = new Date();
+
+    contracts.forEach(contract => {
+      const endDate = new Date(contract.endDate);
+      const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+
+      if (daysLeft === 7 || daysLeft === 3 || daysLeft === 1) {
+        const employee = db.get('employees', contract.employeeId);
+        if (employee) {
+          this.queueEmail('contractExpiry', {
+            companyName: SettingsManager.load().company.name,
+            companyEmail: SettingsManager.load().company.email || 'hr@company.com',
+            companyPhone: SettingsManager.load().company.phone,
+            employeeName: employee.name,
+            daysLeft: daysLeft,
+            endDate: Utils.formatDate(endDate)
+          });
+        }
+      }
+    });
+
+    // 주 52시간 초과 알림
+    const weeklyStats = EmployeeManager.getDashboardSummary().weeklyStats;
+    weeklyStats.forEach(stat => {
+      if (stat.hours > 52) {
+        this.queueEmail('weeklyOvertime', {
+          companyName: SettingsManager.load().company.name,
+          companyEmail: SettingsManager.load().company.email || 'hr@company.com',
+          companyPhone: SettingsManager.load().company.phone,
+          employeeName: stat.employee.name,
+          weeklyHours: stat.hours,
+          overtimeHours: stat.hours - 52
+        });
+      }
+    });
+  },
+
+  /**
+   * 이메일 큐에 추가
+   */
+  queueEmail(templateId, variables) {
+    const queue = JSON.parse(localStorage.getItem('email-queue') || '[]');
+    queue.push({
+      id: Utils.generateId(),
+      templateId,
+      variables,
+      createdAt: new Date().toISOString(),
+      status: 'pending'
+    });
+    localStorage.setItem('email-queue', JSON.stringify(queue));
+
+    NotificationCenter.add({
+      title: '이메일 대기 중',
+      description: `${this.templates[templateId].name} 이메일이 생성되었습니다.`,
+      type: 'info'
+    });
+  },
+
+  /**
+   * 이메일 템플릿 페이지 렌더링
+   */
+  renderTemplatesPage() {
+    const queue = JSON.parse(localStorage.getItem('email-queue') || '[]');
+
+    return `
+      <div class="space-y-6">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">📧 이메일 템플릿</h1>
+          <p class="text-gray-600 mt-1">자동화된 HR 이메일 관리</p>
+        </div>
+
+        <!-- 이메일 템플릿 목록 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${Object.values(this.templates).map(template => `
+            <div class="glass-card p-6 hover:shadow-lg transition-shadow">
+              <h3 class="text-lg font-bold mb-2">${template.name}</h3>
+              <p class="text-sm text-gray-600 mb-4">템플릿 ID: ${template.id}</p>
+              <button onclick="EmailTemplates.showTemplatePreview('${template.id}')"
+                      class="btn btn-primary w-full">
+                👁️ 미리보기
+              </button>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- 이메일 큐 -->
+        ${queue.length > 0 ? `
+          <div class="glass-card p-6">
+            <h2 class="text-xl font-bold mb-4">📬 대기 중인 이메일 (${queue.length})</h2>
+            <div class="space-y-3">
+              ${queue.slice(0, 10).map(email => `
+                <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+                  <div>
+                    <div class="font-medium">${this.templates[email.templateId].name}</div>
+                    <div class="text-xs text-gray-600">${Utils.timeAgo(new Date(email.createdAt))}</div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button onclick="EmailTemplates.viewQueuedEmail('${email.id}')"
+                            class="text-sm text-blue-600 hover:text-blue-800">
+                      보기
+                    </button>
+                    <button onclick="EmailTemplates.removeFromQueue('${email.id}')"
+                            class="text-sm text-red-600 hover:text-red-800">
+                      삭제
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <button onclick="EmailTemplates.clearQueue()"
+                    class="btn btn-danger mt-4 w-full">
+              전체 삭제
+            </button>
+          </div>
+        ` : ''}
+
+        <!-- 자동화 설정 -->
+        <div class="glass-card p-6">
+          <h2 class="text-xl font-bold mb-4">⚙️ 자동화 설정</h2>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+              <div>
+                <div class="font-medium">계약 만료 알림</div>
+                <div class="text-xs text-gray-600">만료 7일, 3일, 1일 전 자동 발송</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+              <div>
+                <div class="font-medium">주 52시간 초과 알림</div>
+                <div class="text-xs text-gray-600">초과 시 즉시 발송</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-white bg-opacity-50 rounded-lg">
+              <div>
+                <div class="font-medium">월간 리포트</div>
+                <div class="text-xs text-gray-600">매월 1일 자동 발송</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" checked disabled>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  /**
+   * 템플릿 미리보기 표시
+   */
+  showTemplatePreview(templateId) {
+    // 샘플 데이터
+    const sampleData = {
+      companyName: SettingsManager.load().company.name || '스타트업',
+      companyEmail: 'hr@company.com',
+      companyPhone: '02-1234-5678',
+      employeeName: '홍길동',
+      position: '개발팀 과장',
+      department: '개발팀',
+      startDate: '2024-01-15',
+      endDate: '2024-12-31',
+      daysLeft: 7,
+      employmentType: '정규직',
+      weeklyHours: 55,
+      overtimeHours: 3,
+      riskScore: 75,
+      riskItems: '<ul><li>주 52시간 초과 (3회)</li><li>휴게시간 미보장</li><li>연차 미사용</li></ul>',
+      month: '12월',
+      totalEmployees: 25,
+      avgWorkHours: 42,
+      newHires: 3,
+      resignations: 1,
+      contractRenewals: 5,
+      legalIssues: 2
+    };
+
+    this.preview(templateId, sampleData);
+  },
+
+  /**
+   * 대기 중인 이메일 보기
+   */
+  viewQueuedEmail(emailId) {
+    const queue = JSON.parse(localStorage.getItem('email-queue') || '[]');
+    const email = queue.find(e => e.id === emailId);
+    if (email) {
+      this.preview(email.templateId, email.variables);
+    }
+  },
+
+  /**
+   * 큐에서 제거
+   */
+  removeFromQueue(emailId) {
+    if (Utils.confirm('이 이메일을 삭제하시겠습니까?')) {
+      const queue = JSON.parse(localStorage.getItem('email-queue') || '[]');
+      const newQueue = queue.filter(e => e.id !== emailId);
+      localStorage.setItem('email-queue', JSON.stringify(newQueue));
+      App.renderPage('email-templates');
+      Utils.showSuccess('이메일이 삭제되었습니다.');
+    }
+  },
+
+  /**
+   * 큐 전체 삭제
+   */
+  clearQueue() {
+    if (Utils.confirm('모든 대기 중인 이메일을 삭제하시겠습니까?')) {
+      localStorage.setItem('email-queue', '[]');
+      App.renderPage('email-templates');
+      Utils.showSuccess('모든 이메일이 삭제되었습니다.');
+    }
+  }
+};
+
+// 전역 사용을 위한 export
+window.EmailTemplates = EmailTemplates;
+
+// 페이지 로드 시 자동 이메일 스케줄링
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    EmailTemplates.scheduleAutomatedEmails();
+  }, 60000 * 60); // 1시간마다 체크
+}
+
+/**
  * StartupHR Pro - Main Application
  * SPA 라우팅 및 UI 렌더링
  */
@@ -6088,6 +8075,11 @@ const App = {
 
   init() {
     console.log('🚀 StartupHR Pro 시작');
+
+    // UI 초기화
+    this.initClock();
+    this.initDarkMode();
+    this.initMobileMenu();
 
     // 이벤트 리스너 등록
     this.setupEventListeners();
@@ -6100,6 +8092,86 @@ const App = {
 
     // 모달 외부 클릭 시 닫기 설정
     this.setupModalCloseOnOutsideClick();
+  },
+
+  initClock() {
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      const timeEl = document.getElementById('time-text');
+      if (timeEl) {
+        timeEl.textContent = timeStr;
+      }
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+  },
+
+  initDarkMode() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+
+    // 저장된 테마 불러오기
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    this.updateDarkModeIcon();
+
+    darkModeToggle.addEventListener('click', () => {
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      this.updateDarkModeIcon();
+    });
+  },
+
+  updateDarkModeIcon() {
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const html = document.documentElement;
+    const theme = html.getAttribute('data-theme');
+    darkModeToggle.innerHTML = theme === 'dark'
+      ? '<span class="text-2xl">☀️</span>'
+      : '<span class="text-2xl">🌙</span>';
+  },
+
+  initMobileMenu() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const sidebar = document.getElementById('sidebar');
+
+    mobileMenuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      const icon = mobileMenuToggle.querySelector('span');
+      icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
+    });
+
+    // 사이드바 외부 클릭 시 닫기 (모바일)
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth <= 768 &&
+          !sidebar.contains(e.target) &&
+          !mobileMenuToggle.contains(e.target) &&
+          sidebar.classList.contains('active')) {
+        sidebar.classList.remove('active');
+        mobileMenuToggle.querySelector('span').textContent = '☰';
+      }
+    });
+
+    // 메뉴 클릭 시 사이드바 닫기 (모바일)
+    document.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
+          sidebar.classList.remove('active');
+          mobileMenuToggle.querySelector('span').textContent = '☰';
+        }
+      });
+    });
   },
 
   setupEventListeners() {
@@ -8424,27 +10496,6 @@ const App = {
 document.addEventListener('DOMContentLoaded', () => {
   App.init();
 });
-
-// Real-time clock
-function updateTime() {
-  const now = new Date();
-  const timeStr = now.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-  const timeEl = document.getElementById('time-text');
-  if (timeEl) {
-    timeEl.textContent = timeStr;
-  }
-}
-
-setInterval(updateTime, 1000);
-updateTime();
   </script>
 
 </body>

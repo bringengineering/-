@@ -48,6 +48,8 @@ cat "$SRCDIR/js/data-manager.js" >> "$OUTPUT"
 echo "" >> "$OUTPUT"
 cat "$SRCDIR/js/utils.js" >> "$OUTPUT"
 echo "" >> "$OUTPUT"
+cat "$SRCDIR/js/settings.js" >> "$OUTPUT"
+echo "" >> "$OUTPUT"
 cat "$SRCDIR/js/employees.js" >> "$OUTPUT"
 echo "" >> "$OUTPUT"
 cat "$SRCDIR/js/contracts.js" >> "$OUTPUT"
@@ -60,91 +62,19 @@ cat "$SRCDIR/js/checklist.js" >> "$OUTPUT"
 echo "" >> "$OUTPUT"
 cat "$SRCDIR/js/conversations.js" >> "$OUTPUT"
 echo "" >> "$OUTPUT"
+cat "$SRCDIR/js/dashboard-widgets.js" >> "$OUTPUT"
+echo "" >> "$OUTPUT"
+cat "$SRCDIR/js/email-templates.js" >> "$OUTPUT"
+echo "" >> "$OUTPUT"
 cat "$SRCDIR/js/app.js" >> "$OUTPUT"
 
-# Add the inline scripts from index.html
-cat >> "$OUTPUT" << 'JSINLINE'
+# Close the combined JavaScript
+echo "  </script>" >> "$OUTPUT"
+echo "" >> "$OUTPUT"
 
-// Real-time clock
-function updateTime() {
-  const now = new Date();
-  const timeStr = now.toLocaleString('ko-KR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  });
-  const timeEl = document.getElementById('time-text');
-  if (timeEl) {
-    timeEl.textContent = timeStr;
-  }
-}
-
-setInterval(updateTime, 1000);
-updateTime();
-
-// Dark Mode Toggle
-const darkModeToggle = document.getElementById('darkModeToggle');
-const html = document.documentElement;
-
-// Load saved theme
-const savedTheme = localStorage.getItem('theme') || 'light';
-html.setAttribute('data-theme', savedTheme);
-updateDarkModeIcon();
-
-darkModeToggle.addEventListener('click', () => {
-  const currentTheme = html.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  updateDarkModeIcon();
-});
-
-function updateDarkModeIcon() {
-  const theme = html.getAttribute('data-theme');
-  darkModeToggle.innerHTML = theme === 'dark'
-    ? '<span class="text-2xl">☀️</span>'
-    : '<span class="text-2xl">🌙</span>';
-}
-
-// Mobile Menu Toggle
-const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-const sidebar = document.getElementById('sidebar');
-
-mobileMenuToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-  const icon = mobileMenuToggle.querySelector('span');
-  icon.textContent = sidebar.classList.contains('active') ? '✕' : '☰';
-});
-
-// Close sidebar on outside click (mobile)
-document.addEventListener('click', (e) => {
-  if (window.innerWidth <= 768 &&
-      !sidebar.contains(e.target) &&
-      !mobileMenuToggle.contains(e.target) &&
-      sidebar.classList.contains('active')) {
-    sidebar.classList.remove('active');
-    mobileMenuToggle.querySelector('span').textContent = '☰';
-  }
-});
-
-// Close sidebar on menu click (mobile)
-document.querySelectorAll('[data-page]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (window.innerWidth <= 768 && sidebar.classList.contains('active')) {
-      sidebar.classList.remove('active');
-      mobileMenuToggle.querySelector('span').textContent = '☰';
-    }
-  });
-});
-  </script>
-
-</body>
-</html>
-JSINLINE
+# Close HTML
+echo "</body>" >> "$OUTPUT"
+echo "</html>" >> "$OUTPUT"
 
 echo "Standalone HTML created at: $OUTPUT"
 wc -l "$OUTPUT"
