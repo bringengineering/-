@@ -1,0 +1,204 @@
+// ===== RISK MODULE =====
+
+const Risk = {
+  charts: {},
+
+  render() {
+    const data = DataManager.get();
+    this.renderKPIs(data);
+    this.renderCharts(data);
+    this.renderTable(data);
+  },
+
+  renderKPIs(data) {
+    const risks = data.risks.filter(r => r.status === 'active');
+    const critical = risks.filter(r => r.impact * r.probability >= 15).length;
+    const high = risks.filter(r => r.impact * r.probability >= 8 && r.impact * r.probability < 15).length;
+    const avgScore = risks.length > 0 ? risks.reduce((s, r) => s + r.impact * r.probability, 0) / risks.length : 0;
+
+    document.getElementById('riskKPIGrid').innerHTML = [
+      Utils.kpiCard('활성 리스크', `${risks.length}건`, '모니터링 중', 'neutral', null, 'info'),
+      Utils.kpiCard('심각 리스크', `${critical}건`, critical > 0 ? '즉시 대응' : '안전', critical > 0 ? 'down' : 'up', '점수 15 이상', critical > 0 ? 'danger' : 'success'),
+      Utils.kpiCard('주의 리스크', `${high}건`, '관리 필요', high > 0 ? 'down' : 'up', '점수 8~14', high > 0 ? 'warning' : 'success'),
+      Utils.kpiCard('평균 리스크 점수', avgScore.toFixed(1), avgScore < 10 ? '관리 가능' : '주의', avgScore < 10 ? 'up' : 'down', '영향×확률', avgScore < 10 ? 'success' : 'warning')
+    ].join('');
+  },
+
+  renderCharts(data) {
+    const risks = data.risks;
+
+    // Heatmap as scatter
+    this.charts.heatmap = Utils.destroyChart(this.charts.heatmap);
+    this.charts.heatmap = new Chart(document.getElementById('riskHeatmapChart'), {
+      type: 'bubble',
+      data: {
+        datasets: risks.map((r, i) => ({
+          label: r.title.slice(0, 20),
+          data: [{ x: r.probability, y: r.impact, r: Math.max(8, r.impact * r.probability / 2) }],
+          backgroundColor: r.impact * r.probability >= 15 ? 'rgba(239,68,68,0.6)' : r.impact * r.probability >= 8 ? 'rgba(245,158,11,0.6)' : 'rgba(34,197,94,0.6)',
+          borderColor: r.impact * r.probability >= 15 ? Utils.colors.danger : r.impact * r.probability >= 8 ? Utils.colors.warning : Utils.colors.success,
+          borderWidth: 2
+        }))
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { title: { display: true, text: '발생 확률 →' }, min: 0, max: 6, ticks: { stepSize: 1 } },
+          y: { title: { display: true, text: '영향도 →' }, min: 0, max: 6, ticks: { stepSize: 1 } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const r = risks[ctx.datasetIndex];
+                return `${r.title} (영향:${r.impact}, 확률:${r.probability}, 점수:${r.impact * r.probability})`;
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // Category distribution
+    const categories = {};
+    risks.forEach(r => { categories[r.category] = (categories[r.category] || 0) + 1; });
+
+    this.charts.category = Utils.destroyChart(this.charts.category);
+    this.charts.category = new Chart(document.getElementById('riskCategoryChart'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(categories),
+        datasets: [{
+          data: Object.values(categories),
+          backgroundColor: Utils.colors.palette.slice(0, Object.keys(categories).length),
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  },
+
+  renderTable(data) {
+    const table = document.getElementById('riskTable');
+    table.querySelector('thead').innerHTML = `<tr>
+      <th>상태</th><th>카테고리</th><th>리스크</th><th>영향</th><th>확률</th><th>점수</th><th>담당</th><th>대응방안</th><th>액션</th>
+    </tr>`;
+
+    table.querySelector('tbody').innerHTML = data.risks.map(r => {
+      const score = r.impact * r.probability;
+      const badge = score >= 15 ? Utils.badge('심각', 'red') : score >= 8 ? Utils.badge('주의', 'yellow') : Utils.badge('수용', 'green');
+      const statusBadge = r.status === 'active' ? Utils.badge('활성', 'blue') : r.status === 'resolved' ? Utils.badge('해결', 'green') : Utils.badge('관찰', 'gray');
+
+      return `<tr>
+        <td>${statusBadge}</td>
+        <td>${r.category}</td>
+        <td style="font-weight:600">${r.title}</td>
+        <td style="text-align:center">${r.impact}</td>
+        <td style="text-align:center">${r.probability}</td>
+        <td style="text-align:center;font-weight:700">${badge} ${score}</td>
+        <td>${r.owner}</td>
+        <td style="font-size:12px;max-width:200px">${r.mitigation}</td>
+        <td>
+          <button class="btn btn-sm btn-secondary" onclick="Risk.editRisk('${r.id}')">수정</button>
+        </td>
+      </tr>`;
+    }).join('');
+  },
+
+  editRisk(riskId) {
+    const data = DataManager.get();
+    const r = data.risks.find(risk => risk.id === riskId);
+    if (!r) return;
+
+    Modal.open(`리스크 수정: ${r.title}`, `
+      <div class="form-group"><label>리스크명</label><input type="text" id="editRiskTitle" value="${r.title}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>카테고리</label><select id="editRiskCat"><option ${r.category==='재무'?'selected':''}>재무</option><option ${r.category==='인력'?'selected':''}>인력</option><option ${r.category==='기술'?'selected':''}>기술</option><option ${r.category==='사업'?'selected':''}>사업</option><option ${r.category==='법무'?'selected':''}>법무</option></select></div>
+        <div class="form-group"><label>상태</label><select id="editRiskStatus"><option value="active" ${r.status==='active'?'selected':''}>활성</option><option value="monitoring" ${r.status==='monitoring'?'selected':''}>관찰</option><option value="resolved" ${r.status==='resolved'?'selected':''}>해결</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>영향도 (1~5)</label><input type="number" id="editRiskImpact" min="1" max="5" value="${r.impact}"></div>
+        <div class="form-group"><label>발생 확률 (1~5)</label><input type="number" id="editRiskProb" min="1" max="5" value="${r.probability}"></div>
+      </div>
+      <div class="form-group"><label>담당자</label><select id="editRiskOwner">${data.team.members.map(m => `<option ${r.owner===m.name?'selected':''}>${m.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>대응 방안</label><textarea id="editRiskMit" rows="3">${r.mitigation}</textarea></div>
+    `, `
+      <button class="btn btn-danger btn-sm" onclick="Risk.deleteRisk('${riskId}')">삭제</button>
+      <button class="btn btn-secondary" onclick="Modal.close()">취소</button>
+      <button class="btn btn-primary" onclick="Risk.saveRisk('${riskId}')">저장</button>
+    `);
+  },
+
+  saveRisk(riskId) {
+    const data = DataManager.get();
+    const r = data.risks.find(risk => risk.id === riskId);
+    if (!r) return;
+
+    r.title = document.getElementById('editRiskTitle').value;
+    r.category = document.getElementById('editRiskCat').value;
+    r.status = document.getElementById('editRiskStatus').value;
+    r.impact = Number(document.getElementById('editRiskImpact').value);
+    r.probability = Number(document.getElementById('editRiskProb').value);
+    r.owner = document.getElementById('editRiskOwner').value;
+    r.mitigation = document.getElementById('editRiskMit').value;
+
+    DataManager.save();
+    DataManager.addActivity('⚠️', `리스크 수정: ${r.title}`, 'info');
+    Modal.close();
+    this.render();
+    Dashboard.render();
+  },
+
+  deleteRisk(riskId) {
+    const data = DataManager.get();
+    const idx = data.risks.findIndex(r => r.id === riskId);
+    if (idx >= 0) {
+      data.risks.splice(idx, 1);
+      DataManager.save();
+      Modal.close();
+      this.render();
+      Dashboard.render();
+    }
+  },
+
+  openAddRisk() {
+    const data = DataManager.get();
+    Modal.open('리스크 추가', `
+      <div class="form-group"><label>리스크명</label><input type="text" id="newRiskTitle"></div>
+      <div class="form-row">
+        <div class="form-group"><label>카테고리</label><select id="newRiskCat"><option>재무</option><option>인력</option><option>기술</option><option>사업</option><option>법무</option></select></div>
+        <div class="form-group"><label>담당자</label><select id="newRiskOwner">${data.team.members.map(m => `<option>${m.name}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>영향도 (1~5)</label><input type="number" id="newRiskImpact" min="1" max="5" value="3"></div>
+        <div class="form-group"><label>발생 확률 (1~5)</label><input type="number" id="newRiskProb" min="1" max="5" value="3"></div>
+      </div>
+      <div class="form-group"><label>대응 방안</label><textarea id="newRiskMit" rows="3"></textarea></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Risk.addRisk()">추가</button>`);
+  },
+
+  addRisk() {
+    const data = DataManager.get();
+    const title = document.getElementById('newRiskTitle').value;
+    if (!title) return;
+
+    data.risks.push({
+      id: Utils.generateId(),
+      title,
+      category: document.getElementById('newRiskCat').value,
+      impact: Number(document.getElementById('newRiskImpact').value),
+      probability: Number(document.getElementById('newRiskProb').value),
+      owner: document.getElementById('newRiskOwner').value,
+      mitigation: document.getElementById('newRiskMit').value,
+      status: 'active'
+    });
+
+    DataManager.save();
+    DataManager.addActivity('⚠️', `새 리스크 등록: ${title}`, 'warning');
+    Modal.close();
+    this.render();
+    Dashboard.render();
+  }
+};

@@ -1,0 +1,77 @@
+// ===== SETTINGS MODULE =====
+
+const Settings = {
+  render() {
+    const data = DataManager.get();
+    document.getElementById('settingCompanyName').value = data.company.name || '';
+    document.getElementById('settingCEO').value = data.company.ceo || '';
+    document.getElementById('settingFoundedDate').value = data.company.founded || '';
+    document.getElementById('settingFiscalStart').value = data.company.fiscalStart || 3;
+
+    const s = data.settings || {};
+    document.getElementById('settingAlertRunway').checked = s.alertRunway !== false;
+    document.getElementById('settingAlertOKR').checked = s.alertOKR !== false;
+    document.getElementById('settingAlertRisk').checked = s.alertRisk !== false;
+  },
+
+  save() {
+    const data = DataManager.get();
+    data.company.name = document.getElementById('settingCompanyName').value.trim() || data.company.name;
+    data.company.ceo = document.getElementById('settingCEO').value.trim() || data.company.ceo;
+    data.company.founded = document.getElementById('settingFoundedDate').value || data.company.founded;
+    data.company.fiscalStart = parseInt(document.getElementById('settingFiscalStart').value) || 3;
+
+    data.settings = data.settings || {};
+    data.settings.alertRunway = document.getElementById('settingAlertRunway').checked;
+    data.settings.alertOKR = document.getElementById('settingAlertOKR').checked;
+    data.settings.alertRisk = document.getElementById('settingAlertRisk').checked;
+
+    DataManager.save();
+    DataManager.addActivity('⚙️', '회사 설정 저장됨', 'info');
+    alert('설정이 저장되었습니다.');
+  },
+
+  exportData() {
+    const data = DataManager.get();
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bring_eng_data_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    DataManager.addActivity('📤', '데이터 JSON 내보내기 완료', 'success');
+  },
+
+  importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const imported = JSON.parse(e.target.result);
+        if (!imported.company || !imported.financial) {
+          alert('올바른 데이터 파일이 아닙니다.');
+          return;
+        }
+        DataManager.import(imported);
+        DataManager.addActivity('📥', '데이터 가져오기 완료', 'success');
+        alert('데이터를 성공적으로 가져왔습니다. 페이지를 새로고침합니다.');
+        location.reload();
+      } catch (err) {
+        alert('파일을 읽을 수 없습니다: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  },
+
+  resetData() {
+    if (!confirm('정말로 모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+    if (!confirm('한번 더 확인합니다. 모든 입력 데이터가 삭제됩니다. 계속하시겠습니까?')) return;
+    DataManager.reset();
+    alert('데이터가 초기화되었습니다. 페이지를 새로고침합니다.');
+    location.reload();
+  }
+};
