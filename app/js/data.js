@@ -246,9 +246,9 @@ const DataManager = {
     return JSON.stringify(this._data, null, 2);
   },
 
-  import(jsonStr) {
+  import(data) {
     try {
-      this._data = JSON.parse(jsonStr);
+      this._data = typeof data === 'string' ? JSON.parse(data) : data;
       this.save();
       return true;
     } catch (e) {
