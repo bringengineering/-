@@ -100,10 +100,10 @@ const Pipeline = {
           </div>
           ${stageDeals.map(d => `
             <div class="pipeline-deal" onclick="Pipeline.editDeal('${d.id}')">
-              <div class="pipeline-deal-name">${d.name}</div>
+              <div class="pipeline-deal-name">${Utils.escapeHtml(d.name)}</div>
               <div class="pipeline-deal-amount">${Utils.formatNumber(d.amount)}만원</div>
-              <div class="pipeline-deal-product">${d.product} · ${d.expectedDate}</div>
-              ${d.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">${d.note}</div>` : ''}
+              <div class="pipeline-deal-product">${Utils.escapeHtml(d.product)} · ${Utils.escapeHtml(d.expectedDate)}</div>
+              ${d.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">${Utils.escapeHtml(d.note)}</div>` : ''}
             </div>
           `).join('')}
         </div>
@@ -116,17 +116,17 @@ const Pipeline = {
     const deal = data.pipeline.deals.find(d => d.id === dealId);
     if (!deal) return;
 
-    Modal.open(`딜 수정: ${deal.name}`, `
-      <div class="form-group"><label>고객명</label><input type="text" id="editDealName" value="${deal.name}"></div>
+    Modal.open(`딜 수정: ${Utils.escapeHtml(deal.name)}`, `
+      <div class="form-group"><label>고객명</label><input type="text" id="editDealName" value="${Utils.escapeHtml(deal.name)}"></div>
       <div class="form-row">
-        <div class="form-group"><label>제품</label><input type="text" id="editDealProduct" value="${deal.product}"></div>
+        <div class="form-group"><label>제품</label><input type="text" id="editDealProduct" value="${Utils.escapeHtml(deal.product)}"></div>
         <div class="form-group"><label>금액 (만원)</label><input type="number" id="editDealAmount" value="${deal.amount}"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>단계</label><select id="editDealStage">${data.pipeline.stages.map((s, i) => `<option value="${i}" ${deal.stage === i ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
-        <div class="form-group"><label>예상 시기</label><input type="text" id="editDealExpected" value="${deal.expectedDate}" placeholder="예: 2026-Q3"></div>
+        <div class="form-group"><label>예상 시기</label><input type="text" id="editDealExpected" value="${Utils.escapeHtml(deal.expectedDate)}" placeholder="예: 2026-Q3"></div>
       </div>
-      <div class="form-group"><label>비고</label><textarea id="editDealNote" rows="2">${deal.note || ''}</textarea></div>
+      <div class="form-group"><label>비고</label><textarea id="editDealNote" rows="2">${Utils.escapeHtml(deal.note || '')}</textarea></div>
     `, `
       <button class="btn btn-danger btn-sm" onclick="Pipeline.deleteDeal('${dealId}')">삭제</button>
       <button class="btn btn-secondary" onclick="Modal.close()">취소</button>
@@ -157,24 +157,26 @@ const Pipeline = {
   },
 
   deleteDeal(dealId) {
-    const data = DataManager.get();
-    const idx = data.pipeline.deals.findIndex(d => d.id === dealId);
-    if (idx >= 0) {
-      const name = data.pipeline.deals[idx].name;
-      data.pipeline.deals.splice(idx, 1);
-      DataManager.save();
-      DataManager.addActivity('📈', `딜 삭제: ${name}`, 'info');
-      Modal.close();
-      this.render();
-      Dashboard.render();
-    }
+    Modal.confirm('딜 삭제', '이 딜을 삭제하시겠습니까?', () => {
+      const data = DataManager.get();
+      const idx = data.pipeline.deals.findIndex(d => d.id === dealId);
+      if (idx >= 0) {
+        const name = data.pipeline.deals[idx].name;
+        data.pipeline.deals.splice(idx, 1);
+        DataManager.save();
+        DataManager.addActivity('📈', `딜 삭제: ${name}`, 'info');
+        Modal.close();
+        Pipeline.render();
+        Dashboard.render();
+      }
+    });
   },
 
   openAddDeal() {
     Modal.open('딜 추가', `
       <div class="form-group"><label>고객명</label><input type="text" id="newDealName"></div>
       <div class="form-row">
-        <div class="form-group"><label>제품</label><select id="newDealProduct">${DataManager.get().projects.map(p => `<option>${p.name}</option>`).join('')}<option>공동연구</option><option>기타</option></select></div>
+        <div class="form-group"><label>제품</label><select id="newDealProduct">${DataManager.get().projects.map(p => `<option>${Utils.escapeHtml(p.name)}</option>`).join('')}<option>공동연구</option><option>기타</option></select></div>
         <div class="form-group"><label>금액 (만원)</label><input type="number" id="newDealAmount"></div>
       </div>
       <div class="form-row">

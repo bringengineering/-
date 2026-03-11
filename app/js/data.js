@@ -228,7 +228,17 @@ const DataManager = {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this._data));
     } catch (e) {
-      console.error('Data save error:', e);
+      if (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014) {
+        Utils.toast('저장 공간이 부족합니다. 오래된 활동 로그를 정리합니다.', 'warning');
+        this._data.activityLog = this._data.activityLog.slice(0, 10);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this._data));
+        } catch (retryErr) {
+          console.error('Data save error after trimming:', retryErr);
+        }
+      } else {
+        console.error('Data save error:', e);
+      }
     }
   },
 

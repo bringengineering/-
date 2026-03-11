@@ -28,7 +28,7 @@ const Settings = {
 
     DataManager.save();
     DataManager.addActivity('⚙️', '회사 설정 저장됨', 'info');
-    alert('설정이 저장되었습니다.');
+    Utils.toast('설정이 저장되었습니다.', 'success');
   },
 
   exportData() {
@@ -52,15 +52,15 @@ const Settings = {
       try {
         const imported = JSON.parse(e.target.result);
         if (!imported.company || !imported.financial) {
-          alert('올바른 데이터 파일이 아닙니다.');
+          Utils.toast('올바른 데이터 파일이 아닙니다.', 'danger');
           return;
         }
         DataManager.import(imported);
         DataManager.addActivity('📥', '데이터 가져오기 완료', 'success');
-        alert('데이터를 성공적으로 가져왔습니다. 페이지를 새로고침합니다.');
-        location.reload();
+        Utils.toast('데이터를 성공적으로 가져왔습니다.', 'success');
+        setTimeout(() => location.reload(), 1000);
       } catch (err) {
-        alert('파일을 읽을 수 없습니다: ' + err.message);
+        Utils.toast('파일을 읽을 수 없습니다: ' + err.message, 'danger');
       }
     };
     reader.readAsText(file);
@@ -68,10 +68,12 @@ const Settings = {
   },
 
   resetData() {
-    if (!confirm('정말로 모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
-    if (!confirm('한번 더 확인합니다. 모든 입력 데이터가 삭제됩니다. 계속하시겠습니까?')) return;
-    DataManager.reset();
-    alert('데이터가 초기화되었습니다. 페이지를 새로고침합니다.');
-    location.reload();
+    Modal.confirm('정말로 모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.', () => {
+      Modal.confirm('한번 더 확인합니다. 모든 입력 데이터가 삭제됩니다. 계속하시겠습니까?', () => {
+        DataManager.reset();
+        Utils.toast('데이터가 초기화되었습니다.', 'success');
+        setTimeout(() => location.reload(), 1000);
+      });
+    });
   }
 };

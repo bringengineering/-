@@ -68,18 +68,23 @@ const OKR = {
       }
     });
 
-    // Trend chart (placeholder - can be populated with weekly check-in data)
+    // Current score chart per objective
+    const currentScores = quarter.objectives.map(o => {
+      const scores = o.keyResults.map(kr => Utils.calcOKRScore(kr.current, kr.target, kr.inverse));
+      return Math.round((scores.reduce((a, b) => a + b, 0) / scores.length) * 100);
+    });
+
     this.charts.trend = Utils.destroyChart(this.charts.trend);
     this.charts.trend = new Chart(document.getElementById('okrTrendChart'), {
-      type: 'line',
+      type: 'bar',
       data: {
-        labels: ['1주', '2주', '3주', '4주', '5주', '6주', '7주', '8주'],
+        labels: ['현재'],
         datasets: quarter.objectives.map((o, i) => ({
           label: o.title.slice(0, 15),
-          data: [0, 5, 10, 15, 20, 25, 30, Math.round(Dashboard.calcOKRScore(data) * 100)],
-          borderColor: Utils.colors.palette[i],
-          tension: 0.3,
-          pointRadius: 3
+          data: [currentScores[i]],
+          backgroundColor: Utils.colors.palette[i],
+          borderRadius: 6,
+          maxBarThickness: 50
         }))
       },
       options: {
@@ -102,8 +107,8 @@ const OKR = {
         <div class="okr-objective">
           <div class="okr-objective-header">
             <div>
-              <div class="okr-objective-title">O${oi + 1}: ${obj.title}</div>
-              <div style="font-size:12px;color:var(--text-light);margin-top:4px">담당: ${obj.owner}</div>
+              <div class="okr-objective-title">O${oi + 1}: ${Utils.escapeHtml(obj.title)}</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:4px">담당: ${Utils.escapeHtml(obj.owner)}</div>
             </div>
             <div class="okr-score" style="color:${scoreColor}">${avgScore.toFixed(2)}</div>
           </div>
@@ -162,7 +167,7 @@ const OKR = {
   openAddObjective() {
     Modal.open('Objective 추가', `
       <div class="form-group"><label>Objective 제목</label><input type="text" id="newObjTitle" placeholder="예: VisiScan 첫 유료 계약 체결"></div>
-      <div class="form-group"><label>담당자</label><select id="newObjOwner">${DataManager.get().team.members.map(m => `<option value="${m.name}">${m.name}</option>`).join('')}</select></div>
+      <div class="form-group"><label>담당자</label><select id="newObjOwner">${DataManager.get().team.members.map(m => `<option value="${Utils.escapeHtml(m.name)}">${Utils.escapeHtml(m.name)}</option>`).join('')}</select></div>
       <div id="newKRList">
         <h4 style="margin:16px 0 8px">Key Results</h4>
         <div class="form-row">

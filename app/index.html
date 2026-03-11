@@ -3,59 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="브링엔지니어링 경영관리 시스템 — CEO 대시보드">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>브링엔지니어링 — 경영관리 시스템</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗️</text></svg>" type="image/svg+xml">
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <noscript>
+    <div class="noscript-msg">
+      <h2>JavaScript가 필요합니다</h2>
+      <p>이 경영관리 시스템을 사용하려면 브라우저의 JavaScript를 활성화해 주세요.</p>
+    </div>
+  </noscript>
+
   <!-- Sidebar Navigation -->
-  <nav id="sidebar">
+  <nav id="sidebar" aria-label="메인 네비게이션">
     <div class="sidebar-header">
       <h2>BRING</h2>
       <span class="subtitle">Engineering</span>
     </div>
-    <ul class="nav-menu">
-      <li class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">📊</span>
+    <ul class="nav-menu" role="menubar">
+      <li class="nav-item active" data-page="dashboard" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📊</span>
         <span class="nav-text">경영 대시보드</span>
       </li>
-      <li class="nav-item" data-page="financial">
-        <span class="nav-icon">💰</span>
+      <li class="nav-item" data-page="financial" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💰</span>
         <span class="nav-text">재무 관리</span>
       </li>
-      <li class="nav-item" data-page="okr">
-        <span class="nav-icon">🎯</span>
+      <li class="nav-item" data-page="okr" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🎯</span>
         <span class="nav-text">OKR 목표관리</span>
       </li>
-      <li class="nav-item" data-page="team">
-        <span class="nav-icon">👥</span>
+      <li class="nav-item" data-page="team" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">👥</span>
         <span class="nav-text">팀 & 인사</span>
       </li>
-      <li class="nav-item" data-page="projects">
-        <span class="nav-icon">🔧</span>
+      <li class="nav-item" data-page="projects" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🔧</span>
         <span class="nav-text">프로젝트 & 기술</span>
       </li>
-      <li class="nav-item" data-page="pipeline">
-        <span class="nav-icon">📈</span>
+      <li class="nav-item" data-page="pipeline" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📈</span>
         <span class="nav-text">영업 파이프라인</span>
       </li>
-      <li class="nav-item" data-page="risk">
-        <span class="nav-icon">⚠️</span>
+      <li class="nav-item" data-page="risk" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⚠️</span>
         <span class="nav-text">리스크 관리</span>
       </li>
-      <li class="nav-item" data-page="reports">
-        <span class="nav-icon">📋</span>
+      <li class="nav-item" data-page="reports" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📋</span>
         <span class="nav-text">리포트 & 분석</span>
       </li>
-      <li class="nav-item" data-page="settings">
-        <span class="nav-icon">⚙️</span>
+      <li class="nav-item" data-page="settings" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
         <span class="nav-text">설정</span>
       </li>
     </ul>
     <div class="sidebar-footer">
       <div class="company-health">
         <span class="health-label">회사 건강도</span>
-        <div class="health-bar">
+        <div class="health-bar" role="progressbar" aria-label="회사 건강도">
           <div class="health-fill" id="globalHealthBar"></div>
         </div>
         <span class="health-score" id="globalHealthScore">--</span>
@@ -67,13 +79,13 @@
   <main id="main-content">
     <header id="top-bar">
       <div class="top-bar-left">
-        <button id="menu-toggle" class="menu-btn">☰</button>
+        <button id="menu-toggle" class="menu-btn" aria-label="메뉴 열기">☰</button>
         <h1 id="page-title">경영 대시보드</h1>
       </div>
       <div class="top-bar-right">
         <span class="current-date" id="currentDate"></span>
-        <div class="alert-badge" id="alertBadge" title="알림">
-          <span class="alert-icon">🔔</span>
+        <div class="alert-badge" id="alertBadge" title="알림" role="status" aria-label="알림">
+          <span class="alert-icon" aria-hidden="true">🔔</span>
           <span class="alert-count" id="alertCount">0</span>
         </div>
       </div>
@@ -82,41 +94,35 @@
     <div id="page-container">
       <!-- Dashboard Page -->
       <section id="page-dashboard" class="page active">
-        <!-- KPI Summary Cards -->
         <div class="kpi-grid" id="dashboardKPIGrid"></div>
+        <div class="alert-banner" id="alertBanner" role="alert" aria-live="polite"></div>
 
-        <!-- Alert Banner -->
-        <div class="alert-banner" id="alertBanner"></div>
-
-        <!-- Charts Row -->
         <div class="charts-row">
           <div class="chart-card">
             <h3>현금 잔고 추이</h3>
-            <canvas id="cashChart"></canvas>
+            <canvas id="cashChart" aria-label="현금 잔고 추이 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>OKR 진행률</h3>
-            <canvas id="okrChart"></canvas>
+            <canvas id="okrChart" aria-label="OKR 진행률 차트" role="img"></canvas>
           </div>
         </div>
         <div class="charts-row">
           <div class="chart-card">
             <h3>제품별 TRL 진행</h3>
-            <canvas id="trlChart"></canvas>
+            <canvas id="trlChart" aria-label="TRL 진행 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>영업 파이프라인 현황</h3>
-            <canvas id="pipelineChart"></canvas>
+            <canvas id="pipelineChart" aria-label="파이프라인 현황 차트" role="img"></canvas>
           </div>
         </div>
 
-        <!-- Health Check Matrix -->
         <div class="section-card">
           <h3>4대 영역 건강도 (Health Check)</h3>
           <div class="health-matrix" id="healthMatrix"></div>
         </div>
 
-        <!-- Recent Activity -->
         <div class="section-card">
           <h3>최근 활동 로그</h3>
           <div class="activity-log" id="activityLog"></div>
@@ -135,18 +141,18 @@
         <div class="charts-row">
           <div class="chart-card wide">
             <h3>월별 수입 vs 지출</h3>
-            <canvas id="incomeExpenseChart"></canvas>
+            <canvas id="incomeExpenseChart" aria-label="수입 지출 차트" role="img"></canvas>
           </div>
         </div>
 
         <div class="charts-row">
           <div class="chart-card">
             <h3>지출 항목별 비중</h3>
-            <canvas id="expensePieChart"></canvas>
+            <canvas id="expensePieChart" aria-label="지출 비중 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>현금 잔고 & 런웨이 추이</h3>
-            <canvas id="runwayChart"></canvas>
+            <canvas id="runwayChart" aria-label="런웨이 추이 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -170,7 +176,7 @@
       <section id="page-okr" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="OKR.openAddObjective()">+ Objective 추가</button>
-          <select id="okrQuarterSelect" onchange="OKR.switchQuarter(this.value)">
+          <select id="okrQuarterSelect" onchange="OKR.switchQuarter(this.value)" aria-label="분기 선택">
             <option value="2026-Q2">2026 Q2</option>
             <option value="2026-Q3">2026 Q3</option>
             <option value="2026-Q4">2026 Q4</option>
@@ -182,11 +188,11 @@
         <div class="charts-row">
           <div class="chart-card">
             <h3>Objective별 달성률</h3>
-            <canvas id="okrProgressChart"></canvas>
+            <canvas id="okrProgressChart" aria-label="OKR 달성률 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
-            <h3>주간 OKR 진행 추이</h3>
-            <canvas id="okrTrendChart"></canvas>
+            <h3>Objective별 현재 점수</h3>
+            <canvas id="okrTrendChart" aria-label="OKR 현재 점수 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -204,11 +210,11 @@
         <div class="charts-row">
           <div class="chart-card">
             <h3>팀원별 스킬 레벨</h3>
-            <canvas id="skillRadarChart"></canvas>
+            <canvas id="skillRadarChart" aria-label="스킬 레이더 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>팀 만족도 추이</h3>
-            <canvas id="satisfactionChart"></canvas>
+            <canvas id="satisfactionChart" aria-label="만족도 추이 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -231,7 +237,7 @@
         <div class="charts-row">
           <div class="chart-card wide">
             <h3>제품별 TRL 로드맵</h3>
-            <canvas id="trlRoadmapChart"></canvas>
+            <canvas id="trlRoadmapChart" aria-label="TRL 로드맵 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -254,11 +260,11 @@
         <div class="charts-row">
           <div class="chart-card">
             <h3>파이프라인 단계별 금액</h3>
-            <canvas id="pipelineFunnelChart"></canvas>
+            <canvas id="pipelineFunnelChart" aria-label="파이프라인 퍼널 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>월별 매출 전망</h3>
-            <canvas id="revenueForecastChart"></canvas>
+            <canvas id="revenueForecastChart" aria-label="매출 전망 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -279,11 +285,11 @@
         <div class="charts-row">
           <div class="chart-card">
             <h3>리스크 히트맵 (영향 × 확률)</h3>
-            <canvas id="riskHeatmapChart"></canvas>
+            <canvas id="riskHeatmapChart" aria-label="리스크 히트맵 차트" role="img"></canvas>
           </div>
           <div class="chart-card">
             <h3>카테고리별 리스크 분포</h3>
-            <canvas id="riskCategoryChart"></canvas>
+            <canvas id="riskCategoryChart" aria-label="리스크 분포 차트" role="img"></canvas>
           </div>
         </div>
 
@@ -304,7 +310,7 @@
           <h3>월간 경영 리포트 생성</h3>
           <p>현재 데이터를 기반으로 자동 생성되는 경영 리포트입니다.</p>
           <div class="page-actions">
-            <select id="reportMonth">
+            <select id="reportMonth" aria-label="리포트 월 선택">
               <option value="2026-03">2026년 3월</option>
               <option value="2026-04">2026년 4월</option>
               <option value="2026-05">2026년 5월</option>
@@ -322,19 +328,19 @@
           <h3>회사 기본 정보</h3>
           <form id="companySettingsForm">
             <div class="form-group">
-              <label>회사명</label>
+              <label for="settingCompanyName">회사명</label>
               <input type="text" id="settingCompanyName" value="브링엔지니어링">
             </div>
             <div class="form-group">
-              <label>대표자</label>
+              <label for="settingCEO">대표자</label>
               <input type="text" id="settingCEO" value="서창환">
             </div>
             <div class="form-group">
-              <label>설립일</label>
+              <label for="settingFoundedDate">설립일</label>
               <input type="date" id="settingFoundedDate">
             </div>
             <div class="form-group">
-              <label>회계연도 시작월</label>
+              <label for="settingFiscalStart">회계연도 시작월</label>
               <select id="settingFiscalStart">
                 <option value="1">1월</option>
                 <option value="3" selected>3월</option>
@@ -369,11 +375,11 @@
   </main>
 
   <!-- Modal -->
-  <div id="modal" class="modal">
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-content">
       <div class="modal-header">
         <h3 id="modalTitle"></h3>
-        <button class="modal-close" onclick="Modal.close()">&times;</button>
+        <button class="modal-close" onclick="Modal.close()" aria-label="닫기">&times;</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
       <div class="modal-footer" id="modalFooter"></div>

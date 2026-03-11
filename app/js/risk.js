@@ -93,13 +93,13 @@ const Risk = {
 
       return `<tr>
         <td>${statusBadge}</td>
-        <td>${r.category}</td>
-        <td style="font-weight:600">${r.title}</td>
+        <td>${Utils.escapeHtml(r.category)}</td>
+        <td style="font-weight:600">${Utils.escapeHtml(r.title)}</td>
         <td style="text-align:center">${r.impact}</td>
         <td style="text-align:center">${r.probability}</td>
         <td style="text-align:center;font-weight:700">${badge} ${score}</td>
-        <td>${r.owner}</td>
-        <td style="font-size:12px;max-width:200px">${r.mitigation}</td>
+        <td>${Utils.escapeHtml(r.owner)}</td>
+        <td style="font-size:12px;max-width:200px">${Utils.escapeHtml(r.mitigation)}</td>
         <td>
           <button class="btn btn-sm btn-secondary" onclick="Risk.editRisk('${r.id}')">수정</button>
         </td>
@@ -112,8 +112,8 @@ const Risk = {
     const r = data.risks.find(risk => risk.id === riskId);
     if (!r) return;
 
-    Modal.open(`리스크 수정: ${r.title}`, `
-      <div class="form-group"><label>리스크명</label><input type="text" id="editRiskTitle" value="${r.title}"></div>
+    Modal.open(`리스크 수정: ${Utils.escapeHtml(r.title)}`, `
+      <div class="form-group"><label>리스크명</label><input type="text" id="editRiskTitle" value="${Utils.escapeHtml(r.title)}"></div>
       <div class="form-row">
         <div class="form-group"><label>카테고리</label><select id="editRiskCat"><option ${r.category==='재무'?'selected':''}>재무</option><option ${r.category==='인력'?'selected':''}>인력</option><option ${r.category==='기술'?'selected':''}>기술</option><option ${r.category==='사업'?'selected':''}>사업</option><option ${r.category==='법무'?'selected':''}>법무</option></select></div>
         <div class="form-group"><label>상태</label><select id="editRiskStatus"><option value="active" ${r.status==='active'?'selected':''}>활성</option><option value="monitoring" ${r.status==='monitoring'?'selected':''}>관찰</option><option value="resolved" ${r.status==='resolved'?'selected':''}>해결</option></select></div>
@@ -122,8 +122,8 @@ const Risk = {
         <div class="form-group"><label>영향도 (1~5)</label><input type="number" id="editRiskImpact" min="1" max="5" value="${r.impact}"></div>
         <div class="form-group"><label>발생 확률 (1~5)</label><input type="number" id="editRiskProb" min="1" max="5" value="${r.probability}"></div>
       </div>
-      <div class="form-group"><label>담당자</label><select id="editRiskOwner">${data.team.members.map(m => `<option ${r.owner===m.name?'selected':''}>${m.name}</option>`).join('')}</select></div>
-      <div class="form-group"><label>대응 방안</label><textarea id="editRiskMit" rows="3">${r.mitigation}</textarea></div>
+      <div class="form-group"><label>담당자</label><select id="editRiskOwner">${data.team.members.map(m => `<option ${r.owner===m.name?'selected':''}>${Utils.escapeHtml(m.name)}</option>`).join('')}</select></div>
+      <div class="form-group"><label>대응 방안</label><textarea id="editRiskMit" rows="3">${Utils.escapeHtml(r.mitigation)}</textarea></div>
     `, `
       <button class="btn btn-danger btn-sm" onclick="Risk.deleteRisk('${riskId}')">삭제</button>
       <button class="btn btn-secondary" onclick="Modal.close()">취소</button>
@@ -152,15 +152,17 @@ const Risk = {
   },
 
   deleteRisk(riskId) {
-    const data = DataManager.get();
-    const idx = data.risks.findIndex(r => r.id === riskId);
-    if (idx >= 0) {
-      data.risks.splice(idx, 1);
-      DataManager.save();
-      Modal.close();
-      this.render();
-      Dashboard.render();
-    }
+    Modal.confirm('리스크 삭제', '이 리스크를 삭제하시겠습니까?', () => {
+      const data = DataManager.get();
+      const idx = data.risks.findIndex(r => r.id === riskId);
+      if (idx >= 0) {
+        data.risks.splice(idx, 1);
+        DataManager.save();
+        Modal.close();
+        Risk.render();
+        Dashboard.render();
+      }
+    });
   },
 
   openAddRisk() {
@@ -169,7 +171,7 @@ const Risk = {
       <div class="form-group"><label>리스크명</label><input type="text" id="newRiskTitle"></div>
       <div class="form-row">
         <div class="form-group"><label>카테고리</label><select id="newRiskCat"><option>재무</option><option>인력</option><option>기술</option><option>사업</option><option>법무</option></select></div>
-        <div class="form-group"><label>담당자</label><select id="newRiskOwner">${data.team.members.map(m => `<option>${m.name}</option>`).join('')}</select></div>
+        <div class="form-group"><label>담당자</label><select id="newRiskOwner">${data.team.members.map(m => `<option>${Utils.escapeHtml(m.name)}</option>`).join('')}</select></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>영향도 (1~5)</label><input type="number" id="newRiskImpact" min="1" max="5" value="3"></div>

@@ -5,6 +5,7 @@ const App = {
 
   init() {
     DataManager.load();
+    Modal.init();
     this.setupNavigation();
     this.setupMenuToggle();
     this.updateDate();
@@ -15,7 +16,14 @@ const App = {
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
         const page = item.dataset.page;
-        if (page) this.navigateTo(page);
+        if (page) {
+          this.navigateTo(page);
+          // Close sidebar on mobile after navigation
+          const sidebar = document.getElementById('sidebar');
+          if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+          }
+        }
       });
     });
   },
@@ -27,7 +35,6 @@ const App = {
       toggle.addEventListener('click', () => {
         sidebar.classList.toggle('open');
       });
-      // Close sidebar on outside click (mobile)
       document.getElementById('main-content').addEventListener('click', (e) => {
         if (sidebar.classList.contains('open') && !e.target.closest('#menu-toggle')) {
           sidebar.classList.remove('open');
@@ -48,17 +55,14 @@ const App = {
   navigateTo(page) {
     this.currentPage = page;
 
-    // Update sidebar active state
     document.querySelectorAll('.nav-item').forEach(item => {
       item.classList.toggle('active', item.dataset.page === page);
     });
 
-    // Show/hide pages
     document.querySelectorAll('.page').forEach(p => {
       p.classList.toggle('active', p.id === 'page-' + page);
     });
 
-    // Update page title
     const titles = {
       dashboard: '경영 대시보드',
       financial: '재무 관리',
@@ -72,11 +76,10 @@ const App = {
     };
     document.getElementById('page-title').textContent = titles[page] || page;
 
-    // Render page module
     this.renderPage(page);
 
     // Scroll to top
-    document.getElementById('page-container').scrollTop = 0;
+    document.getElementById('main-content').scrollTo(0, 0);
   },
 
   renderPage(page) {
@@ -93,7 +96,12 @@ const App = {
     };
     const mod = modules[page];
     if (mod && typeof mod.render === 'function') {
-      mod.render();
+      try {
+        mod.render();
+      } catch (e) {
+        console.error(`Error rendering ${page}:`, e);
+        Utils.toast('페이지 렌더링 중 오류가 발생했습니다.', 'danger');
+      }
     }
   }
 };

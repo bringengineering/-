@@ -13,15 +13,15 @@ const Team = {
 
   renderKPIs(data) {
     const members = data.team.members;
-    const avgSat = members.reduce((s, m) => s + m.satisfaction, 0) / members.length;
-    const avgLevel = members.reduce((s, m) => s + m.level, 0) / members.length;
+    const avgSat = members.length > 0 ? members.reduce((s, m) => s + m.satisfaction, 0) / members.length : 0;
+    const avgLevel = members.length > 0 ? members.reduce((s, m) => s + m.level, 0) / members.length : 0;
     const routines = data.team.routines;
     const routineNames = Object.keys(routines);
     const totalWeeks = routines[routineNames[0]]?.weeks.length || 8;
-    const routineRate = routineNames.reduce((sum, rn) => {
+    const routineRate = routineNames.length > 0 ? routineNames.reduce((sum, rn) => {
       const done = routines[rn].weeks.filter(w => w).length;
       return sum + done / totalWeeks;
-    }, 0) / routineNames.length * 100;
+    }, 0) / routineNames.length * 100 : 0;
 
     document.getElementById('teamKPIGrid').innerHTML = [
       Utils.kpiCard('팀 규모', `${members.length}명`, '현재 인원', 'neutral', null, 'info'),
@@ -95,8 +95,8 @@ const Team = {
           <div class="team-card-header">
             <div class="team-avatar" style="background:${Utils.colors.palette[data.team.members.indexOf(m)]}">${m.avatar}</div>
             <div>
-              <div class="team-name">${m.name}</div>
-              <div class="team-role">${m.role}</div>
+              <div class="team-name">${Utils.escapeHtml(m.name)}</div>
+              <div class="team-role">${Utils.escapeHtml(m.role)}</div>
               <div style="margin-top:4px">${Utils.badge('Lv.' + m.level + ' ' + levelNames[m.level], levelColors[m.level])}</div>
             </div>
           </div>
@@ -193,10 +193,10 @@ const Team = {
     const m = data.team.members.find(mem => mem.id === memberId);
     if (!m) return;
 
-    Modal.open(`${m.name} 정보 수정`, `
+    Modal.open(`${Utils.escapeHtml(m.name)} 정보 수정`, `
       <div class="form-row">
-        <div class="form-group"><label>이름</label><input type="text" id="editName" value="${m.name}"></div>
-        <div class="form-group"><label>역할</label><input type="text" id="editRole" value="${m.role}"></div>
+        <div class="form-group"><label>이름</label><input type="text" id="editName" value="${Utils.escapeHtml(m.name)}"></div>
+        <div class="form-group"><label>역할</label><input type="text" id="editRole" value="${Utils.escapeHtml(m.role)}"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>스킬 레벨 (1~5)</label><input type="number" id="editLevel" min="1" max="5" value="${m.level}"></div>

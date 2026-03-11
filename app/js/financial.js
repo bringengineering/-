@@ -148,7 +148,7 @@ const Financial = {
       return `
         <div class="budget-progress-container">
           <div class="budget-progress-header">
-            <span>${gb.name} (${gb.period})</span>
+            <span>${Utils.escapeHtml(gb.name)} (${gb.period})</span>
             <span>${Utils.formatNumber(gb.spent)}만 / ${Utils.formatNumber(gb.totalBudget)}만</span>
           </div>
           <div class="budget-bar">
@@ -205,6 +205,11 @@ const Financial = {
     const type = document.getElementById('addTxType').value;
     const category = document.getElementById('addTxCategory').value;
     const amount = Number(document.getElementById('addTxAmount').value) || 0;
+
+    if (amount <= 0) {
+      Utils.toast('금액을 입력해주세요.', 'warning');
+      return;
+    }
 
     const monthData = data.financial.months.find(m => m.month === month);
     if (monthData && monthData[type] && category in monthData[type]) {
