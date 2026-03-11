@@ -86,7 +86,7 @@ const App = {
       }
 
       // Number keys 1-9 for page navigation
-      const pages = ['dashboard', 'financial', 'okr', 'team', 'projects', 'pipeline', 'risk', 'reports', 'settings'];
+      const pages = ['dashboard', 'operations', 'financial', 'okr', 'team', 'hrpage', 'projects', 'quality', 'pipeline'];
       const num = parseInt(e.key);
       if (num >= 1 && num <= 9) {
         this.navigateTo(pages[num - 1]);
@@ -217,12 +217,16 @@ const App = {
 
     const titles = {
       dashboard: '경영 대시보드',
+      operations: '운영 체계',
       financial: '재무 관리',
       okr: 'OKR 목표관리',
       team: '팀 & 인사',
+      hrpage: '인사 제도',
       projects: '프로젝트 & 기술',
+      quality: '품질 & IP',
       pipeline: '영업 파이프라인',
       risk: '리스크 관리',
+      roadmap: '로드맵 & 전략',
       reports: '리포트 & 분석',
       settings: '설정'
     };
@@ -235,12 +239,16 @@ const App = {
   renderPage(page) {
     const modules = {
       dashboard: Dashboard,
+      operations: Operations,
       financial: Financial,
       okr: OKR,
       team: Team,
+      hrpage: HRPage,
       projects: Projects,
+      quality: Quality,
       pipeline: Pipeline,
       risk: Risk,
+      roadmap: RoadmapPage,
       reports: null,
       settings: Settings
     };

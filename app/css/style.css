@@ -1337,3 +1337,159 @@ select {
   color: var(--danger);
   margin-top: 4px;
 }
+
+/* ===== OPERATIONS PAGE ===== */
+.mission-card { background: var(--bg); border-radius: 12px; padding: 24px; }
+.mission-card h4 { color: var(--primary); margin-bottom: 12px; font-size: 16px; }
+.mission-text { font-size: 18px; line-height: 1.6; color: var(--text); font-weight: 500; }
+.vision-timeline { display: flex; flex-direction: column; gap: 12px; }
+.vision-step { display: flex; align-items: center; gap: 16px; padding: 12px; background: var(--bg-card); border-radius: 8px; border-left: 4px solid var(--primary); }
+.vision-year { font-weight: 700; font-size: 18px; color: var(--primary); min-width: 50px; }
+.vision-goal { flex: 1; font-size: 14px; }
+
+.value-card { background: var(--bg); border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+.value-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.value-number { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.value-header h4 { margin: 0; font-size: 16px; }
+.value-def { font-size: 15px; color: var(--text); margin-bottom: 12px; font-weight: 500; }
+.value-detail { font-size: 13px; color: var(--text-light); display: flex; flex-direction: column; gap: 6px; }
+
+.decision-card { background: var(--bg); border-radius: 12px; padding: 20px; margin-bottom: 12px; border-left: 5px solid var(--secondary); }
+.decision-card.level-l1 { border-left-color: var(--success); }
+.decision-card.level-l2 { border-left-color: var(--info); }
+.decision-card.level-l3 { border-left-color: var(--warning); }
+.decision-card.level-l4 { border-left-color: var(--danger); }
+.decision-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.decision-level { background: var(--primary); color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 13px; }
+.decision-header h4 { margin: 0; flex: 1; }
+.decision-time { font-size: 13px; color: var(--text-light); background: var(--bg-card); padding: 4px 10px; border-radius: 6px; }
+.decision-body { font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+.decision-body div { line-height: 1.5; }
+
+.raci-cell { text-align: center; font-weight: 600; }
+.wrap-cell { max-width: 300px; white-space: pre-wrap; word-break: break-word; }
+
+.growth-phase { background: var(--bg); border-radius: 12px; padding: 20px; margin-bottom: 12px; border-left: 5px solid var(--secondary); }
+.growth-phase.current { border-left-color: var(--success); background: var(--success-light); }
+.phase-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.phase-header h4 { margin: 0; }
+.phase-headcount { font-weight: 700; color: var(--primary); }
+.phase-body { font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+
+.meeting-rule { background: var(--bg); border-radius: 8px; padding: 16px; margin-bottom: 8px; }
+.meeting-rule strong { display: block; margin-bottom: 6px; color: var(--text); }
+.meeting-rule p { font-size: 14px; margin: 0 0 4px; }
+.meeting-rule small { color: var(--text-light); font-style: italic; }
+
+.highlight-cell { background: var(--primary-light); font-weight: 600; }
+
+/* ===== QMS PAGE ===== */
+.qms-progress, .roadmap-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.qms-bar, .roadmap-bar { flex: 1; height: 12px; background: var(--bg); border-radius: 6px; overflow: hidden; }
+.qms-fill, .roadmap-fill { height: 100%; background: var(--success); border-radius: 6px; transition: width 0.3s; }
+.qms-stage { margin-bottom: 20px; }
+.qms-stage h4 { color: var(--primary); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--primary-light); }
+.qms-item { background: var(--bg); border-radius: 8px; padding: 14px; margin-bottom: 8px; transition: opacity 0.3s; }
+.qms-item.done { opacity: 0.6; }
+.qms-check { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 8px; }
+.qms-check input { width: 18px; height: 18px; }
+.qms-detail { font-size: 13px; color: var(--text-light); margin-bottom: 8px; }
+.qms-meta { display: flex; gap: 20px; font-size: 12px; color: var(--text-light); }
+
+.tech-debt-type { background: var(--bg); border-radius: 12px; padding: 20px; margin-bottom: 12px; border-left: 5px solid var(--secondary); }
+.tech-debt-type.risk-high { border-left-color: var(--danger); }
+.tech-debt-type.risk-medium { border-left-color: var(--warning); }
+.tech-debt-type.risk-low { border-left-color: var(--success); }
+.debt-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.debt-header h4 { margin: 0; }
+.debt-meta { font-size: 13px; color: var(--text-light); display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+
+/* ===== HR PAGE ===== */
+.onboarding-phase { margin-bottom: 24px; }
+.onboarding-phase h4 { color: var(--primary); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--primary-light); font-size: 16px; }
+.onboarding-item { display: flex; gap: 16px; background: var(--bg); border-radius: 8px; padding: 14px; margin-bottom: 8px; }
+.onboarding-item.done { opacity: 0.5; }
+.ob-period { font-weight: 700; color: var(--primary); min-width: 80px; font-size: 13px; }
+.ob-content { flex: 1; }
+.ob-area { margin-bottom: 6px; }
+.ob-task { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+.ob-output, .ob-mentor { font-size: 12px; color: var(--text-light); }
+
+.current-phase { background: var(--success-light) !important; }
+
+.resignation-timeline { position: relative; padding-left: 30px; }
+.resignation-timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 3px; background: var(--primary-light); }
+.resign-step { position: relative; margin-bottom: 20px; }
+.resign-step::before { content: ''; position: absolute; left: -24px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--primary); border: 3px solid var(--bg-card); }
+.resign-timing { font-weight: 700; color: var(--primary); font-size: 15px; margin-bottom: 6px; }
+.resign-content h4 { margin: 0 0 6px; font-size: 15px; }
+.resign-content p { font-size: 13px; color: var(--text-light); margin: 0 0 6px; }
+.resign-meta { display: flex; gap: 20px; font-size: 12px; color: var(--secondary); }
+
+.dev-plan-card { background: var(--bg); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+.dev-plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.dev-plan-header h4 { margin: 0; }
+.dev-week { margin-bottom: 16px; }
+.dev-week h5 { color: var(--primary); margin-bottom: 10px; font-size: 14px; }
+.data-table.compact { font-size: 12px; }
+.data-table.compact td, .data-table.compact th { padding: 6px 8px; }
+
+/* ===== ROADMAP PAGE ===== */
+.roadmap-grid { display: flex; flex-direction: column; gap: 12px; }
+.roadmap-week { background: var(--bg); border-radius: 10px; padding: 16px; }
+.week-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.roadmap-item { padding: 10px; background: var(--bg-card); border-radius: 8px; margin-bottom: 8px; }
+.roadmap-item.done { opacity: 0.5; text-decoration: line-through; }
+.roadmap-item label { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 6px; }
+.roadmap-item input { width: 18px; height: 18px; }
+.roadmap-goal { font-size: 13px; color: var(--text-light); margin-left: 28px; }
+.roadmap-owner { font-size: 12px; color: var(--secondary); margin-left: 28px; margin-top: 4px; }
+
+/* Gantt Chart */
+.gantt-table th.gantt-month { font-size: 12px; text-align: center; min-width: 45px; }
+.gantt-cell { text-align: center; padding: 4px !important; }
+.gantt-bar { width: 100%; height: 20px; background: var(--primary); border-radius: 4px; }
+
+/* Brand Assets */
+.brand-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+.brand-card { display: flex; gap: 14px; background: var(--bg); border-radius: 10px; padding: 16px; }
+.brand-icon { font-size: 28px; }
+.brand-content h4 { margin: 6px 0 4px; font-size: 14px; }
+.brand-meta { font-size: 12px; color: var(--text-light); }
+.brand-usage { font-size: 12px; color: var(--secondary); margin-top: 4px; }
+
+/* Badge enhancements */
+.badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.badge-success { background: var(--success-light); color: #166534; }
+.badge-warning { background: var(--warning-light); color: #92400e; }
+.badge-danger { background: var(--danger-light); color: #991b1b; }
+.badge-info { background: var(--info-light); color: #155e75; }
+
+/* Dark mode adjustments for new pages */
+[data-theme="dark"] .mission-card,
+[data-theme="dark"] .value-card,
+[data-theme="dark"] .decision-card,
+[data-theme="dark"] .growth-phase,
+[data-theme="dark"] .meeting-rule,
+[data-theme="dark"] .qms-item,
+[data-theme="dark"] .tech-debt-type,
+[data-theme="dark"] .onboarding-item,
+[data-theme="dark"] .dev-plan-card,
+[data-theme="dark"] .roadmap-week,
+[data-theme="dark"] .brand-card {
+  background: var(--bg);
+}
+[data-theme="dark"] .vision-step,
+[data-theme="dark"] .roadmap-item {
+  background: var(--bg-card);
+}
+[data-theme="dark"] .growth-phase.current {
+  background: rgba(34, 197, 94, 0.1);
+}
+[data-theme="dark"] .highlight-cell {
+  background: rgba(37, 99, 235, 0.2);
+}
+[data-theme="dark"] .badge-success { background: rgba(34,197,94,0.2); color: #86efac; }
+[data-theme="dark"] .badge-warning { background: rgba(245,158,11,0.2); color: #fcd34d; }
+[data-theme="dark"] .badge-danger { background: rgba(239,68,68,0.2); color: #fca5a5; }
+[data-theme="dark"] .badge-info { background: rgba(6,182,212,0.2); color: #67e8f9; }

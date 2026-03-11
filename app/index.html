@@ -31,6 +31,10 @@
         <span class="nav-icon" aria-hidden="true">📊</span>
         <span class="nav-text">경영 대시보드</span>
       </li>
+      <li class="nav-item" data-page="operations" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🏛️</span>
+        <span class="nav-text">운영 체계</span>
+      </li>
       <li class="nav-item" data-page="financial" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">💰</span>
         <span class="nav-text">재무 관리</span>
@@ -43,9 +47,17 @@
         <span class="nav-icon" aria-hidden="true">👥</span>
         <span class="nav-text">팀 & 인사</span>
       </li>
+      <li class="nav-item" data-page="hrpage" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📝</span>
+        <span class="nav-text">인사 제도</span>
+      </li>
       <li class="nav-item" data-page="projects" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">🔧</span>
         <span class="nav-text">프로젝트 & 기술</span>
+      </li>
+      <li class="nav-item" data-page="quality" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">✅</span>
+        <span class="nav-text">품질 & IP</span>
       </li>
       <li class="nav-item" data-page="pipeline" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">📈</span>
@@ -54,6 +66,10 @@
       <li class="nav-item" data-page="risk" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">⚠️</span>
         <span class="nav-text">리스크 관리</span>
+      </li>
+      <li class="nav-item" data-page="roadmap" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🗺️</span>
+        <span class="nav-text">로드맵 & 전략</span>
       </li>
       <li class="nav-item" data-page="reports" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">📋</span>
@@ -128,6 +144,62 @@
         <div class="section-card">
           <h3>최근 활동 로그</h3>
           <div class="activity-log" id="activityLog"></div>
+        </div>
+      </section>
+
+      <!-- Operations Page -->
+      <section id="page-operations" class="page">
+        <div class="section-card">
+          <h3>미션 · 비전 · 핵심가치</h3>
+          <div id="missionVisionSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>핵심가치 (Core Values)</h3>
+          <div id="coreValuesSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>행동원칙 (Do / Don't)</h3>
+          <div id="behaviorRulesSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>운영 리듬 캘린더</h3>
+          <div class="table-container" id="rhythmSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>의사결정 프레임워크</h3>
+          <div id="decisionSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>RACI 매트릭스</h3>
+          <div class="table-container" id="raciSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>긴급 의사결정 프로세스 (대표 부재 시)</h3>
+          <div class="table-container" id="emergencySection"></div>
+        </div>
+        <div class="section-card">
+          <h3>커뮤니케이션 프로토콜</h3>
+          <div class="table-container" id="commProtocolSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>이슈 에스컬레이션</h3>
+          <div class="table-container" id="escalationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>현재 조직 구조 (2026.03)</h3>
+          <div class="table-container" id="orgStructureSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>조직 성장 로드맵</h3>
+          <div id="growthRoadmapSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>핵심 인력 리스크 (Key Person Risk)</h3>
+          <div class="table-container" id="keyPersonRiskSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>회의 운영 원칙</h3>
+          <div id="meetingRulesSection"></div>
         </div>
       </section>
 
@@ -233,6 +305,34 @@
         </div>
       </section>
 
+      <!-- HR Page -->
+      <section id="page-hrpage" class="page">
+        <div class="section-card">
+          <h3>온보딩 프로그램 (30-60-90일)</h3>
+          <div id="onboardingSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>성과평가 체계</h3>
+          <div class="table-container" id="perfEvalSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>보상 · 인센티브 체계</h3>
+          <div class="table-container" id="compensationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>퇴직 · 인수인계 프로토콜</h3>
+          <div id="resignationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>개발자 착수 준비 계획</h3>
+          <div id="devPlansSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>세무 · 회계 캘린더 (2026)</h3>
+          <div class="table-container" id="taxCalendarSection"></div>
+        </div>
+      </section>
+
       <!-- Projects Page -->
       <section id="page-projects" class="page">
         <div class="page-actions">
@@ -253,6 +353,22 @@
         <div class="section-card">
           <h3>기술 부채 현황</h3>
           <div id="techDebtSection"></div>
+        </div>
+      </section>
+
+      <!-- Quality & IP Page -->
+      <section id="page-quality" class="page">
+        <div class="section-card">
+          <h3>VisiScan 측정 서비스 품질 체크리스트 (QMS)</h3>
+          <div id="qmsSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>IP 포트폴리오 현황</h3>
+          <div class="table-container" id="ipSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>기술 부채 관리 기준</h3>
+          <div id="techDebtTypesSection"></div>
         </div>
       </section>
 
@@ -325,6 +441,26 @@
               <tbody></tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <!-- Roadmap & Strategy Page -->
+      <section id="page-roadmap" class="page">
+        <div class="section-card">
+          <h3>12주 체계 정착 실행 로드맵</h3>
+          <div id="weeklyRoadmapSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>FDInnovation 추진일정표 (2026)</h3>
+          <div class="table-container" id="fdiScheduleSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>경쟁사 분석</h3>
+          <div class="table-container" id="competitorSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>수상 · 인증 · 레퍼런스</h3>
+          <div id="brandAssetsSection"></div>
         </div>
       </section>
 
@@ -437,6 +573,10 @@
   <script src="js/pipeline.js"></script>
   <script src="js/risk.js"></script>
   <script src="js/reports.js"></script>
+  <script src="js/operations.js"></script>
+  <script src="js/quality.js"></script>
+  <script src="js/hrpage.js"></script>
+  <script src="js/roadmappage.js"></script>
   <script src="js/settings.js"></script>
   <script src="js/app.js"></script>
 </body>
