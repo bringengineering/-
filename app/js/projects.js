@@ -109,6 +109,7 @@ const Projects = {
             <div style="display:flex;gap:8px">
               <input type="number" min="1" max="9" value="${p.currentTRL}" style="width:60px;padding:4px;font-size:13px;border:1px solid var(--border);border-radius:4px"
                 onchange="Projects.updateTRL(${pi}, this.value)" title="현재 TRL 변경">
+              <button class="btn btn-sm btn-secondary" onclick="Projects.editProject('${p.id}')">수정</button>
               <button class="btn btn-sm btn-secondary" onclick="Projects.addMilestone(${pi})">+ 마일스톤</button>
               <button class="btn btn-sm btn-danger" onclick="Projects.deleteProject('${p.id}')">삭제</button>
             </div>
@@ -116,18 +117,20 @@ const Projects = {
 
           <div class="project-milestones">
             ${p.milestones.map((ms, mi) => `
-              <div class="milestone ${ms.status}" onclick="Projects.toggleMilestone(${pi}, ${mi})" style="cursor:pointer">
-                <span>${ms.status === 'done' ? '✅' : ms.status === 'in-progress' ? '🔄' : '⬜'}</span>
-                <span>${ms.title}</span>
+              <div class="milestone ${ms.status}" style="cursor:pointer;position:relative">
+                <span onclick="Projects.toggleMilestone(${pi}, ${mi})">${ms.status === 'done' ? '✅' : ms.status === 'in-progress' ? '🔄' : '⬜'}</span>
+                <span onclick="Projects.toggleMilestone(${pi}, ${mi})" style="flex:1">${ms.title}</span>
                 <span style="font-size:11px;color:var(--text-muted)">${Utils.formatDate(ms.dueDate)}</span>
+                <span onclick="event.stopPropagation();Projects.deleteMilestone(${pi},${mi})" style="color:var(--danger);cursor:pointer;font-size:14px;margin-left:4px" title="마일스톤 삭제">✕</span>
               </div>
             `).join('')}
           </div>
 
-          <div style="margin-top:12px;font-size:12px;color:var(--text-light)">
+          <div style="margin-top:12px;font-size:12px;color:var(--text-light);display:flex;align-items:center;gap:8px">
             기술 부채: <span style="color:var(--danger);font-weight:700">${p.techDebt.high} 심각</span> /
             <span style="color:var(--warning);font-weight:700">${p.techDebt.medium} 중간</span> /
             <span style="color:var(--text-muted);font-weight:700">${p.techDebt.low} 낮음</span>
+            <button class="btn btn-sm btn-secondary" onclick="Projects.editTechDebt(${pi})" style="margin-left:auto;font-size:11px">부채 수정</button>
           </div>
         </div>
       `;
@@ -232,6 +235,89 @@ const Projects = {
     });
     DataManager.save();
     DataManager.addActivity('🔧', `새 프로젝트 추가: ${name}`, 'info');
+    Modal.close();
+    this.render();
+    Dashboard.render();
+  },
+
+  deleteMilestone(projectIdx, milestoneIdx) {
+    const data = DataManager.get();
+    const p = data.projects[projectIdx];
+    if (!p) return;
+    const ms = p.milestones[milestoneIdx];
+    if (!ms) return;
+    Modal.confirm('마일스톤 삭제', `"${ms.title}" 마일스톤을 삭제하시겠습니까?`, () => {
+      p.milestones.splice(milestoneIdx, 1);
+      DataManager.save();
+      DataManager.addActivity('🔧', `마일스톤 삭제: ${ms.title} (${p.name})`, 'info');
+      Modal.close();
+      Projects.render();
+      Dashboard.render();
+    });
+  },
+
+  editProject(projectId) {
+    const data = DataManager.get();
+    const p = data.projects.find(pr => pr.id === projectId);
+    if (!p) return;
+
+    Modal.open('프로젝트 수정', `
+      <div class="form-group"><label>프로젝트명</label><input type="text" id="editProjName" value="${Utils.escapeHtml(p.name)}"></div>
+      <div class="form-group"><label>설명</label><input type="text" id="editProjDesc" value="${Utils.escapeHtml(p.description || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>현재 TRL</label><input type="number" id="editProjTRL" min="1" max="9" value="${p.currentTRL}"></div>
+        <div class="form-group"><label>목표 TRL</label><input type="number" id="editProjTargetTRL" min="1" max="9" value="${p.targetTRL}"></div>
+      </div>
+      <div class="form-group"><label>우선순위</label><select id="editProjPriority"><option value="3" ${p.priority===3?'selected':''}>⭐⭐⭐ 최우선</option><option value="2" ${p.priority===2?'selected':''}>⭐⭐ 중요</option><option value="1" ${p.priority===1?'selected':''}>⭐ 일반</option></select></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Projects.saveEditProject('${projectId}')">저장</button>`);
+  },
+
+  saveEditProject(projectId) {
+    const data = DataManager.get();
+    const p = data.projects.find(pr => pr.id === projectId);
+    if (!p) return;
+    const name = document.getElementById('editProjName').value.trim();
+    if (!name) { Utils.toast('프로젝트명을 입력해주세요.', 'warning'); return; }
+    const currentTRL = Utils.clamp(Number(document.getElementById('editProjTRL').value), 1, 9);
+    const targetTRL = Utils.clamp(Number(document.getElementById('editProjTargetTRL').value), 1, 9);
+    if (currentTRL > targetTRL) { Utils.toast('현재 TRL이 목표 TRL보다 높을 수 없습니다.', 'warning'); return; }
+
+    p.name = name;
+    p.description = document.getElementById('editProjDesc').value;
+    p.currentTRL = currentTRL;
+    p.targetTRL = targetTRL;
+    p.priority = Number(document.getElementById('editProjPriority').value);
+
+    DataManager.save();
+    DataManager.addActivity('🔧', `프로젝트 수정: ${name}`, 'info');
+    Modal.close();
+    this.render();
+    Dashboard.render();
+  },
+
+  editTechDebt(projectIdx) {
+    const data = DataManager.get();
+    const p = data.projects[projectIdx];
+    if (!p) return;
+
+    Modal.open(`${Utils.escapeHtml(p.name)} 기술 부채 수정`, `
+      <div class="form-row">
+        <div class="form-group"><label style="color:var(--danger)">심각 (High)</label><input type="number" id="editDebtHigh" min="0" value="${p.techDebt.high}"></div>
+        <div class="form-group"><label style="color:var(--warning)">중간 (Medium)</label><input type="number" id="editDebtMed" min="0" value="${p.techDebt.medium}"></div>
+      </div>
+      <div class="form-group"><label>낮음 (Low)</label><input type="number" id="editDebtLow" min="0" value="${p.techDebt.low}"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Projects.saveTechDebt(${projectIdx})">저장</button>`);
+  },
+
+  saveTechDebt(projectIdx) {
+    const data = DataManager.get();
+    const p = data.projects[projectIdx];
+    if (!p) return;
+    p.techDebt.high = Math.max(0, Number(document.getElementById('editDebtHigh').value) || 0);
+    p.techDebt.medium = Math.max(0, Number(document.getElementById('editDebtMed').value) || 0);
+    p.techDebt.low = Math.max(0, Number(document.getElementById('editDebtLow').value) || 0);
+    DataManager.save();
+    DataManager.addActivity('🔧', `${p.name} 기술 부채 수정`, 'info');
     Modal.close();
     this.render();
     Dashboard.render();

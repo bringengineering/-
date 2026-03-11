@@ -115,6 +115,7 @@ const OKR = {
             </div>
             <div style="display:flex;align-items:center;gap:8px">
               <div class="okr-score" style="color:${scoreColor}">${avgScore.toFixed(2)}</div>
+              <button class="btn btn-sm btn-secondary" onclick="event.stopPropagation();OKR.editObjective('${obj.id}')" title="수정">✎</button>
               <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();OKR.deleteObjective('${obj.id}')" title="삭제">✕</button>
             </div>
           </div>
@@ -212,6 +213,88 @@ const OKR = {
     quarter.objectives.push({ id: Utils.generateId(), title, owner, keyResults: krs });
     DataManager.save();
     DataManager.addActivity('🎯', `새 Objective 추가: ${title}`, 'info');
+    Modal.close();
+    this.render();
+    Dashboard.render();
+  },
+
+  editObjective(objId) {
+    const data = DataManager.get();
+    const quarter = data.okrs.quarters[data.okrs.currentQuarter];
+    const obj = quarter?.objectives.find(o => o.id === objId);
+    if (!obj) return;
+
+    const krHtml = obj.keyResults.map((kr, i) => `
+      <div class="form-row" style="align-items:end" data-kr-id="${kr.id}">
+        <div class="form-group"><label>KR${i + 1} 제목</label><input type="text" class="editKRTitle" value="${Utils.escapeHtml(kr.title)}"></div>
+        <div class="form-group"><label>목표값</label><input type="number" class="editKRTarget" value="${kr.target}"></div>
+        <div class="form-group"><label>현재값</label><input type="number" class="editKRCurrent" value="${kr.current}"></div>
+        <div class="form-group" style="margin-bottom:16px"><button type="button" class="btn btn-sm btn-danger" onclick="this.closest('[data-kr-id]').remove()">삭제</button></div>
+      </div>
+    `).join('');
+
+    Modal.open(`Objective 수정`, `
+      <div class="form-group"><label>Objective 제목</label><input type="text" id="editObjTitle" value="${Utils.escapeHtml(obj.title)}"></div>
+      <div class="form-group"><label>담당자</label><select id="editObjOwner">${data.team.members.map(m => `<option value="${Utils.escapeHtml(m.name)}" ${m.name === obj.owner ? 'selected' : ''}>${Utils.escapeHtml(m.name)}</option>`).join('')}</select></div>
+      <div id="editKRList">
+        <h4 style="margin:16px 0 8px">Key Results</h4>
+        ${krHtml}
+      </div>
+      <button type="button" class="btn btn-sm btn-secondary" onclick="OKR.addKRField()" style="margin-top:8px">+ KR 추가</button>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="OKR.saveEditObjective('${objId}')">저장</button>`);
+  },
+
+  addKRField() {
+    const list = document.getElementById('editKRList');
+    const count = list.querySelectorAll('[data-kr-id]').length + 1;
+    const div = document.createElement('div');
+    div.className = 'form-row';
+    div.style.alignItems = 'end';
+    div.setAttribute('data-kr-id', 'new-' + Utils.generateId());
+    div.innerHTML = `
+      <div class="form-group"><label>KR${count} 제목</label><input type="text" class="editKRTitle"></div>
+      <div class="form-group"><label>목표값</label><input type="number" class="editKRTarget"></div>
+      <div class="form-group"><label>현재값</label><input type="number" class="editKRCurrent" value="0"></div>
+      <div class="form-group" style="margin-bottom:16px"><button type="button" class="btn btn-sm btn-danger" onclick="this.closest('[data-kr-id]').remove()">삭제</button></div>
+    `;
+    list.appendChild(div);
+  },
+
+  saveEditObjective(objId) {
+    const data = DataManager.get();
+    const quarter = data.okrs.quarters[data.okrs.currentQuarter];
+    const obj = quarter?.objectives.find(o => o.id === objId);
+    if (!obj) return;
+
+    const title = document.getElementById('editObjTitle').value.trim();
+    if (!title) { Utils.toast('제목을 입력해주세요.', 'warning'); return; }
+
+    obj.title = title;
+    obj.owner = document.getElementById('editObjOwner').value;
+
+    const krRows = document.querySelectorAll('#editKRList [data-kr-id]');
+    const newKRs = [];
+    krRows.forEach(row => {
+      const krTitle = row.querySelector('.editKRTitle').value.trim();
+      const target = Number(row.querySelector('.editKRTarget').value);
+      const current = Number(row.querySelector('.editKRCurrent').value);
+      if (krTitle && target > 0) {
+        const existingId = row.getAttribute('data-kr-id');
+        const oldKR = obj.keyResults.find(k => k.id === existingId);
+        newKRs.push({
+          id: oldKR ? oldKR.id : Utils.generateId(),
+          title: krTitle,
+          target,
+          current,
+          unit: oldKR?.unit || '',
+          inverse: oldKR?.inverse || false
+        });
+      }
+    });
+    obj.keyResults = newKRs;
+
+    DataManager.save();
+    DataManager.addActivity('🎯', `Objective 수정: ${title}`, 'info');
     Modal.close();
     this.render();
     Dashboard.render();

@@ -186,6 +186,22 @@ const Team = {
     const member = data.team.members.find(m => m.id === memberId);
     if (member) {
       member.satisfaction = Number(document.getElementById('satRange').value);
+
+      // Auto-track satisfaction history
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      if (!data.team.satisfactionHistory) data.team.satisfactionHistory = [];
+      const avgSat = data.team.members.reduce((s, m) => s + m.satisfaction, 0) / data.team.members.length;
+      const existing = data.team.satisfactionHistory.find(h => h.month === currentMonth);
+      if (existing) {
+        existing.score = Math.round(avgSat * 10) / 10;
+      } else {
+        data.team.satisfactionHistory.push({ month: currentMonth, score: Math.round(avgSat * 10) / 10 });
+        // Keep last 12 months
+        if (data.team.satisfactionHistory.length > 12) {
+          data.team.satisfactionHistory = data.team.satisfactionHistory.slice(-12);
+        }
+      }
+
       DataManager.save();
       DataManager.addActivity('👥', `${member.name} 만족도 업데이트: ${member.satisfaction}/5`, 'info');
       Modal.close();
@@ -290,9 +306,26 @@ const Team = {
     const data = DataManager.get();
     const member = data.team.members.find(m => m.id === memberId);
     if (!member) return;
-    Modal.confirm('멤버 삭제', `${member.name}을(를) 삭제하시겠습니까?`, () => {
+
+    // Check for orphan references
+    const warnings = [];
+    const riskRefs = (data.risks || []).filter(r => r.owner === member.name);
+    if (riskRefs.length > 0) warnings.push(`리스크 담당 ${riskRefs.length}건`);
+    const quarter = data.okrs.quarters[data.okrs.currentQuarter];
+    const okrRefs = quarter ? quarter.objectives.filter(o => o.owner === member.name) : [];
+    if (okrRefs.length > 0) warnings.push(`OKR 담당 ${okrRefs.length}건`);
+
+    const warningText = warnings.length > 0 ? `\n\n⚠️ 이 멤버가 담당 중인 항목: ${warnings.join(', ')}.\n삭제 시 해당 담당이 "미지정"으로 변경됩니다.` : '';
+
+    Modal.confirm('멤버 삭제', `${member.name}을(를) 삭제하시겠습니까?${warningText}`, () => {
       const idx = data.team.members.findIndex(m => m.id === memberId);
       if (idx >= 0) {
+        // Clean up orphan references
+        (data.risks || []).forEach(r => { if (r.owner === member.name) r.owner = '미지정'; });
+        if (quarter) {
+          quarter.objectives.forEach(o => { if (o.owner === member.name) o.owner = '미지정'; });
+        }
+
         data.team.members.splice(idx, 1);
         DataManager.save();
         DataManager.addActivity('👥', `멤버 삭제: ${member.name}`, 'info');

@@ -231,19 +231,57 @@ const Dashboard = {
     }).join('');
   },
 
+  activityPage: 0,
+  activityPageSize: 10,
+
   renderActivityLog(data) {
-    const logs = data.activityLog.slice(0, 10);
-    if (logs.length === 0) {
+    const allLogs = data.activityLog || [];
+    const totalPages = Math.max(1, Math.ceil(allLogs.length / this.activityPageSize));
+    this.activityPage = Math.min(this.activityPage, totalPages - 1);
+    const start = this.activityPage * this.activityPageSize;
+    const logs = allLogs.slice(start, start + this.activityPageSize);
+
+    if (allLogs.length === 0) {
       document.getElementById('activityLog').innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:16px 0">아직 활동 기록이 없습니다.</p>';
       return;
     }
-    document.getElementById('activityLog').innerHTML = logs.map(a => `
+
+    const logHtml = logs.map(a => `
       <div class="activity-item">
         <div class="activity-icon" style="background:${a.type === 'success' ? 'var(--success-light)' : a.type === 'danger' ? 'var(--danger-light)' : 'var(--primary-light)'}">${a.icon}</div>
         <div class="activity-text">${Utils.escapeHtml(a.text)}</div>
         <div class="activity-time">${Utils.escapeHtml(a.time)}</div>
       </div>
     `).join('');
+
+    const paginationHtml = allLogs.length > this.activityPageSize ? `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--border-light)">
+        <span style="font-size:12px;color:var(--text-muted)">${allLogs.length}건 중 ${start + 1}~${Math.min(start + this.activityPageSize, allLogs.length)}</span>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm btn-secondary" onclick="Dashboard.prevActivityPage()" ${this.activityPage === 0 ? 'disabled style="opacity:0.4"' : ''}>◀ 이전</button>
+          <span style="font-size:12px;color:var(--text-light);line-height:28px">${this.activityPage + 1} / ${totalPages}</span>
+          <button class="btn btn-sm btn-secondary" onclick="Dashboard.nextActivityPage()" ${this.activityPage >= totalPages - 1 ? 'disabled style="opacity:0.4"' : ''}>다음 ▶</button>
+        </div>
+      </div>
+    ` : '';
+
+    document.getElementById('activityLog').innerHTML = logHtml + paginationHtml;
+  },
+
+  prevActivityPage() {
+    if (this.activityPage > 0) {
+      this.activityPage--;
+      this.renderActivityLog(DataManager.get());
+    }
+  },
+
+  nextActivityPage() {
+    const data = DataManager.get();
+    const totalPages = Math.ceil((data.activityLog || []).length / this.activityPageSize);
+    if (this.activityPage < totalPages - 1) {
+      this.activityPage++;
+      this.renderActivityLog(data);
+    }
   },
 
   updateGlobalHealth(data) {

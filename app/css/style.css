@@ -1033,6 +1033,10 @@ select {
   .form-row { grid-template-columns: 1fr; }
   .pipeline-board { grid-template-columns: 1fr; }
   .okr-kr { grid-template-columns: 1fr; }
+  .page-actions { flex-wrap: wrap; }
+  .page-actions .search-input { min-width: 140px; flex: 1; }
+  .page-actions select { min-width: 100px; flex: 1; }
+  .page-actions .btn { flex-shrink: 0; }
 }
 
 /* ===== PRINT ===== */
@@ -1176,6 +1180,11 @@ select {
   #page-container { padding: 12px; }
   #top-bar { padding: 0 16px; }
   #page-title { font-size: 16px; }
+  .page-actions { flex-direction: column; }
+  .page-actions .search-input,
+  .page-actions select { width: 100%; min-width: unset; }
+  .project-milestones { grid-template-columns: 1fr; }
+  .budget-progress-header { flex-direction: column; gap: 4px; }
 }
 
 /* ===== NOSCRIPT ===== */

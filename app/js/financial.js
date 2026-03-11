@@ -149,7 +149,11 @@ const Financial = {
         <div class="budget-progress-container">
           <div class="budget-progress-header">
             <span>${Utils.escapeHtml(gb.name)} (${gb.period})</span>
-            <span>${Utils.formatNumber(gb.spent)}만 / ${Utils.formatNumber(gb.totalBudget)}만</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span>${Utils.formatNumber(gb.spent)}만 / ${Utils.formatNumber(gb.totalBudget)}만</span>
+              <button class="btn btn-sm btn-secondary" onclick="Financial.editGovBudget(${i})" title="수정">✎</button>
+              <button class="btn btn-sm btn-danger" onclick="Financial.deleteGovBudget(${i})" title="삭제">✕</button>
+            </div>
           </div>
           <div class="budget-bar">
             <div class="budget-fill" style="width:${pct}%;background:${color}">${pct}%</div>
@@ -161,7 +165,7 @@ const Financial = {
           </div>
         </div>
       `;
-    }).join('');
+    }).join('') || '<p style="color:var(--text-muted);font-size:14px">등록된 정부과제 예산이 없습니다.</p>';
   },
 
   updateValue(monthIdx, type, key, value) {
@@ -211,6 +215,75 @@ const Financial = {
     });
     Utils.downloadCSV([header, ...rows].join('\n'), `재무_${new Date().toISOString().slice(0, 10)}.csv`);
     DataManager.addActivity('📤', '재무 데이터 CSV 내보내기', 'success');
+  },
+
+  openAddGovBudget() {
+    Modal.open('정부과제 예산 추가', `
+      <div class="form-group"><label>과제명</label><input type="text" id="newGovName" placeholder="예: 중기부 TIPS"></div>
+      <div class="form-group"><label>과제 기간</label><input type="text" id="newGovPeriod" placeholder="예: 2026.03~2027.02"></div>
+      <div class="form-row">
+        <div class="form-group"><label>총 예산 (만원)</label><input type="number" id="newGovBudget" min="0"></div>
+        <div class="form-group"><label>현재 집행액 (만원)</label><input type="number" id="newGovSpent" min="0" value="0"></div>
+      </div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addGovBudget()">추가</button>`);
+  },
+
+  addGovBudget() {
+    const data = DataManager.get();
+    const name = document.getElementById('newGovName').value.trim();
+    const period = document.getElementById('newGovPeriod').value.trim();
+    const totalBudget = Number(document.getElementById('newGovBudget').value) || 0;
+    const spent = Number(document.getElementById('newGovSpent').value) || 0;
+    if (!name) { Utils.toast('과제명을 입력해주세요.', 'warning'); return; }
+    if (totalBudget <= 0) { Utils.toast('예산을 입력해주세요.', 'warning'); return; }
+
+    data.financial.govBudgets.push({ name, period, totalBudget, spent });
+    DataManager.save();
+    DataManager.addActivity('💰', `정부과제 추가: ${name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  editGovBudget(idx) {
+    const data = DataManager.get();
+    const gb = data.financial.govBudgets[idx];
+    if (!gb) return;
+
+    Modal.open('정부과제 수정', `
+      <div class="form-group"><label>과제명</label><input type="text" id="editGovName" value="${Utils.escapeHtml(gb.name)}"></div>
+      <div class="form-group"><label>과제 기간</label><input type="text" id="editGovPeriod" value="${Utils.escapeHtml(gb.period || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>총 예산 (만원)</label><input type="number" id="editGovBudget" min="0" value="${gb.totalBudget}"></div>
+        <div class="form-group"><label>현재 집행액 (만원)</label><input type="number" id="editGovSpent" min="0" value="${gb.spent}"></div>
+      </div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.saveEditGovBudget(${idx})">저장</button>`);
+  },
+
+  saveEditGovBudget(idx) {
+    const data = DataManager.get();
+    const gb = data.financial.govBudgets[idx];
+    if (!gb) return;
+    gb.name = document.getElementById('editGovName').value.trim();
+    gb.period = document.getElementById('editGovPeriod').value.trim();
+    gb.totalBudget = Number(document.getElementById('editGovBudget').value) || 0;
+    gb.spent = Number(document.getElementById('editGovSpent').value) || 0;
+    DataManager.save();
+    DataManager.addActivity('💰', `정부과제 수정: ${gb.name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  deleteGovBudget(idx) {
+    const data = DataManager.get();
+    const gb = data.financial.govBudgets[idx];
+    if (!gb) return;
+    Modal.confirm('정부과제 삭제', `"${gb.name}" 과제를 삭제하시겠습니까?`, () => {
+      data.financial.govBudgets.splice(idx, 1);
+      DataManager.save();
+      DataManager.addActivity('💰', `정부과제 삭제: ${gb.name}`, 'info');
+      Modal.close();
+      Financial.render();
+    });
   },
 
   addTransaction() {
