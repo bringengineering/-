@@ -86,6 +86,11 @@ const Team = {
     const levelNames = ['', '학습자', '실행자', '숙련자', '전문가', '마스터'];
     const levelColors = ['', 'gray', 'blue', 'green', 'purple', 'yellow'];
 
+    if (data.team.members.length === 0) {
+      document.getElementById('teamMemberGrid').innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">등록된 팀원이 없습니다</div><div class="empty-state-sub">"+ 멤버 추가" 버튼으로 팀원을 등록하세요</div></div>`;
+      return;
+    }
+
     document.getElementById('teamMemberGrid').innerHTML = data.team.members.map(m => {
       const skillKeys = ['leadership', 'business', 'technical', 'communication', 'problemSolving'];
       const skillNames = ['리더십', '비즈니스', '기술', '소통', '문제해결'];
@@ -127,7 +132,8 @@ const Team = {
           </div>
           <div style="margin-top:12px;display:flex;gap:8px">
             <button class="btn btn-sm btn-secondary" onclick="Team.editMember('${m.id}')">수정</button>
-            <button class="btn btn-sm btn-secondary" onclick="Team.updateSatisfaction('${m.id}')">만족도 업데이트</button>
+            <button class="btn btn-sm btn-secondary" onclick="Team.updateSatisfaction('${m.id}')">만족도</button>
+            <button class="btn btn-sm btn-danger" onclick="Team.deleteMember('${m.id}')">삭제</button>
           </div>
         </div>
       `;
@@ -249,11 +255,12 @@ const Team = {
 
   addMember() {
     const data = DataManager.get();
-    const name = document.getElementById('addMemName').value;
-    const role = document.getElementById('addMemRole').value;
+    const name = document.getElementById('addMemName').value.trim();
+    const role = document.getElementById('addMemRole').value.trim();
     const joinDate = document.getElementById('addMemDate').value;
 
-    if (!name) return;
+    if (!name) { Utils.toast('이름을 입력해주세요.', 'warning'); return; }
+    if (!role) { Utils.toast('역할을 입력해주세요.', 'warning'); return; }
 
     data.team.members.push({
       id: Utils.generateId(), name, role, avatar: name[0],
@@ -267,5 +274,32 @@ const Team = {
     Modal.close();
     this.render();
     Dashboard.render();
+  },
+
+  exportCSV() {
+    const data = DataManager.get();
+    const header = '이름,역할,스킬레벨,만족도,합류일,리더십,비즈니스,기술,소통,문제해결';
+    const rows = data.team.members.map(m =>
+      `"${m.name.replace(/"/g, '""')}","${m.role.replace(/"/g, '""')}",${m.level},${m.satisfaction},${m.joinDate},${m.skills.leadership},${m.skills.business},${m.skills.technical},${m.skills.communication},${m.skills.problemSolving}`
+    );
+    Utils.downloadCSV([header, ...rows].join('\n'), `팀원_${new Date().toISOString().slice(0, 10)}.csv`);
+    DataManager.addActivity('📤', '팀 데이터 CSV 내보내기', 'success');
+  },
+
+  deleteMember(memberId) {
+    const data = DataManager.get();
+    const member = data.team.members.find(m => m.id === memberId);
+    if (!member) return;
+    Modal.confirm('멤버 삭제', `${member.name}을(를) 삭제하시겠습니까?`, () => {
+      const idx = data.team.members.findIndex(m => m.id === memberId);
+      if (idx >= 0) {
+        data.team.members.splice(idx, 1);
+        DataManager.save();
+        DataManager.addActivity('👥', `멤버 삭제: ${member.name}`, 'info');
+        Modal.close();
+        Team.render();
+        Dashboard.render();
+      }
+    });
   }
 };

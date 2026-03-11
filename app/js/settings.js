@@ -12,6 +12,9 @@ const Settings = {
     document.getElementById('settingAlertRunway').checked = s.alertRunway !== false;
     document.getElementById('settingAlertOKR').checked = s.alertOKR !== false;
     document.getElementById('settingAlertRisk').checked = s.alertRisk !== false;
+    document.getElementById('settingRunwayDanger').value = s.runwayDanger || 3;
+    document.getElementById('settingRunwayWarning').value = s.runwayWarning || 6;
+    document.getElementById('settingOKRThreshold').value = s.okrThreshold || 40;
   },
 
   save() {
@@ -25,6 +28,9 @@ const Settings = {
     data.settings.alertRunway = document.getElementById('settingAlertRunway').checked;
     data.settings.alertOKR = document.getElementById('settingAlertOKR').checked;
     data.settings.alertRisk = document.getElementById('settingAlertRisk').checked;
+    data.settings.runwayDanger = Utils.clamp(parseInt(document.getElementById('settingRunwayDanger').value) || 3, 1, 12);
+    data.settings.runwayWarning = Utils.clamp(parseInt(document.getElementById('settingRunwayWarning').value) || 6, 1, 24);
+    data.settings.okrThreshold = Utils.clamp(parseInt(document.getElementById('settingOKRThreshold').value) || 40, 10, 100);
 
     DataManager.save();
     DataManager.addActivity('⚙️', '회사 설정 저장됨', 'info');
@@ -41,6 +47,7 @@ const Settings = {
     a.download = `bring_eng_data_${new Date().toISOString().slice(0, 10)}.json`;
     a.click();
     URL.revokeObjectURL(url);
+    localStorage.setItem('bring_last_backup', Date.now());
     DataManager.addActivity('📤', '데이터 JSON 내보내기 완료', 'success');
   },
 

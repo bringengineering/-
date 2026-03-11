@@ -10,6 +10,32 @@ const Risk = {
     this.renderTable(data);
   },
 
+  _getFilteredRisks(data) {
+    let risks = data.risks;
+    const searchEl = document.getElementById('riskSearch');
+    const statusEl = document.getElementById('riskFilterStatus');
+    const catEl = document.getElementById('riskFilterCategory');
+
+    const search = searchEl ? searchEl.value.toLowerCase() : '';
+    const statusFilter = statusEl ? statusEl.value : '';
+    const catFilter = catEl ? catEl.value : '';
+
+    if (search) {
+      risks = risks.filter(r =>
+        r.title.toLowerCase().includes(search) ||
+        r.owner.toLowerCase().includes(search) ||
+        r.mitigation.toLowerCase().includes(search)
+      );
+    }
+    if (statusFilter) {
+      risks = risks.filter(r => r.status === statusFilter);
+    }
+    if (catFilter) {
+      risks = risks.filter(r => r.category === catFilter);
+    }
+    return risks;
+  },
+
   renderKPIs(data) {
     const risks = data.risks.filter(r => r.status === 'active');
     const critical = risks.filter(r => r.impact * r.probability >= 15).length;
@@ -27,12 +53,11 @@ const Risk = {
   renderCharts(data) {
     const risks = data.risks;
 
-    // Heatmap as scatter
     this.charts.heatmap = Utils.destroyChart(this.charts.heatmap);
     this.charts.heatmap = new Chart(document.getElementById('riskHeatmapChart'), {
       type: 'bubble',
       data: {
-        datasets: risks.map((r, i) => ({
+        datasets: risks.map((r) => ({
           label: r.title.slice(0, 20),
           data: [{ x: r.probability, y: r.impact, r: Math.max(8, r.impact * r.probability / 2) }],
           backgroundColor: r.impact * r.probability >= 15 ? 'rgba(239,68,68,0.6)' : r.impact * r.probability >= 8 ? 'rgba(245,158,11,0.6)' : 'rgba(34,197,94,0.6)',
@@ -60,7 +85,6 @@ const Risk = {
       }
     });
 
-    // Category distribution
     const categories = {};
     risks.forEach(r => { categories[r.category] = (categories[r.category] || 0) + 1; });
 
@@ -81,12 +105,18 @@ const Risk = {
   },
 
   renderTable(data) {
+    const filteredRisks = this._getFilteredRisks(data);
     const table = document.getElementById('riskTable');
     table.querySelector('thead').innerHTML = `<tr>
       <th>상태</th><th>카테고리</th><th>리스크</th><th>영향</th><th>확률</th><th>점수</th><th>담당</th><th>대응방안</th><th>액션</th>
     </tr>`;
 
-    table.querySelector('tbody').innerHTML = data.risks.map(r => {
+    if (filteredRisks.length === 0) {
+      table.querySelector('tbody').innerHTML = `<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">검색 결과가 없습니다</div></div></td></tr>`;
+      return;
+    }
+
+    table.querySelector('tbody').innerHTML = filteredRisks.map(r => {
       const score = r.impact * r.probability;
       const badge = score >= 15 ? Utils.badge('심각', 'red') : score >= 8 ? Utils.badge('주의', 'yellow') : Utils.badge('수용', 'green');
       const statusBadge = r.status === 'active' ? Utils.badge('활성', 'blue') : r.status === 'resolved' ? Utils.badge('해결', 'green') : Utils.badge('관찰', 'gray');
@@ -136,11 +166,18 @@ const Risk = {
     const r = data.risks.find(risk => risk.id === riskId);
     if (!r) return;
 
+    const impact = Number(document.getElementById('editRiskImpact').value);
+    const prob = Number(document.getElementById('editRiskProb').value);
+    if (impact < 1 || impact > 5 || prob < 1 || prob > 5) {
+      Utils.toast('영향도와 확률은 1~5 사이 값이어야 합니다.', 'warning');
+      return;
+    }
+
     r.title = document.getElementById('editRiskTitle').value;
     r.category = document.getElementById('editRiskCat').value;
     r.status = document.getElementById('editRiskStatus').value;
-    r.impact = Number(document.getElementById('editRiskImpact').value);
-    r.probability = Number(document.getElementById('editRiskProb').value);
+    r.impact = impact;
+    r.probability = prob;
     r.owner = document.getElementById('editRiskOwner').value;
     r.mitigation = document.getElementById('editRiskMit').value;
 
@@ -168,7 +205,7 @@ const Risk = {
   openAddRisk() {
     const data = DataManager.get();
     Modal.open('리스크 추가', `
-      <div class="form-group"><label>리스크명</label><input type="text" id="newRiskTitle"></div>
+      <div class="form-group"><label>리스크명 <span style="color:var(--danger)">*</span></label><input type="text" id="newRiskTitle" required></div>
       <div class="form-row">
         <div class="form-group"><label>카테고리</label><select id="newRiskCat"><option>재무</option><option>인력</option><option>기술</option><option>사업</option><option>법무</option></select></div>
         <div class="form-group"><label>담당자</label><select id="newRiskOwner">${data.team.members.map(m => `<option>${Utils.escapeHtml(m.name)}</option>`).join('')}</select></div>
@@ -183,15 +220,25 @@ const Risk = {
 
   addRisk() {
     const data = DataManager.get();
-    const title = document.getElementById('newRiskTitle').value;
-    if (!title) return;
+    const title = document.getElementById('newRiskTitle').value.trim();
+    if (!title) {
+      Utils.toast('리스크명을 입력해주세요.', 'warning');
+      return;
+    }
+
+    const impact = Number(document.getElementById('newRiskImpact').value);
+    const prob = Number(document.getElementById('newRiskProb').value);
+    if (impact < 1 || impact > 5 || prob < 1 || prob > 5) {
+      Utils.toast('영향도와 확률은 1~5 사이 값이어야 합니다.', 'warning');
+      return;
+    }
 
     data.risks.push({
       id: Utils.generateId(),
       title,
       category: document.getElementById('newRiskCat').value,
-      impact: Number(document.getElementById('newRiskImpact').value),
-      probability: Number(document.getElementById('newRiskProb').value),
+      impact,
+      probability: prob,
       owner: document.getElementById('newRiskOwner').value,
       mitigation: document.getElementById('newRiskMit').value,
       status: 'active'
@@ -202,5 +249,16 @@ const Risk = {
     Modal.close();
     this.render();
     Dashboard.render();
+  },
+
+  exportCSV() {
+    const data = DataManager.get();
+    const risks = this._getFilteredRisks(data);
+    const header = '상태,카테고리,리스크명,영향도,확률,점수,담당자,대응방안';
+    const rows = risks.map(r =>
+      `${r.status},${r.category},"${r.title.replace(/"/g, '""')}",${r.impact},${r.probability},${r.impact * r.probability},"${r.owner.replace(/"/g, '""')}","${r.mitigation.replace(/"/g, '""')}"`
+    );
+    Utils.downloadCSV([header, ...rows].join('\n'), `리스크_${new Date().toISOString().slice(0, 10)}.csv`);
+    DataManager.addActivity('📤', '리스크 데이터 CSV 내보내기', 'success');
   }
 };

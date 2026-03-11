@@ -199,6 +199,20 @@ const Financial = {
     `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addTransaction()">추가</button>`);
   },
 
+  exportCSV() {
+    const data = DataManager.get();
+    const months = data.financial.months;
+    const balances = Dashboard.calcMonthlyBalances(data);
+    const header = '월,정부과제,추가과제,매출,기타수입,수입합계,인건비,클라우드,장비,출장,사무실,외주,기타지출,지출합계,월말잔고';
+    const rows = months.map((m, i) => {
+      const inc = Utils.sumValues(m.income);
+      const exp = Utils.sumValues(m.expense);
+      return `${m.month},${m.income.govProject||0},${m.income.additionalGov||0},${m.income.sales||0},${m.income.other||0},${inc},${m.expense.salary||0},${m.expense.cloud||0},${m.expense.equipment||0},${m.expense.travel||0},${m.expense.office||0},${m.expense.outsource||0},${m.expense.misc||0},${exp},${balances[i]}`;
+    });
+    Utils.downloadCSV([header, ...rows].join('\n'), `재무_${new Date().toISOString().slice(0, 10)}.csv`);
+    DataManager.addActivity('📤', '재무 데이터 CSV 내보내기', 'success');
+  },
+
   addTransaction() {
     const data = DataManager.get();
     const month = document.getElementById('addTxMonth').value;

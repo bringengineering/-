@@ -37,13 +37,16 @@ const Dashboard = {
     const settings = data.settings || {};
 
     if (settings.alertRunway !== false) {
-      if (fin.runway < 3) alerts.push({ type: 'danger', text: `런웨이 ${fin.runway.toFixed(1)}개월 — 즉시 자금 대응 필요` });
-      else if (fin.runway < 6) alerts.push({ type: 'warning', text: `런웨이 ${fin.runway.toFixed(1)}개월 — 비용 절감 또는 매출 가속 검토` });
+      const dangerThreshold = settings.runwayDanger || 3;
+      const warningThreshold = settings.runwayWarning || 6;
+      if (fin.runway < dangerThreshold) alerts.push({ type: 'danger', text: `런웨이 ${fin.runway.toFixed(1)}개월 — 즉시 자금 대응 필요` });
+      else if (fin.runway < warningThreshold) alerts.push({ type: 'warning', text: `런웨이 ${fin.runway.toFixed(1)}개월 — 비용 절감 또는 매출 가속 검토` });
     }
 
     if (settings.alertOKR !== false) {
+      const okrThreshold = (settings.okrThreshold || 40) / 100;
       const okrScore = this.calcOKRScore(data);
-      if (okrScore < 0.4) alerts.push({ type: 'warning', text: `OKR 전체 진행률 ${(okrScore*100).toFixed(0)}% — 목표 달성 점검 필요` });
+      if (okrScore < okrThreshold) alerts.push({ type: 'warning', text: `OKR 전체 진행률 ${(okrScore*100).toFixed(0)}% — 목표 달성 점검 필요` });
     }
 
     if (settings.alertRisk !== false) {

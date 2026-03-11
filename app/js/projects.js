@@ -13,7 +13,7 @@ const Projects = {
 
   renderKPIs(data) {
     const projects = data.projects;
-    const avgTRLProgress = projects.reduce((s, p) => s + p.currentTRL / p.targetTRL, 0) / projects.length * 100;
+    const avgTRLProgress = projects.length > 0 ? projects.reduce((s, p) => s + p.currentTRL / p.targetTRL, 0) / projects.length * 100 : 0;
     const totalMilestones = projects.reduce((s, p) => s + p.milestones.length, 0);
     const completedMilestones = projects.reduce((s, p) => s + p.milestones.filter(m => m.status === 'done').length, 0);
     const totalDebt = projects.reduce((s, p) => s + p.techDebt.high + p.techDebt.medium + p.techDebt.low, 0);
@@ -70,6 +70,11 @@ const Projects = {
   renderProjects(data) {
     const priorityLabels = ['', '⭐', '⭐⭐', '⭐⭐⭐'];
 
+    if (data.projects.length === 0) {
+      document.getElementById('projectsList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔧</div><div class="empty-state-text">등록된 프로젝트가 없습니다</div><div class="empty-state-sub">"+ 프로젝트 추가" 버튼으로 시작하세요</div></div>`;
+      return;
+    }
+
     document.getElementById('projectsList').innerHTML = data.projects.map((p, pi) => {
       const trlPct = (p.currentTRL / 9 * 100).toFixed(0);
       const targetPct = (p.targetTRL / 9 * 100).toFixed(0);
@@ -105,6 +110,7 @@ const Projects = {
               <input type="number" min="1" max="9" value="${p.currentTRL}" style="width:60px;padding:4px;font-size:13px;border:1px solid var(--border);border-radius:4px"
                 onchange="Projects.updateTRL(${pi}, this.value)" title="현재 TRL 변경">
               <button class="btn btn-sm btn-secondary" onclick="Projects.addMilestone(${pi})">+ 마일스톤</button>
+              <button class="btn btn-sm btn-danger" onclick="Projects.deleteProject('${p.id}')">삭제</button>
             </div>
           </div>
 
@@ -209,20 +215,42 @@ const Projects = {
 
   addProject() {
     const data = DataManager.get();
+    const name = document.getElementById('newProjName').value.trim();
+    if (!name) { Utils.toast('프로젝트명을 입력해주세요.', 'warning'); return; }
+    const currentTRL = Utils.clamp(Number(document.getElementById('newProjTRL').value), 1, 9);
+    const targetTRL = Utils.clamp(Number(document.getElementById('newProjTargetTRL').value), 1, 9);
+    if (currentTRL > targetTRL) { Utils.toast('현재 TRL이 목표 TRL보다 높을 수 없습니다.', 'warning'); return; }
     data.projects.push({
       id: Utils.generateId(),
-      name: document.getElementById('newProjName').value,
+      name,
       description: document.getElementById('newProjDesc').value,
-      currentTRL: Number(document.getElementById('newProjTRL').value),
-      targetTRL: Number(document.getElementById('newProjTargetTRL').value),
+      currentTRL,
+      targetTRL,
       priority: Number(document.getElementById('newProjPriority').value),
       milestones: [],
       techDebt: { high: 0, medium: 0, low: 0 }
     });
     DataManager.save();
-    DataManager.addActivity('🔧', `새 프로젝트 추가: ${document.getElementById('newProjName').value}`, 'info');
+    DataManager.addActivity('🔧', `새 프로젝트 추가: ${name}`, 'info');
     Modal.close();
     this.render();
     Dashboard.render();
+  },
+
+  deleteProject(projectId) {
+    const data = DataManager.get();
+    const project = data.projects.find(p => p.id === projectId);
+    if (!project) return;
+    Modal.confirm('프로젝트 삭제', `"${project.name}" 프로젝트를 삭제하시겠습니까?`, () => {
+      const idx = data.projects.findIndex(p => p.id === projectId);
+      if (idx >= 0) {
+        data.projects.splice(idx, 1);
+        DataManager.save();
+        DataManager.addActivity('🔧', `프로젝트 삭제: ${project.name}`, 'info');
+        Modal.close();
+        Projects.render();
+        Dashboard.render();
+      }
+    });
   }
 };

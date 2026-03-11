@@ -166,5 +166,22 @@ const Utils = {
       chartInstance.destroy();
     }
     return null;
+  },
+
+  // Download CSV file
+  downloadCSV(csvContent, filename) {
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  },
+
+  // Clamp a number between min and max
+  clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
   }
 };

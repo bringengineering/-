@@ -84,9 +84,23 @@ const Pipeline = {
     });
   },
 
+  _getFilteredDeals(data) {
+    let deals = data.pipeline.deals;
+    const searchEl = document.getElementById('pipelineSearch');
+    const search = searchEl ? searchEl.value.toLowerCase() : '';
+    if (search) {
+      deals = deals.filter(d =>
+        d.name.toLowerCase().includes(search) ||
+        d.product.toLowerCase().includes(search) ||
+        (d.note && d.note.toLowerCase().includes(search))
+      );
+    }
+    return deals;
+  },
+
   renderBoard(data) {
     const stages = data.pipeline.stages;
-    const deals = data.pipeline.deals;
+    const deals = this._getFilteredDeals(data);
 
     document.getElementById('pipelineBoard').innerHTML = stages.map((stage, si) => {
       const stageDeals = deals.filter(d => d.stage === si);
@@ -189,8 +203,10 @@ const Pipeline = {
 
   addDeal() {
     const data = DataManager.get();
-    const name = document.getElementById('newDealName').value;
-    if (!name) return;
+    const name = document.getElementById('newDealName').value.trim();
+    if (!name) { Utils.toast('고객명을 입력해주세요.', 'warning'); return; }
+    const amount = Number(document.getElementById('newDealAmount').value) || 0;
+    if (amount <= 0) { Utils.toast('금액을 입력해주세요.', 'warning'); return; }
 
     data.pipeline.deals.push({
       id: Utils.generateId(),

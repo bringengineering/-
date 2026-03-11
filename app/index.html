@@ -84,6 +84,8 @@
       </div>
       <div class="top-bar-right">
         <span class="current-date" id="currentDate"></span>
+        <button class="theme-toggle" id="themeToggle" onclick="App.toggleTheme()" title="다크모드 전환 (D)" aria-label="테마 전환">🌙</button>
+        <button class="theme-toggle" id="shortcutHelp" onclick="App.showShortcuts()" title="키보드 단축키 (?)" aria-label="단축키 도움말">⌨️</button>
         <div class="alert-badge" id="alertBadge" title="알림" role="status" aria-label="알림">
           <span class="alert-icon" aria-hidden="true">🔔</span>
           <span class="alert-count" id="alertCount">0</span>
@@ -134,6 +136,7 @@
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Financial.openAddModal()">+ 거래 추가</button>
           <button class="btn btn-secondary" onclick="Financial.recalculate()">재계산</button>
+          <button class="btn btn-secondary" onclick="Financial.exportCSV()">CSV 내보내기</button>
         </div>
 
         <div class="kpi-grid" id="financialKPIGrid"></div>
@@ -203,6 +206,7 @@
       <section id="page-team" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Team.openAddMember()">+ 멤버 추가</button>
+          <button class="btn btn-secondary" onclick="Team.exportCSV()">CSV 내보내기</button>
         </div>
 
         <div class="kpi-grid" id="teamKPIGrid"></div>
@@ -253,6 +257,7 @@
       <section id="page-pipeline" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Pipeline.openAddDeal()">+ 딜 추가</button>
+          <input type="text" id="pipelineSearch" placeholder="딜 검색..." oninput="Pipeline.render()" class="search-input" aria-label="파이프라인 검색">
         </div>
 
         <div class="kpi-grid" id="pipelineKPIGrid"></div>
@@ -278,6 +283,22 @@
       <section id="page-risk" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Risk.openAddRisk()">+ 리스크 추가</button>
+          <button class="btn btn-secondary" onclick="Risk.exportCSV()">CSV 내보내기</button>
+          <input type="text" id="riskSearch" placeholder="리스크 검색..." oninput="Risk.render()" class="search-input" aria-label="리스크 검색">
+          <select id="riskFilterStatus" onchange="Risk.render()" aria-label="상태 필터">
+            <option value="">전체 상태</option>
+            <option value="active">활성</option>
+            <option value="monitoring">관찰</option>
+            <option value="resolved">해결</option>
+          </select>
+          <select id="riskFilterCategory" onchange="Risk.render()" aria-label="카테고리 필터">
+            <option value="">전체 카테고리</option>
+            <option value="재무">재무</option>
+            <option value="인력">인력</option>
+            <option value="기술">기술</option>
+            <option value="사업">사업</option>
+            <option value="법무">법무</option>
+          </select>
         </div>
 
         <div class="kpi-grid" id="riskKPIGrid"></div>
@@ -361,14 +382,29 @@
         <div class="section-card">
           <h3>알림 설정</h3>
           <div class="form-group">
-            <label><input type="checkbox" id="settingAlertRunway" checked> 런웨이 3개월 미만 시 경고</label>
+            <label><input type="checkbox" id="settingAlertRunway" checked> 런웨이 경고</label>
+            <div class="form-row" style="margin-top:8px">
+              <div class="form-group"><label>위험 임계값 (개월)</label><input type="number" id="settingRunwayDanger" min="1" max="12" value="3"></div>
+              <div class="form-group"><label>주의 임계값 (개월)</label><input type="number" id="settingRunwayWarning" min="1" max="24" value="6"></div>
+            </div>
           </div>
           <div class="form-group">
-            <label><input type="checkbox" id="settingAlertOKR" checked> OKR 진행률 40% 미만 시 경고</label>
+            <label><input type="checkbox" id="settingAlertOKR" checked> OKR 진행률 경고</label>
+            <div class="form-row" style="margin-top:8px">
+              <div class="form-group"><label>경고 기준 (%)</label><input type="number" id="settingOKRThreshold" min="10" max="100" value="40"></div>
+            </div>
           </div>
           <div class="form-group">
             <label><input type="checkbox" id="settingAlertRisk" checked> 심각 등급 리스크 발생 시 경고</label>
           </div>
+        </div>
+        <div class="section-card">
+          <h3>앱 정보</h3>
+          <p style="font-size:13px;color:var(--text-light)">
+            브링엔지니어링 경영관리 시스템 v2.0<br>
+            데이터: localStorage 기반 (브라우저 내 저장)<br>
+            단축키: <span class="shortcut-key">?</span> 키를 눌러 확인
+          </p>
         </div>
       </section>
     </div>

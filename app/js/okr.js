@@ -96,7 +96,10 @@ const OKR = {
 
   renderObjectives(data) {
     const quarter = data.okrs.quarters[data.okrs.currentQuarter];
-    if (!quarter) return;
+    if (!quarter || quarter.objectives.length === 0) {
+      document.getElementById('okrObjectivesList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">🎯</div><div class="empty-state-text">등록된 Objective가 없습니다</div><div class="empty-state-sub">위의 "+ Objective 추가" 버튼으로 시작하세요</div></div>`;
+      return;
+    }
 
     document.getElementById('okrObjectivesList').innerHTML = quarter.objectives.map((obj, oi) => {
       const scores = obj.keyResults.map(kr => Utils.calcOKRScore(kr.current, kr.target, kr.inverse));
@@ -110,7 +113,10 @@ const OKR = {
               <div class="okr-objective-title">O${oi + 1}: ${Utils.escapeHtml(obj.title)}</div>
               <div style="font-size:12px;color:var(--text-light);margin-top:4px">담당: ${Utils.escapeHtml(obj.owner)}</div>
             </div>
-            <div class="okr-score" style="color:${scoreColor}">${avgScore.toFixed(2)}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="okr-score" style="color:${scoreColor}">${avgScore.toFixed(2)}</div>
+              <button class="btn btn-sm btn-danger" onclick="event.stopPropagation();OKR.deleteObjective('${obj.id}')" title="삭제">✕</button>
+            </div>
           </div>
           <div class="okr-kr-list">
             ${obj.keyResults.map((kr, ki) => {
@@ -189,10 +195,10 @@ const OKR = {
   addObjective() {
     const data = DataManager.get();
     const quarter = data.okrs.quarters[data.okrs.currentQuarter];
-    const title = document.getElementById('newObjTitle').value;
+    const title = document.getElementById('newObjTitle').value.trim();
     const owner = document.getElementById('newObjOwner').value;
 
-    if (!title) return;
+    if (!title) { Utils.toast('Objective 제목을 입력해주세요.', 'warning'); return; }
 
     const krs = [];
     for (let i = 1; i <= 3; i++) {
@@ -209,5 +215,24 @@ const OKR = {
     Modal.close();
     this.render();
     Dashboard.render();
+  },
+
+  deleteObjective(objId) {
+    const data = DataManager.get();
+    const quarter = data.okrs.quarters[data.okrs.currentQuarter];
+    if (!quarter) return;
+    const obj = quarter.objectives.find(o => o.id === objId);
+    if (!obj) return;
+    Modal.confirm('Objective 삭제', `"${obj.title}"을(를) 삭제하시겠습니까?`, () => {
+      const idx = quarter.objectives.findIndex(o => o.id === objId);
+      if (idx >= 0) {
+        quarter.objectives.splice(idx, 1);
+        DataManager.save();
+        DataManager.addActivity('🎯', `Objective 삭제: ${obj.title}`, 'info');
+        Modal.close();
+        OKR.render();
+        Dashboard.render();
+      }
+    });
   }
 };
