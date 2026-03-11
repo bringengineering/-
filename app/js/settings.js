@@ -68,8 +68,8 @@ const Settings = {
   },
 
   resetData() {
-    Modal.confirm('정말로 모든 데이터를 초기화하시겠습니까?\n이 작업은 되돌릴 수 없습니다.', () => {
-      Modal.confirm('한번 더 확인합니다. 모든 입력 데이터가 삭제됩니다. 계속하시겠습니까?', () => {
+    Modal.confirm('데이터 초기화', '정말로 모든 데이터를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.', () => {
+      Modal.confirm('최종 확인', '한번 더 확인합니다. 모든 입력 데이터가 삭제됩니다. 계속하시겠습니까?', () => {
         DataManager.reset();
         Utils.toast('데이터가 초기화되었습니다.', 'success');
         setTimeout(() => location.reload(), 1000);
