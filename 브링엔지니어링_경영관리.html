@@ -1601,6 +1601,7 @@ select {
       </div>
       <div class="top-bar-right">
         <span class="current-date" id="currentDate"></span>
+        <button id="saveBtn" onclick="App.manualSave()" title="저장 (Ctrl+S)" style="padding:6px 14px;border:none;border-radius:6px;background:#16a34a;color:white;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">💾 저장</button>
         <button class="theme-toggle" id="themeToggle" onclick="App.toggleTheme()" title="다크모드 전환 (D)" aria-label="테마 전환">🌙</button>
         <button class="theme-toggle" id="shortcutHelp" onclick="App.showShortcuts()" title="키보드 단축키 (?)" aria-label="단축키 도움말">⌨️</button>
         <div class="alert-badge" id="alertBadge" title="알림" role="status" aria-label="알림">
@@ -7532,14 +7533,13 @@ const App = {
       const tag = e.target.tagName;
       const inInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
 
-      // Ctrl+S / Cmd+S — save current page settings
+      // Ctrl+S / Cmd+S — save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         if (this.currentPage === 'settings') {
           Settings.save();
-        } else {
-          Utils.toast('데이터가 자동 저장되고 있습니다.', 'info');
         }
+        App.manualSave();
         return;
       }
 
@@ -7592,6 +7592,17 @@ const App = {
       const btn = document.getElementById('themeToggle');
       if (btn) btn.textContent = '☀️';
     }
+  },
+
+  manualSave() {
+    DataManager.save();
+    const btn = document.getElementById('saveBtn');
+    if (btn) {
+      btn.style.background = '#22c55e';
+      btn.innerHTML = '✅ 저장 완료!';
+      setTimeout(() => { btn.style.background = '#16a34a'; btn.innerHTML = '💾 저장'; }, 1500);
+    }
+    Utils.toast('저장 완료!', 'success');
   },
 
   toggleTheme() {
