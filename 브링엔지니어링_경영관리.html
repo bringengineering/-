@@ -1904,6 +1904,11 @@ select {
         <div id="projectsList" class="projects-list"></div>
 
         <div class="section-card">
+          <h3>TRL 단계별 상세 가이드</h3>
+          <div id="trlDetailSection"></div>
+        </div>
+
+        <div class="section-card">
           <h3>기술 부채 현황</h3>
           <div id="techDebtSection"></div>
         </div>
@@ -1929,7 +1934,16 @@ select {
       <section id="page-pipeline" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Pipeline.openAddDeal()">+ 딜 추가</button>
-          <input type="text" id="pipelineSearch" placeholder="딜 검색..." oninput="Pipeline.render()" class="search-input" aria-label="파이프라인 검색">
+          <input type="text" id="pipelineSearch" placeholder="고객명/제품/지역 검색..." oninput="Pipeline.render()" class="search-input" aria-label="파이프라인 검색">
+          <select id="pipelineCategoryFilter" onchange="Pipeline.render()" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+            <option value="">전체 분류</option>
+            <option value="도로공사">한국도로공사</option>
+            <option value="광역지자체">광역 지자체</option>
+            <option value="도">도</option>
+            <option value="시/군">시/군</option>
+            <option value="중앙부처">중앙부처</option>
+            <option value="대학/연구">대학/연구</option>
+          </select>
         </div>
 
         <div class="kpi-grid" id="pipelineKPIGrid"></div>
@@ -1946,8 +1960,16 @@ select {
         </div>
 
         <div class="section-card">
-          <h3>파이프라인 상세</h3>
+          <h3>파이프라인 보드</h3>
           <div class="pipeline-board" id="pipelineBoard"></div>
+        </div>
+
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">지자체/기관 관리 현황</h3>
+            <button class="btn btn-sm btn-secondary" onclick="Pipeline.exportDealCSV()">CSV 내보내기</button>
+          </div>
+          <div id="dealTableSection" class="table-container"></div>
         </div>
       </section>
 
@@ -2664,11 +2686,48 @@ const DEFAULT_DATA = {
   pipeline: {
     stages: ['리드 발굴', '접촉/미팅', '니즈 파악', '제안서', '협상', '계약', '납품'],
     deals: [
-      { id: 'd1', name: '한국도로공사 (강원)', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2026-Q3', note: '터널 조도 측정' },
-      { id: 'd2', name: '강원도청', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2026-Q3', note: '도로 안전 진단' },
-      { id: 'd3', name: '원주시', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2026-Q3', note: '시범 사업' },
-      { id: 'd4', name: '진주시', product: 'Shadow AI', stage: 0, amount: 2000, expectedDate: '2026-Q4', note: '' },
-      { id: 'd5', name: '상지대학교', product: '공동연구', stage: 1, amount: 500, expectedDate: '2026-Q2', note: '산학협력' }
+      // === 한국도로공사 본부/지역본부 ===
+      { id: 'd1', name: '한국도로공사 (본사)', product: 'VisiScan', stage: 0, amount: 5000, expectedDate: '2026-Q4', note: '본사 기술기획처', contactName: '', contactPhone: '', contactEmail: '', region: '경기 성남', category: '도로공사' },
+      { id: 'd2', name: '한국도로공사 수도권본부', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2026-Q3', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경기', category: '도로공사' },
+      { id: 'd3', name: '한국도로공사 강원본부', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2026-Q3', note: '터널 조도 측정 우선 타깃', contactName: '', contactPhone: '', contactEmail: '', region: '강원', category: '도로공사' },
+      { id: 'd4', name: '한국도로공사 충북본부', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2026-Q4', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '충북', category: '도로공사' },
+      { id: 'd5', name: '한국도로공사 대전충남본부', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2026-Q4', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '대전/충남', category: '도로공사' },
+      { id: 'd6', name: '한국도로공사 전북본부', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '전북', category: '도로공사' },
+      { id: 'd7', name: '한국도로공사 광주전남본부', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '광주/전남', category: '도로공사' },
+      { id: 'd8', name: '한국도로공사 대구경북본부', product: 'VisiScan', stage: 0, amount: 2500, expectedDate: '2026-Q4', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '대구/경북', category: '도로공사' },
+      { id: 'd9', name: '한국도로공사 부산경남본부', product: 'VisiScan', stage: 0, amount: 2500, expectedDate: '2026-Q4', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '부산/경남', category: '도로공사' },
+      // === 광역 지자체 ===
+      { id: 'd10', name: '서울특별시', product: 'Shadow AI', stage: 0, amount: 5000, expectedDate: '2027-Q1', note: '도로 인프라 안전과', contactName: '', contactPhone: '', contactEmail: '', region: '서울', category: '광역지자체' },
+      { id: 'd11', name: '부산광역시', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '부산', category: '광역지자체' },
+      { id: 'd12', name: '대구광역시', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '대구', category: '광역지자체' },
+      { id: 'd13', name: '인천광역시', product: 'VisiScan', stage: 0, amount: 2500, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '인천', category: '광역지자체' },
+      { id: 'd14', name: '광주광역시', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '광주', category: '광역지자체' },
+      { id: 'd15', name: '대전광역시', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '대전', category: '광역지자체' },
+      { id: 'd16', name: '울산광역시', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '울산', category: '광역지자체' },
+      { id: 'd17', name: '세종특별자치시', product: 'VisiScan', stage: 0, amount: 1000, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '세종', category: '광역지자체' },
+      // === 도 단위 ===
+      { id: 'd18', name: '경기도', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2027-Q1', note: '도로시설과', contactName: '', contactPhone: '', contactEmail: '', region: '경기', category: '도' },
+      { id: 'd19', name: '강원특별자치도', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2026-Q3', note: '도로 안전 진단 — 우선 타깃', contactName: '', contactPhone: '', contactEmail: '', region: '강원', category: '도' },
+      { id: 'd20', name: '충청북도', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '충북', category: '도' },
+      { id: 'd21', name: '충청남도', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '충남', category: '도' },
+      { id: 'd22', name: '전북특별자치도', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '전북', category: '도' },
+      { id: 'd23', name: '전라남도', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '전남', category: '도' },
+      { id: 'd24', name: '경상북도', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경북', category: '도' },
+      { id: 'd25', name: '경상남도', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경남', category: '도' },
+      { id: 'd26', name: '제주특별자치도', product: 'VisiScan', stage: 0, amount: 1000, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '제주', category: '도' },
+      // === 기초 지자체 (우선 타깃) ===
+      { id: 'd27', name: '원주시', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2026-Q3', note: '시범 사업 — 우선 타깃', contactName: '', contactPhone: '', contactEmail: '', region: '강원 원주', category: '시/군' },
+      { id: 'd28', name: '춘천시', product: 'VisiScan', stage: 0, amount: 1000, expectedDate: '2026-Q4', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '강원 춘천', category: '시/군' },
+      { id: 'd29', name: '진주시', product: 'Shadow AI', stage: 0, amount: 2000, expectedDate: '2026-Q4', note: 'PoC 진행 이력 있음', contactName: '', contactPhone: '', contactEmail: '', region: '경남 진주', category: '시/군' },
+      { id: 'd30', name: '수원시', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경기 수원', category: '시/군' },
+      { id: 'd31', name: '성남시', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경기 성남', category: '시/군' },
+      { id: 'd32', name: '용인시', product: 'VisiScan', stage: 0, amount: 1500, expectedDate: '2027-Q2', note: '', contactName: '', contactPhone: '', contactEmail: '', region: '경기 용인', category: '시/군' },
+      // === 국토부 산하기관 ===
+      { id: 'd33', name: '국토교통부', product: 'Shadow AI', stage: 0, amount: 5000, expectedDate: '2027-Q2', note: '도로국 도로안전과', contactName: '', contactPhone: '', contactEmail: '', region: '세종', category: '중앙부처' },
+      { id: 'd34', name: '한국교통안전공단', product: 'VisiScan', stage: 0, amount: 3000, expectedDate: '2027-Q1', note: '도로 안전 진단', contactName: '', contactPhone: '', contactEmail: '', region: '경기 김천', category: '중앙부처' },
+      { id: 'd35', name: '국토안전관리원', product: 'VisiScan', stage: 0, amount: 2000, expectedDate: '2027-Q1', note: '시설물 안전 진단', contactName: '', contactPhone: '', contactEmail: '', region: '경기', category: '중앙부처' },
+      // === 산학협력 ===
+      { id: 'd36', name: '상지대학교', product: '공동연구', stage: 1, amount: 500, expectedDate: '2026-Q2', note: '산학협력', contactName: '', contactPhone: '', contactEmail: '', region: '강원 원주', category: '대학/연구' }
     ]
   },
 
@@ -5205,8 +5264,66 @@ const Projects = {
     this.renderKPIs(data);
     this.renderCharts(data);
     this.renderProjects(data);
+    this.renderTRLDetail(data);
     this.renderTechDebt(data);
   },
+
+  TRL_GUIDE: [
+    { level: 1, name: '기초 원리 관찰', phase: '연구', color: '#94a3b8',
+      definition: '기초 과학 연구에서 기본 원리가 관찰되고 보고된 단계',
+      requirements: ['기초 과학 연구 논문/보고서', '원리 관찰 실험 결과', '이론적 배경 문서화'],
+      deliverables: ['연구 보고서', '원리 검증 논문', '기초 실험 데이터'],
+      bringStatus: '완료 — 터널 조도·그림자 분석 원리 연구 완료',
+      evidence: 'CIE 88 표준 기반 조도 분석 이론 정립' },
+    { level: 2, name: '기술 개념 수립', phase: '연구', color: '#60a5fa',
+      definition: '기술의 기본 개념이 정의되고 응용 분야가 설정된 단계',
+      requirements: ['기술 개념 정의서', '실현 가능성 분석', '잠재적 응용 분야 목록', '기술 로드맵 초안'],
+      deliverables: ['기술 개념 보고서', '실현 가능성 분석서', '기술 사양 초안'],
+      bringStatus: '완료 — AI 기반 광학분석 개념 정립, Shadow AI/VisiScan 제품 컨셉 확정',
+      evidence: '제품 기획서, 기술 개념 보고서' },
+    { level: 3, name: '개념 실험 증명', phase: '개발', color: '#fbbf24',
+      definition: '핵심 기능이 실험실 환경에서 분석/실험으로 증명된 단계',
+      requirements: ['실험실 환경 구축', 'PoC (Proof of Concept) 수행', '핵심 알고리즘 구현', '실험 결과 데이터'],
+      deliverables: ['PoC 결과 보고서', '실험 데이터셋', '핵심 알고리즘 소스코드', '기술 명세서'],
+      bringStatus: '완료 — Lux-Guard/FDInnovation 현재 이 단계',
+      evidence: '실험 데이터, PoC 보고서' },
+    { level: 4, name: '실험실 검증', phase: '개발', color: '#f59e0b',
+      definition: '구성 요소가 실험실 환경에서 통합 검증된 단계',
+      requirements: ['통합 프로토타입 개발', '실험실 환경 테스트 계획/수행', '성능 지표(KPI) 정의 및 측정', '외부 데이터와 비교 검증'],
+      deliverables: ['프로토타입', '실험실 테스트 보고서', '성능 평가 결과', '개선 사항 목록'],
+      bringStatus: '완료 (VisiScan) — 실험실 환경 통합 테스트 완료',
+      evidence: 'VisiScan 프로토타입, 실험실 데이터' },
+    { level: 5, name: '유사 환경 검증', phase: '실증', color: '#f97316',
+      definition: '시스템이 유사 운영 환경에서 검증된 단계',
+      requirements: ['유사 환경(현장) 테스트 수행', '실 데이터 기반 성능 검증', '안정성/재현성 확인', '사용자 피드백 수집', '인증 획득'],
+      deliverables: ['현장 테스트 보고서', 'TRL 5 인증서', '사용자 피드백 문서', '개선 로드맵'],
+      bringStatus: '완료 (Shadow AI) — TRL 5 인증 획득! 진주 폐터널 현장 실증 (직사광 51.91% 저감)',
+      evidence: 'TRL 5 인증서, 현장 테스트 데이터, PoC 결과 보고서' },
+    { level: 6, name: '실제 환경 시범', phase: '실증', color: '#ef4444',
+      definition: '시스템이 실제 운영 환경에서 시범 적용된 단계',
+      requirements: ['실 환경 파일럿 사이트 확보', '실 사용자 대상 운영', '6개월+ 안정성 데이터', '운영 매뉴얼 작성', '유지보수 프로세스 수립'],
+      deliverables: ['파일럿 운영 보고서', '안정성 데이터 (6개월+)', '운영 매뉴얼', '유지보수 계획서', 'SLA 정의서'],
+      bringStatus: '목표 (VisiScan 2026-Q4) — 파일럿 고객 1건 확보 예정',
+      evidence: '예정: 한국도로공사 또는 지자체 파일럿' },
+    { level: 7, name: '실제 환경 검증', phase: '양산준비', color: '#dc2626',
+      definition: '시스템 프로토타입이 실제 운영 환경에서 검증된 단계',
+      requirements: ['다수 현장(3건+) 실증 데이터', '상용화 기준 성능 달성', '양산 설계 완료', '품질 인증 (ISO등)', '고객 만족도 조사'],
+      deliverables: ['다중 현장 실증 보고서', '양산 설계 문서', '품질 인증서', '제품 카탈로그', '가격 정책서'],
+      bringStatus: '목표 (Shadow AI 2026-Q4) — 2개 이상 현장 실증으로 TRL 7 달성 목표',
+      evidence: '예정: 다수 현장 데이터 수집' },
+    { level: 8, name: '시스템 완성', phase: '양산', color: '#991b1b',
+      definition: '실제 시스템이 최종 형태로 개발·검증 완료된 단계',
+      requirements: ['양산 체제 확립', '전수 테스트 통과', '인증 완료 (KOLAS 등)', '납품 실적 5건+', '기술 지원 체계 구축'],
+      deliverables: ['양산 제품', '전수 테스트 보고서', 'KOLAS 인증서', '기술 지원 매뉴얼', '납품 실적서'],
+      bringStatus: '2028 목표 — KOLAS 인증 + 정기 모니터링 서비스',
+      evidence: '' },
+    { level: 9, name: '실 환경 운영 성공', phase: '상용화', color: '#7f1d1d',
+      definition: '실제 운영 환경에서 성공적으로 운영되고 있는 단계',
+      requirements: ['다수 고객 대상 상용 서비스', '연간 운영 안정성 데이터', '고객 재구매/갱신', '시장 점유율 확보', '수익성 달성'],
+      deliverables: ['상용 서비스 운영 보고서', '고객 사례집', '시장 점유율 데이터', '연간 매출/수익 보고서'],
+      bringStatus: '2029+ 장기 목표',
+      evidence: '' }
+  ],
 
   renderKPIs(data) {
     const projects = data.projects;
@@ -5332,6 +5449,60 @@ const Projects = {
         </div>
       `;
     }).join('');
+  },
+
+  renderTRLDetail(data) {
+    const el = document.getElementById('trlDetailSection');
+    if (!el) return;
+
+    const projects = data.projects;
+    const guide = this.TRL_GUIDE;
+
+    // Product TRL positions
+    const productTRLs = projects.map(p => ({ name: p.name, current: p.currentTRL, target: p.targetTRL }));
+
+    el.innerHTML = `
+      <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+        ${productTRLs.map(p => `<span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:${guide[p.current-1]?.color || '#94a3b8'}20;color:${guide[p.current-1]?.color || '#94a3b8'};border:1px solid ${guide[p.current-1]?.color || '#94a3b8'}40">${p.name}: TRL ${p.current} → ${p.target}</span>`).join('')}
+      </div>
+      ${guide.map(trl => {
+        const isActive = productTRLs.some(p => p.current === trl.level);
+        const isTarget = productTRLs.some(p => p.target === trl.level);
+        const activeProducts = productTRLs.filter(p => p.current === trl.level).map(p => p.name);
+        const targetProducts = productTRLs.filter(p => p.target === trl.level).map(p => p.name);
+        return `
+        <div style="border:1px solid ${isActive ? trl.color + '60' : 'var(--border)'};border-left:4px solid ${trl.color};border-radius:8px;padding:16px;margin-bottom:8px;background:${isActive ? trl.color + '08' : 'var(--bg)'}">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:${trl.color};color:white;font-weight:800;font-size:14px">${trl.level}</span>
+              <div>
+                <div style="font-weight:700;font-size:14px">${trl.name}</div>
+                <div style="font-size:11px;color:var(--text-light)">${trl.phase} 단계</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap">
+              ${isActive ? activeProducts.map(n => `<span style="padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:${trl.color};color:white">✓ ${n} (현재)</span>`).join('') : ''}
+              ${isTarget ? targetProducts.map(n => `<span style="padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;background:${trl.color}30;color:${trl.color}">🎯 ${n} (목표)</span>`).join('') : ''}
+            </div>
+          </div>
+          <div style="font-size:13px;color:var(--text);margin-bottom:10px">${trl.definition}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+            <div>
+              <div style="font-weight:600;margin-bottom:4px;color:var(--primary)">필요 요건</div>
+              <ul style="margin:0;padding-left:16px;list-style:disc">${trl.requirements.map(r => `<li style="margin:2px 0">${r}</li>`).join('')}</ul>
+            </div>
+            <div>
+              <div style="font-weight:600;margin-bottom:4px;color:var(--success)">산출물</div>
+              <ul style="margin:0;padding-left:16px;list-style:disc">${trl.deliverables.map(d => `<li style="margin:2px 0">${d}</li>`).join('')}</ul>
+            </div>
+          </div>
+          <div style="margin-top:10px;padding:8px 12px;border-radius:6px;background:var(--bg-hover);font-size:12px">
+            <span style="font-weight:600">브링엔지니어링 현황:</span> ${trl.bringStatus}
+            ${trl.evidence ? `<br><span style="color:var(--text-light)">근거: ${trl.evidence}</span>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+    `;
   },
 
   renderTechDebt(data) {
@@ -5550,6 +5721,7 @@ const Pipeline = {
     this.renderKPIs(data);
     this.renderCharts(data);
     this.renderBoard(data);
+    this.renderDealTable(data);
   },
 
   renderKPIs(data) {
@@ -5634,8 +5806,15 @@ const Pipeline = {
       deals = deals.filter(d =>
         d.name.toLowerCase().includes(search) ||
         d.product.toLowerCase().includes(search) ||
-        (d.note && d.note.toLowerCase().includes(search))
+        (d.note && d.note.toLowerCase().includes(search)) ||
+        (d.region && d.region.toLowerCase().includes(search)) ||
+        (d.contactName && d.contactName.toLowerCase().includes(search))
       );
+    }
+    const catEl = document.getElementById('pipelineCategoryFilter');
+    const cat = catEl ? catEl.value : '';
+    if (cat) {
+      deals = deals.filter(d => (d.category || '') === cat);
     }
     return deals;
   },
@@ -5658,8 +5837,9 @@ const Pipeline = {
             <div class="pipeline-deal" onclick="Pipeline.editDeal('${d.id}')">
               <div class="pipeline-deal-name">${Utils.escapeHtml(d.name)}</div>
               <div class="pipeline-deal-amount">${Utils.formatNumber(d.amount)}만원</div>
-              <div class="pipeline-deal-product">${Utils.escapeHtml(d.product)} · ${Utils.escapeHtml(d.expectedDate)}</div>
-              ${d.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:4px">${Utils.escapeHtml(d.note)}</div>` : ''}
+              <div class="pipeline-deal-product">${Utils.escapeHtml(d.product)} · ${Utils.escapeHtml(d.expectedDate)}${d.category ? ` · ${Utils.escapeHtml(d.category)}` : ''}</div>
+              ${d.contactName ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px">👤 ${Utils.escapeHtml(d.contactName)}${d.contactPhone ? ' · ' + Utils.escapeHtml(d.contactPhone) : ''}</div>` : ''}
+              ${d.note ? `<div style="font-size:11px;color:var(--text-muted);margin-top:2px">${Utils.escapeHtml(d.note)}</div>` : ''}
             </div>
           `).join('')}
         </div>
@@ -5672,6 +5852,7 @@ const Pipeline = {
     const deal = data.pipeline.deals.find(d => d.id === dealId);
     if (!deal) return;
 
+    const catOpts = ['도로공사','광역지자체','도','시/군','중앙부처','대학/연구','기타'];
     Modal.open(`딜 수정: ${Utils.escapeHtml(deal.name)}`, `
       <div class="form-group"><label>고객명</label><input type="text" id="editDealName" value="${Utils.escapeHtml(deal.name)}"></div>
       <div class="form-row">
@@ -5681,6 +5862,18 @@ const Pipeline = {
       <div class="form-row">
         <div class="form-group"><label>단계</label><select id="editDealStage">${data.pipeline.stages.map((s, i) => `<option value="${i}" ${deal.stage === i ? 'selected' : ''}>${s}</option>`).join('')}</select></div>
         <div class="form-group"><label>예상 시기</label><input type="text" id="editDealExpected" value="${Utils.escapeHtml(deal.expectedDate)}" placeholder="예: 2026-Q3"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="editDealCategory">${catOpts.map(c=>`<option value="${c}" ${(deal.category||'')=== c?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label>지역</label><input type="text" id="editDealRegion" value="${Utils.escapeHtml(deal.region || '')}"></div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;background:var(--bg-hover)">
+        <div style="font-weight:600;font-size:13px;margin-bottom:8px">담당자 정보</div>
+        <div class="form-row">
+          <div class="form-group"><label>담당자명</label><input type="text" id="editDealContact" value="${Utils.escapeHtml(deal.contactName || '')}" placeholder="홍길동"></div>
+          <div class="form-group"><label>전화번호</label><input type="text" id="editDealPhone" value="${Utils.escapeHtml(deal.contactPhone || '')}" placeholder="010-0000-0000"></div>
+        </div>
+        <div class="form-group"><label>이메일</label><input type="text" id="editDealEmail" value="${Utils.escapeHtml(deal.contactEmail || '')}" placeholder="email@example.com"></div>
       </div>
       <div class="form-group"><label>비고</label><textarea id="editDealNote" rows="2">${Utils.escapeHtml(deal.note || '')}</textarea></div>
     `, `
@@ -5702,6 +5895,11 @@ const Pipeline = {
     deal.stage = Number(document.getElementById('editDealStage').value);
     deal.expectedDate = document.getElementById('editDealExpected').value;
     deal.note = document.getElementById('editDealNote').value;
+    deal.category = document.getElementById('editDealCategory').value;
+    deal.region = document.getElementById('editDealRegion').value;
+    deal.contactName = document.getElementById('editDealContact').value;
+    deal.contactPhone = document.getElementById('editDealPhone').value;
+    deal.contactEmail = document.getElementById('editDealEmail').value;
 
     DataManager.save();
     if (deal.stage !== oldStage) {
@@ -5729,6 +5927,7 @@ const Pipeline = {
   },
 
   openAddDeal() {
+    const catOpts = ['도로공사','광역지자체','도','시/군','중앙부처','대학/연구','기타'];
     Modal.open('딜 추가', `
       <div class="form-group"><label>고객명</label><input type="text" id="newDealName"></div>
       <div class="form-row">
@@ -5738,6 +5937,18 @@ const Pipeline = {
       <div class="form-row">
         <div class="form-group"><label>단계</label><select id="newDealStage">${DataManager.get().pipeline.stages.map((s, i) => `<option value="${i}">${s}</option>`).join('')}</select></div>
         <div class="form-group"><label>예상 시기</label><input type="text" id="newDealExpected" placeholder="예: 2026-Q3"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="newDealCategory">${catOpts.map(c=>`<option value="${c}">${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label>지역</label><input type="text" id="newDealRegion" placeholder="예: 강원 원주"></div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin:8px 0;background:var(--bg-hover)">
+        <div style="font-weight:600;font-size:13px;margin-bottom:8px">담당자 정보</div>
+        <div class="form-row">
+          <div class="form-group"><label>담당자명</label><input type="text" id="newDealContact" placeholder="홍길동"></div>
+          <div class="form-group"><label>전화번호</label><input type="text" id="newDealPhone" placeholder="010-0000-0000"></div>
+        </div>
+        <div class="form-group"><label>이메일</label><input type="text" id="newDealEmail" placeholder="email@example.com"></div>
       </div>
       <div class="form-group"><label>비고</label><textarea id="newDealNote" rows="2"></textarea></div>
     `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Pipeline.addDeal()">추가</button>`);
@@ -5757,7 +5968,12 @@ const Pipeline = {
       amount: Number(document.getElementById('newDealAmount').value) || 0,
       stage: Number(document.getElementById('newDealStage').value),
       expectedDate: document.getElementById('newDealExpected').value,
-      note: document.getElementById('newDealNote').value
+      note: document.getElementById('newDealNote').value,
+      category: document.getElementById('newDealCategory').value,
+      region: document.getElementById('newDealRegion').value,
+      contactName: document.getElementById('newDealContact').value,
+      contactPhone: document.getElementById('newDealPhone').value,
+      contactEmail: document.getElementById('newDealEmail').value
     });
 
     DataManager.save();
@@ -5765,6 +5981,58 @@ const Pipeline = {
     Modal.close();
     this.render();
     Dashboard.render();
+  },
+
+  renderDealTable(data) {
+    const el = document.getElementById('dealTableSection');
+    if (!el) return;
+    const stages = data.pipeline.stages;
+    const deals = this._getFilteredDeals(data);
+    const catOrder = ['도로공사','중앙부처','광역지자체','도','시/군','대학/연구','기타',''];
+    const sorted = [...deals].sort((a, b) => {
+      const ca = catOrder.indexOf(a.category || '');
+      const cb = catOrder.indexOf(b.category || '');
+      return ca !== cb ? ca - cb : a.name.localeCompare(b.name);
+    });
+
+    const stageColors = ['#94a3b8','#60a5fa','#f59e0b','#a78bfa','#f472b6','#34d399','#22d3ee'];
+
+    el.innerHTML = `
+      <table class="data-table" style="font-size:12px">
+        <thead><tr>
+          <th>분류</th><th>기관명</th><th>지역</th><th>제품</th><th style="text-align:right">금액</th>
+          <th>단계</th><th>예상시기</th><th>담당자</th><th>연락처</th><th>이메일</th><th>비고</th>
+        </tr></thead>
+        <tbody>${sorted.map(d => {
+          const sColor = stageColors[d.stage] || '#94a3b8';
+          return `<tr style="cursor:pointer" onclick="Pipeline.editDeal('${d.id}')">
+            <td><span style="font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bg-hover);white-space:nowrap">${Utils.escapeHtml(d.category || '-')}</span></td>
+            <td style="font-weight:600">${Utils.escapeHtml(d.name)}</td>
+            <td>${Utils.escapeHtml(d.region || '-')}</td>
+            <td>${Utils.escapeHtml(d.product)}</td>
+            <td style="text-align:right;font-weight:600">${d.amount.toLocaleString()}만</td>
+            <td><span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${sColor}20;color:${sColor};font-weight:600;white-space:nowrap">${stages[d.stage]}</span></td>
+            <td>${Utils.escapeHtml(d.expectedDate)}</td>
+            <td>${Utils.escapeHtml(d.contactName || '-')}</td>
+            <td>${d.contactPhone ? `<a href="tel:${d.contactPhone}" style="color:var(--primary)">${Utils.escapeHtml(d.contactPhone)}</a>` : '-'}</td>
+            <td>${d.contactEmail ? `<a href="mailto:${d.contactEmail}" style="color:var(--primary);font-size:11px">${Utils.escapeHtml(d.contactEmail)}</a>` : '-'}</td>
+            <td style="font-size:11px;color:var(--text-light);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${Utils.escapeHtml(d.note || '')}">${Utils.escapeHtml(d.note || '-')}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+      <div style="margin-top:8px;font-size:12px;color:var(--text-light)">총 ${sorted.length}건 · 클릭하여 수정 · 검색/분류 필터 적용됨</div>
+    `;
+  },
+
+  exportDealCSV() {
+    const data = DataManager.get();
+    const stages = data.pipeline.stages;
+    const header = '분류,기관명,지역,제품,금액(만원),단계,예상시기,담당자,전화번호,이메일,비고';
+    const rows = data.pipeline.deals.map(d =>
+      `${d.category||''},${d.name},${d.region||''},${d.product},${d.amount},${stages[d.stage]},${d.expectedDate},${d.contactName||''},${d.contactPhone||''},${d.contactEmail||''},${(d.note||'').replace(/,/g, ';')}`
+    );
+    Utils.downloadCSV([header, ...rows].join('\n'), `파이프라인_${new Date().toISOString().slice(0, 10)}.csv`);
+    DataManager.addActivity('📤', '파이프라인 CSV 내보내기', 'success');
   }
 };
 
