@@ -1602,6 +1602,7 @@ select {
       <div class="top-bar-right">
         <span class="current-date" id="currentDate"></span>
         <button id="saveBtn" onclick="App.manualSave()" title="저장 (Ctrl+S)" style="padding:6px 14px;border:none;border-radius:6px;background:#16a34a;color:white;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">💾 저장</button>
+        <button id="saveFileBtn" onclick="App.backupData()" title="백업 생성" style="padding:6px 14px;border:none;border-radius:6px;background:#2563eb;color:white;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">💾 백업</button>
         <button class="theme-toggle" id="themeToggle" onclick="App.toggleTheme()" title="다크모드 전환 (D)" aria-label="테마 전환">🌙</button>
         <button class="theme-toggle" id="shortcutHelp" onclick="App.showShortcuts()" title="키보드 단축키 (?)" aria-label="단축키 도움말">⌨️</button>
         <div class="alert-badge" id="alertBadge" title="알림" role="status" aria-label="알림">
@@ -2124,7 +2125,7 @@ select {
           <h3>앱 정보</h3>
           <p style="font-size:13px;color:var(--text-light)">
             브링엔지니어링 경영관리 시스템 v2.0<br>
-            데이터: localStorage 기반 (브라우저 내 저장)<br>
+            데이터: 서버 파일 저장 (./data/app-data.json)<br>
             단축키: <span class="shortcut-key">?</span> 키를 눌러 확인
           </p>
         </div>
@@ -2150,6 +2151,7 @@ select {
 
 const STORAGE_KEY = 'bring_eng_data';
 
+// DEFAULT_DATA 정의 (초기값 / 신규 필드 머지용)
 const DEFAULT_DATA = {
   company: {
     name: '브링엔지니어링',
@@ -2772,18 +2774,28 @@ const DEFAULT_DATA = {
     alertRisk: true
   }
 };
+// DEFAULT_DATA 정의 끝
 
 // Data Manager
 const DataManager = {
   _data: null,
+  _saveTimer: null,
+  _saving: false,
 
+  // 서버에서 데이터 로드 (동기식 초기 로드용)
   load() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        this._data = JSON.parse(stored);
-        // Merge missing fields from defaults
-        this._data = this._deepMerge(DEFAULT_DATA, this._data);
+      // 동기 XHR로 초기 로드 (앱 시작 시 1회)
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '/api/data', false);
+      xhr.send();
+      if (xhr.status === 200) {
+        const stored = JSON.parse(xhr.responseText);
+        if (stored) {
+          this._data = this._deepMerge(DEFAULT_DATA, stored);
+        } else {
+          this._data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
       } else {
         this._data = JSON.parse(JSON.stringify(DEFAULT_DATA));
       }
@@ -2794,22 +2806,32 @@ const DataManager = {
     return this._data;
   },
 
+  // 서버에 데이터 저장 (디바운스 300ms)
   save() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this._data));
-    } catch (e) {
-      if (e.name === 'QuotaExceededError' || e.code === 22 || e.code === 1014) {
-        Utils.toast('저장 공간이 부족합니다. 오래된 활동 로그를 정리합니다.', 'warning');
-        this._data.activityLog = this._data.activityLog.slice(0, 10);
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(this._data));
-        } catch (retryErr) {
-          console.error('Data save error after trimming:', retryErr);
-        }
-      } else {
-        console.error('Data save error:', e);
+    if (this._saveTimer) clearTimeout(this._saveTimer);
+    this._saveTimer = setTimeout(() => {
+      this._doSave();
+    }, 300);
+  },
+
+  _doSave() {
+    if (this._saving || !this._data) return;
+    this._saving = true;
+    fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(this._data)
+    }).then(res => {
+      this._saving = false;
+      if (!res.ok) {
+        console.error('서버 저장 실패:', res.status);
+        Utils.toast('서버 저장 실패. 다시 시도합니다.', 'warning');
       }
-    }
+    }).catch(err => {
+      this._saving = false;
+      console.error('서버 연결 오류:', err);
+      Utils.toast('서버 연결 오류. 데이터가 저장되지 않았습니다.', 'error');
+    });
   },
 
   get() {
@@ -7280,8 +7302,8 @@ const RoadmapPage = {
   attachFile(idx, input) {
     const file = input.files[0];
     if (!file) return;
-    if (file.size > 500 * 1024) {
-      Utils.toast('파일 크기는 500KB 이하만 가능합니다. (localStorage 제한)', 'warning');
+    if (file.size > 5 * 1024 * 1024) {
+      Utils.toast('파일 크기는 5MB 이하만 가능합니다.', 'warning');
       return;
     }
     const reader = new FileReader();
@@ -7576,13 +7598,7 @@ const App = {
   },
 
   setupTabSync() {
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY) {
-        DataManager.load();
-        this.renderPage(this.currentPage);
-        Utils.toast('다른 탭에서 데이터가 변경되었습니다.', 'info');
-      }
-    });
+    // 서버 기반이므로 탭 동기화는 불필요 (주기적 폴링도 가능하지만 단일 사용자이므로 생략)
   },
 
   loadTheme() {
@@ -7602,7 +7618,23 @@ const App = {
       btn.innerHTML = '✅ 저장 완료!';
       setTimeout(() => { btn.style.background = '#16a34a'; btn.innerHTML = '💾 저장'; }, 1500);
     }
-    Utils.toast('저장 완료!', 'success');
+    Utils.toast('서버에 저장 완료!', 'success');
+  },
+
+  backupData() {
+    fetch('/api/backup', { method: 'POST' })
+      .then(res => res.json())
+      .then(result => {
+        if (result.ok) {
+          Utils.toast('백업 파일이 생성되었습니다!', 'success');
+          localStorage.setItem('bring_last_backup', Date.now());
+        } else {
+          Utils.toast('백업 실패: ' + (result.error || '알 수 없는 오류'), 'error');
+        }
+      })
+      .catch(err => {
+        Utils.toast('백업 중 오류 발생', 'error');
+      });
   },
 
   toggleTheme() {
@@ -7679,7 +7711,7 @@ const App = {
       <div class="backup-reminder-title">💾 데이터 백업 알림</div>
       <p style="font-size:13px;color:var(--text-light)">마지막 백업으로부터 7일이 지났습니다. 데이터를 안전하게 보관하세요.</p>
       <div class="backup-reminder-actions">
-        <button class="btn btn-primary btn-sm" onclick="Settings.exportData();localStorage.setItem('bring_last_backup',Date.now());this.closest('.backup-reminder').remove()">지금 백업</button>
+        <button class="btn btn-primary btn-sm" onclick="App.backupData();this.closest('.backup-reminder').remove()">지금 백업</button>
         <button class="btn btn-secondary btn-sm" onclick="localStorage.setItem('bring_last_backup',Date.now());this.closest('.backup-reminder').remove()">다음에</button>
       </div>
     `;
