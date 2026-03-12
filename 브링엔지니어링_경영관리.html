@@ -2273,23 +2273,36 @@ const DEFAULT_DATA = {
   hr: {
     onboarding: {
       phase1: { title: 'Phase 1: 첫 30일 — "이해하기"', items: [
-        { period: 'Day 1~3', area: '환경 셋업', task: 'PC·계정·슬랙·노션·Git 세팅, 폴더 구조 이해', output: '환경 세팅 완료 체크리스트', mentor: '대표/멘토', done: false },
-        { period: 'Day 1~3', area: '회사 이해', task: '미션·비전·핵심가치 선언문 읽기, 운영 리듬·커뮤니케이션 프로토콜 숙지', output: '핵심가치 1줄 소감 작성', mentor: '대표', done: false },
-        { period: 'Week 1', area: '사업 이해', task: '4개 프로젝트 브리핑 (각 30분), 전략 포지셔닝·경쟁사 분석 읽기', output: '사업 이해도 퀴즈 (10문항)', mentor: '대표/플래너', done: false },
-        { period: 'Week 1', area: '팀 이해', task: '팀원 전원 1:1 커피챗 (15분씩), 각자 R&R·현재 진행 업무 파악', output: '팀 구조 정리 메모', mentor: '본인', done: false },
-        { period: 'Week 2', area: '역할 이해', task: '본인 R&R 상세 설명, 개인 가이드북 초안 작성 시작', output: 'R&R 이해 확인서', mentor: '직속 멘토', done: false },
-        { period: 'Week 2~3', area: '기술 온보딩', task: '담당 기술 스택 학습, 기존 코드/문서 리뷰', output: '기술 스택 자가진단표', mentor: '기술 멘토', done: false },
-        { period: 'Week 3~4', area: '첫 업무', task: '작은 단위 업무 1건 직접 수행, 주간보고 첫 작성', output: '첫 업무 완료 + 주간보고 제출', mentor: '멘토', done: false },
-        { period: 'Day 30', area: '30일 리뷰', task: '대표와 1:1 면담 (30분), 적응도·어려움·기대 확인', output: '30일 리뷰 기록', mentor: '대표', done: false }
+        { period: 'Day 1 (오전)', area: '입사 행정', task: '근로계약서 서명, 4대보험 가입 서류 제출, 급여 통장 사본 제출, 개인정보 수집 동의서 작성', output: '입사 서류 일체 제출 완료', mentor: '대표', done: false },
+        { period: 'Day 1 (오전)', area: '장비 지급', task: '업무용 노트북 수령 및 설정, 모니터·키보드·마우스 등 주변기기 확인, 사무실 좌석 배정', output: '장비 수령 확인서 서명', mentor: '대표/멘토', done: false },
+        { period: 'Day 1 (오후)', area: '계정 세팅', task: '회사 이메일(@bring.engineering) 생성, 슬랙 워크스페이스 초대 및 채널 가입 (#general, #standup, #project-*), 노션 워크스페이스 접근 권한 부여, GitHub 조직 초대 및 저장소 권한 설정', output: '전체 계정 접근 테스트 완료', mentor: '기술 멘토', done: false },
+        { period: 'Day 1~2', area: '개발 환경', task: 'Python 3.11 + venv 표준 환경 설치, Git 클론 및 브랜치 전략 이해, IDE(VSCode) 설정 및 공통 Extension 설치, Docker 환경 세팅 (해당시)', output: '로컬 환경에서 코드 빌드/실행 성공', mentor: '기술 멘토', done: false },
+        { period: 'Day 2~3', area: '회사 이해', task: '미션·비전·핵심가치 선언문 정독 + 1줄 소감 작성, 조직도·R&R 매트릭스 숙지, 운영 리듬(데일리/주간/월간) 숙지, 커뮤니케이션 프로토콜(슬랙 채널별 용도, 응답 시간) 이해, 의사결정 레벨(L1~L4) 이해', output: '핵심가치 소감 + 운영 리듬 이해도 체크', mentor: '대표', done: false },
+        { period: 'Day 3~5', area: '제품 이해', task: 'Shadow AI: 터널 조도 AI 분석 원리, TRL 5 인증 내용, 데모 실행\nVisiScan: 인프라 가시성 측정 SOP, CIE 88 기준 이해\nLux-Guard: 눈부심 저감 하드웨어 컨셉\nFDInnovation: IoT 보도블록 컨셉', output: '4개 제품 요약 노트 (각 A4 1장)', mentor: '대표/각 담당자', done: false },
+        { period: 'Week 1', area: '사업 이해', task: '사업계획서(IR 덱) 정독, 시장 분석(TAM/SAM/SOM) 이해, 경쟁사 분석표 숙지, 정부과제(청년창업사관학교) 구조 이해, 영업 파이프라인 현황 파악', output: '사업 이해도 퀴즈 10문항 통과', mentor: '대표/플래너', done: false },
+        { period: 'Week 1', area: '팀 빌딩', task: '팀원 전원 1:1 커피챗 (각 20분): 각자 역할/현재 프로젝트/강점/성격 파악, 점심 함께하기 3회 이상', output: '팀원별 1줄 메모 (강점, 협업 포인트)', mentor: '본인', done: false },
+        { period: 'Week 2', area: '역할 이해', task: '본인 R&R 상세 브리핑 (1시간), 담당 프로젝트 범위·목표·마일스톤 확인, 개인 가이드북 작성 시작 (담당 업무 매뉴얼화), 첫 OKR 초안 작성 (멘토와 함께)', output: 'R&R 이해 확인서 + OKR 초안', mentor: '직속 멘토', done: false },
+        { period: 'Week 2~3 (기술직)', area: '기술 온보딩', task: '코드 아키텍처 전체 구조 설명 (2시간), 기존 코드 리뷰 3건 이상, 담당 기술 스택 자가 진단 (Python/PyTorch/LangGraph 등), 기술 부채 목록 확인, 코딩 컨벤션·브랜치 전략·PR 프로세스 숙지', output: '기술 스택 자가진단표 + 코드 리뷰 참여 기록', mentor: '기술 리드', done: false },
+        { period: 'Week 2~3 (비즈니스직)', area: '비즈니스 온보딩', task: '제안서 작성 가이드 숙지, 정부과제 서류 양식 이해, 기존 제안서 3건 분석, 브랜드 가이드라인 숙지, SNS/홍보 채널 현황 파악', output: '제안서 작성 가이드 이해 확인 + 기존 제안서 분석 메모', mentor: '대표/플래너', done: false },
+        { period: 'Week 3~4', area: '첫 업무 수행', task: '난이도 "하" 업무 1건 독립 수행 (멘토 지원 가능), 데일리 스탠드업 참여 시작, 주간보고 첫 작성 및 제출', output: '첫 업무 PR 머지 또는 산출물 제출 + 주간보고 1회', mentor: '멘토', done: false },
+        { period: 'Week 4', area: '보안/규정', task: '개인정보보호법 기초 교육 (30분), 영업비밀 관리 규정 숙지, 데이터 접근 권한 체계 이해, NDA(비밀유지서약서) 서명 확인', output: '보안 교육 수료 확인', mentor: '대표', done: false },
+        { period: 'Day 30', area: '30일 리뷰', task: '대표와 1:1 면담 (30분): 적응도 5점 척도 자가평가, 가장 어려웠던 점 3가지, 가장 좋았던 점 3가지, 앞으로 필요한 지원, 30~60일 목표 합의', output: '30일 리뷰 면담 기록서', mentor: '대표', done: false }
       ]},
       phase2: { title: 'Phase 2: 31~60일 — "기여하기"', items: [
-        { period: 'Week 5~6', area: '독립 업무', task: '담당 업무 독립 수행 시작, 주간보고 자율 작성', output: '주간보고 2회 이상 제출', mentor: '멘토(지원)', done: false },
-        { period: 'Week 7~8', area: '프로젝트 참여', task: '핵심 프로젝트 기여, 코드 리뷰 참여', output: '프로젝트 기여 기록', mentor: '프로젝트 리드', done: false },
-        { period: 'Day 60', area: '60일 리뷰', task: '대표 + 멘토 3자 면담, 성과·적응도 종합 점검', output: '60일 리뷰 기록', mentor: '대표', done: false }
+        { period: 'Week 5~6', area: '독립 업무 전환', task: '담당 업무 독립 수행 (멘토 지원 → 질문 시에만), 주간보고 자율 작성 (매주 금요일), 데일리 스탠드업 능동적 참여 (블로커 자진 공유)', output: '주간보고 2회 이상 자율 제출', mentor: '멘토(필요시)', done: false },
+        { period: 'Week 5~6 (기술직)', area: '코드 기여', task: '담당 모듈 기능 개발 1건 이상, PR 작성 및 코드 리뷰 프로세스 수행, 기술 싱크 회의 참여 (격주)', output: 'PR 1건 이상 머지 + 코드 리뷰 참여 2건', mentor: '기술 리드', done: false },
+        { period: 'Week 5~6 (비즈니스직)', area: '사업 기여', task: '제안서 초안 작성 1건, 또는 홍보 콘텐츠 제작 2건, 영업 파이프라인 관련 리서치 1건', output: '제안서 초안 또는 콘텐츠 산출물', mentor: '대표/플래너', done: false },
+        { period: 'Week 7~8', area: '프로젝트 핵심 참여', task: '핵심 프로젝트 마일스톤 1건 직접 담당, 다른 팀원과 협업 업무 1건 수행, 기술 공유 세션 청취 또는 발표 1회', output: '마일스톤 달성 기록 + 협업 업무 완료', mentor: '프로젝트 리드', done: false },
+        { period: 'Week 7~8', area: '프로세스 참여', task: '스프린트 계획/회고 참여, OKR 중간 점검 참여, 본인 OKR 달성률 자가 점검', output: 'OKR 중간 점검 기록', mentor: '본인', done: false },
+        { period: 'Week 8', area: '개인 가이드북 완성', task: '담당 업무 매뉴얼(개인 가이드북) 초안 완성: 주요 업무 절차, 사용 도구, 트러블슈팅 가이드, 인수인계 시 활용 가능하도록 작성', output: '개인 가이드북 초안 (노션)', mentor: '멘토', done: false },
+        { period: 'Day 60', area: '60일 리뷰', task: '대표 + 멘토 3자 면담 (45분): 업무 성과 정량 평가, 핵심가치 체화도 평가 (5개 항목), 팀 적응도, 개선 필요 사항, 60~90일 핵심 목표 설정', output: '60일 리뷰 기록서 (성과+가치 평가)', mentor: '대표+멘토', done: false }
       ]},
       phase3: { title: 'Phase 3: 61~90일 — "주도하기"', items: [
-        { period: 'Week 9~12', area: '업무 주도', task: '담당 영역 자율 운영, 개선 제안 1건 이상', output: '개선 제안서', mentor: '자율', done: false },
-        { period: 'Day 90', area: '90일 리뷰', task: '종합 평가, 정규 전환 결정, OKR 설정', output: '90일 종합 평가서', mentor: '대표', done: false }
+        { period: 'Week 9~10', area: '자율 운영', task: '담당 영역 완전 자율 운영, 의사결정 레벨 L1~L2 수준 자율 결정, 멘토링 없이 업무 수행 (필요시만 질문)', output: '자율 업무 수행 기록', mentor: '자율', done: false },
+        { period: 'Week 9~10', area: '개선 제안', task: '업무 프로세스/도구/코드 등에서 개선점 발견 및 제안서 작성 1건 이상, 실행 가능한 수준의 구체적 제안', output: '개선 제안서 1건', mentor: '자율', done: false },
+        { period: 'Week 11~12', area: '리더십 시작', task: '후배/신규 입사자에게 1가지 이상 가르칠 수 있는 수준 달성, 기술 공유 세션 발표 1회, 또는 문서화 기여 2건 이상', output: '기술 공유 발표 자료 또는 문서 기여 기록', mentor: '자율', done: false },
+        { period: 'Week 12', area: '개인 가이드북 완성', task: '개인 가이드북 최종본 완성 및 팀 공유, 인수인계 가능 수준으로 문서화 완료', output: '개인 가이드북 최종본 (노션 공개)', mentor: '본인', done: false },
+        { period: 'Day 90', area: '90일 종합 리뷰', task: '대표와 종합 면담 (1시간):\n1. 90일 성과 정량 평가 (OKR 달성률)\n2. 핵심가치 체화도 종합 평가\n3. 팀 기여도 평가 (동료 피드백 포함)\n4. 강점/성장 영역 피드백\n5. 정규 전환 결정 (수습 종료)\n6. 다음 분기 OKR 설정\n7. 커리어 성장 방향 논의', output: '90일 종합 평가서 + 정규 전환 결정 + 분기 OKR', mentor: '대표', done: false }
       ]}
     },
     performanceEval: {
@@ -6785,20 +6798,33 @@ const HRPage = {
     const el = document.getElementById('onboardingSection');
     if (!el || !ob) return;
 
-    const renderPhase = (phase) => {
+    const renderPhase = (phase, phaseKey) => {
       if (!phase) return '';
+      const total = phase.items.length;
+      const done = phase.items.filter(i => i.done).length;
+      const pct = total > 0 ? Math.round(done / total * 100) : 0;
       return `
         <div class="onboarding-phase">
-          <h4>${phase.title}</h4>
+          <h4 style="display:flex;justify-content:space-between;align-items:center">${phase.title}
+            <span style="font-size:13px;font-weight:400;color:var(--text-light)">${done}/${total} 완료 (${pct}%)</span>
+          </h4>
+          <div class="budget-bar" style="margin-bottom:16px"><div class="budget-fill" style="width:${pct}%;background:${pct >= 80 ? 'var(--success)' : pct >= 40 ? 'var(--primary)' : 'var(--warning)'}">${pct}%</div></div>
           <div class="onboarding-items">
             ${phase.items.map((item, idx) => `
-              <div class="onboarding-item ${item.done ? 'done' : ''}">
-                <div class="ob-period">${item.period}</div>
-                <div class="ob-content">
-                  <div class="ob-area"><span class="badge badge-info">${item.area}</span></div>
-                  <div class="ob-task">${item.task}</div>
-                  <div class="ob-output">산출물: ${item.output}</div>
-                  <div class="ob-mentor">멘토: ${item.mentor}</div>
+              <div class="onboarding-item ${item.done ? 'done' : ''}" style="border-left:3px solid ${item.done ? 'var(--success)' : 'var(--border)'}">
+                <div class="ob-period">${Utils.escapeHtml(item.period)}</div>
+                <div class="ob-content" style="flex:1">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                    <div class="ob-area"><span class="badge badge-info">${Utils.escapeHtml(item.area)}</span></div>
+                    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;color:var(--text-light)">
+                      <input type="checkbox" ${item.done ? 'checked' : ''} onchange="HRPage.toggleOnboarding('${phaseKey}',${idx},this.checked)"> 완료
+                    </label>
+                  </div>
+                  <div class="ob-task" style="white-space:pre-line">${Utils.escapeHtml(item.task)}</div>
+                  <div style="margin-top:6px;display:flex;gap:16px;flex-wrap:wrap">
+                    <div class="ob-output" style="flex:1;min-width:200px;padding:6px 10px;background:var(--bg-hover);border-radius:6px;font-size:12px"><strong>산출물:</strong> ${Utils.escapeHtml(item.output)}</div>
+                    <div class="ob-mentor" style="padding:6px 10px;background:var(--bg-hover);border-radius:6px;font-size:12px"><strong>멘토:</strong> ${Utils.escapeHtml(item.mentor)}</div>
+                  </div>
                 </div>
               </div>
             `).join('')}
@@ -6807,7 +6833,16 @@ const HRPage = {
       `;
     };
 
-    el.innerHTML = renderPhase(ob.phase1) + renderPhase(ob.phase2) + renderPhase(ob.phase3);
+    el.innerHTML = renderPhase(ob.phase1, 'phase1') + renderPhase(ob.phase2, 'phase2') + renderPhase(ob.phase3, 'phase3');
+  },
+
+  toggleOnboarding(phaseKey, idx, checked) {
+    const data = DataManager.get();
+    if (data.hr.onboarding[phaseKey] && data.hr.onboarding[phaseKey].items[idx]) {
+      data.hr.onboarding[phaseKey].items[idx].done = checked;
+      DataManager.save();
+      this.renderOnboarding();
+    }
   },
 
   renderPerformanceEval() {
