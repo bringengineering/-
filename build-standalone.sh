@@ -36,8 +36,8 @@ cat >> "$OUTPUT" << 'HTMLMID'
 <body class="bg-gray-100 animated-bg">
 HTMLMID
 
-# Add HTML body from index.html (extract body content only)
-sed -n '/<body/,/<\/body>/p' "$SRCDIR/index.html" | sed '1d;$d' >> "$OUTPUT"
+# Add HTML body from index.html (extract body content, remove script src tags)
+sed -n '/<body/,/<\/body>/p' "$SRCDIR/index.html" | sed '1d;$d' | grep -v '<script src="js/' >> "$OUTPUT"
 
 # Add inline JavaScript
 echo "  <!-- Combined JavaScript (All Modules Inlined) -->" >> "$OUTPUT"

@@ -96,44 +96,51 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   background-attachment: fixed;
-  min-height: 100vh;
-  overflow: hidden;
   height: 100vh;
+  overflow: hidden;  /* body 자체는 스크롤 안 함. main에서만 스크롤 */
 }
 
-/* Main Container - 스크롤 완전 수정 */
+/* 전체 레이아웃 컨테이너 */
+.min-h-screen {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Main Container - 스크롤은 여기서만! */
 main {
-  height: 100vh !important;
-  overflow-y: scroll !important;
-  overflow-x: hidden !important;
-  padding-bottom: 4rem;
-  -webkit-overflow-scrolling: touch;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 6rem;
+  -webkit-overflow-scrolling: touch;  /* iOS 부드러운 스크롤 */
+  scroll-behavior: smooth;
 }
 
 /* 스크롤바 디자인 */
 main::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 main::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  background: transparent;
 }
 
 main::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.5);
-  border-radius: 6px;
+  background: rgba(102, 126, 234, 0.4);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 main::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.8);
+  background: rgba(102, 126, 234, 0.7);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 #content {
-  max-width: 1600px;
+  max-width: 1400px;
   margin: 0 auto;
-  overflow: visible;
-  min-height: calc(100vh + 200px);
 }
 
 /* ===== Glassmorphism Cards ===== */
@@ -161,7 +168,7 @@ main::-webkit-scrollbar-thumb:hover {
 /* ===== Animated Background ===== */
 .animated-bg {
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden 삭제 - 스크롤 차단 원인이었음 */
 }
 
 .animated-bg::before {
