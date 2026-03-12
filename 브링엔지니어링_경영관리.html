@@ -434,6 +434,11 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 
+.data-table td.num-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 .data-table tr:hover td {
   background: var(--primary-light);
 }
@@ -1744,6 +1749,57 @@ select {
           </div>
           <div id="govBudgetSection"></div>
         </div>
+
+        <!-- 급여 관리 테이블 -->
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">급여 관리</h3>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm btn-primary" onclick="Financial.openAddPayroll()">+ 인원 추가</button>
+              <button class="btn btn-sm btn-secondary" onclick="Financial.exportPayrollCSV()">CSV 내보내기</button>
+            </div>
+          </div>
+          <div class="table-container" id="payrollSection"></div>
+        </div>
+
+        <!-- 예상 수입 계획 -->
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">예상 수입 계획</h3>
+            <button class="btn btn-sm btn-primary" onclick="Financial.openAddExpectedIncome()">+ 수입 계획 추가</button>
+          </div>
+          <div id="expectedIncomeSection"></div>
+        </div>
+
+        <!-- 월간 생존 요약 -->
+        <div class="section-card">
+          <h3>월간 생존 요약</h3>
+          <div id="monthlySurvivalSection"></div>
+        </div>
+
+        <!-- 대출 현황 -->
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">대출 현황</h3>
+            <button class="btn btn-sm btn-primary" onclick="Financial.openAddLoan()">+ 대출 추가</button>
+          </div>
+          <div id="loanSection"></div>
+        </div>
+
+        <!-- 정기 지출 캘린더 -->
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">정기 지출 캘린더</h3>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-sm btn-secondary" onclick="Financial.prevCalMonth()">&lt;</button>
+              <span id="calendarMonthLabel" style="font-weight:600;min-width:100px;text-align:center"></span>
+              <button class="btn btn-sm btn-secondary" onclick="Financial.nextCalMonth()">&gt;</button>
+              <button class="btn btn-sm btn-primary" onclick="Financial.openAddRecurring()" style="margin-left:8px">+ 정기 지출 추가</button>
+            </div>
+          </div>
+          <div id="recurringCalendar"></div>
+          <div id="recurringList" style="margin-top:16px"></div>
+        </div>
       </section>
 
       <!-- OKR Page -->
@@ -2426,6 +2482,29 @@ const DEFAULT_DATA = {
     ],
     govBudgets: [
       { name: '청년창업사관학교', totalBudget: 10000, spent: 750, period: '2026.03 ~ 2026.12' }
+    ],
+    payroll: [
+      { name: '노광민', monthlySalary: 2200000, insuranceCompany: 251623, insuranceEmployee: 213783, advance: 1000000 },
+      { name: '배정환', monthlySalary: 1000000, insuranceCompany: 97174, insuranceEmployee: 99674, advance: 0 },
+      { name: '김현서', monthlySalary: 700000, insuranceCompany: 80062, insuranceEmployee: 68022, advance: 0 },
+      { name: '양준호', monthlySalary: 2200000, insuranceCompany: 251623, insuranceEmployee: 213783, advance: 300000 }
+    ],
+    loans: [
+      { id: 'loan1', name: '청년창업사관학교 운영자금', lender: '중소벤처기업부', totalAmount: 10000, remainingAmount: 10000, interestRate: 1.0, monthlyPayment: 0, paymentDay: 0, startDate: '2026-03', endDate: '2027-12', status: 'grace', memo: '거치기간 중 (이자만 납부)' },
+    ],
+    expectedIncome: [
+      { id: 'ei1', name: '청년창업사관학교 정부과제', source: '중소벤처기업부', amount: 10000, expectedDate: '2026-03 ~ 2026-12', probability: 100, status: 'confirmed', memo: '월 800~2000만 분할 지급' },
+      { id: 'ei2', name: '한국도로공사 터널 조도 측정', source: '한국도로공사 (강원)', amount: 3000, expectedDate: '2026-Q3', probability: 40, status: 'prospecting', memo: 'VisiScan 납품' },
+      { id: 'ei3', name: '강원도청 도로 안전 진단', source: '강원도청', amount: 2000, expectedDate: '2026-Q3', probability: 30, status: 'prospecting', memo: '' },
+      { id: 'ei4', name: '원주시 시범 사업', source: '원주시', amount: 1500, expectedDate: '2026-Q3', probability: 30, status: 'prospecting', memo: '' },
+      { id: 'ei5', name: '상지대 산학협력', source: '상지대학교', amount: 500, expectedDate: '2026-Q2', probability: 70, status: 'negotiating', memo: '공동연구' },
+    ],
+    recurringExpenses: [
+      { id: 're1', name: '인건비 (급여)', amount: 610, cycle: 'monthly', day: 25, category: 'salary', memo: '전 직원 급여일' },
+      { id: 're2', name: '4대보험 (회사부담)', amount: 68, cycle: 'monthly', day: 10, category: 'salary', memo: '국민연금/건강보험/고용보험/산재보험' },
+      { id: 're3', name: 'AWS 클라우드', amount: 30, cycle: 'monthly', day: 1, category: 'cloud', memo: 'EC2+S3+등' },
+      { id: 're4', name: '사무실 임대료', amount: 50, cycle: 'monthly', day: 1, category: 'office', memo: '' },
+      { id: 're5', name: '슬랙/노션 구독', amount: 5, cycle: 'monthly', day: 15, category: 'cloud', memo: '팀 협업 도구' }
     ]
   },
 
@@ -2495,6 +2574,12 @@ const DEFAULT_DATA = {
       {
         id: 'm4', name: '김현서', role: '비즈니스 플래너', avatar: '김',
         skills: { leadership: 2, business: 3, technical: 1, communication: 4, problemSolving: 2 },
+        level: 2, joinDate: '2026-03-09', satisfaction: 4,
+        okrScore: 0, routineScore: 0
+      },
+      {
+        id: 'm5', name: '양준호', role: 'SW Developer', avatar: '양',
+        skills: { leadership: 2, business: 1, technical: 3, communication: 3, problemSolving: 3 },
         level: 2, joinDate: '2026-03-09', satisfaction: 4,
         okrScore: 0, routineScore: 0
       }
@@ -3294,12 +3379,19 @@ const Dashboard = {
 const Financial = {
   charts: {},
 
+  calendarMonth: new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0'),
+
   render() {
     const data = DataManager.get();
     this.renderKPIs(data);
     this.renderCharts(data);
     this.renderCashflowTable(data);
     this.renderGovBudget(data);
+    this.renderPayroll(data);
+    this.renderExpectedIncome(data);
+    this.renderMonthlySurvival(data);
+    this.renderLoans(data);
+    this.renderRecurringCalendar(data);
   },
 
   renderKPIs(data) {
@@ -3598,6 +3690,752 @@ const Financial = {
       this.render();
       Dashboard.render();
     }
+  },
+
+  // ===== 급여 관리 =====
+  renderPayroll(data) {
+    const payroll = data.financial.payroll || [];
+    const container = document.getElementById('payrollSection');
+    if (!container) return;
+
+    const fmt = (n) => n.toLocaleString('ko-KR');
+    let totalSalary = 0, totalInsComp = 0, totalInsEmp = 0, totalNet = 0, totalTakeHome = 0, totalAdvance = 0, totalAnnual = 0;
+
+    const rows = payroll.map((p, i) => {
+      const annual = p.monthlySalary * 9;
+      const netPay = p.monthlySalary - p.insuranceEmployee;
+      const takeHome = netPay - p.advance;
+      totalSalary += p.monthlySalary;
+      totalAnnual += annual;
+      totalInsComp += p.insuranceCompany;
+      totalInsEmp += p.insuranceEmployee;
+      totalNet += netPay;
+      totalAdvance += p.advance;
+      totalTakeHome += takeHome;
+      return `<tr>
+        <td style="font-weight:600">${Utils.escapeHtml(p.name)}</td>
+        <td class="num-cell"><input type="text" value="${fmt(p.monthlySalary)}" style="width:110px;text-align:right;border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:13px" onchange="Financial.updatePayroll(${i},'monthlySalary',this.value)"></td>
+        <td class="num-cell" style="color:var(--text-light)">${fmt(annual)}</td>
+        <td class="num-cell"><input type="text" value="${fmt(p.insuranceCompany)}" style="width:100px;text-align:right;border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:13px" onchange="Financial.updatePayroll(${i},'insuranceCompany',this.value)"></td>
+        <td class="num-cell"><input type="text" value="${fmt(p.insuranceEmployee)}" style="width:100px;text-align:right;border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:13px" onchange="Financial.updatePayroll(${i},'insuranceEmployee',this.value)"></td>
+        <td class="num-cell" style="font-weight:600;color:var(--primary)">${fmt(netPay)}</td>
+        <td class="num-cell"><input type="text" value="${fmt(p.advance)}" style="width:100px;text-align:right;border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:13px" onchange="Financial.updatePayroll(${i},'advance',this.value)"></td>
+        <td class="num-cell" style="font-weight:700;color:${takeHome >= 0 ? 'var(--success)' : 'var(--danger)'}">${fmt(takeHome)}</td>
+        <td style="text-align:center">
+          <button class="btn btn-sm btn-danger" onclick="Financial.deletePayroll(${i})" title="삭제" style="padding:2px 8px">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = `
+      <table class="data-table" style="font-size:13px">
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th style="text-align:right">월급</th>
+            <th style="text-align:right">총 합계 (9개월)</th>
+            <th style="text-align:right">4대보험 (회사)</th>
+            <th style="text-align:right">4대보험 (개인)</th>
+            <th style="text-align:right">총 금액</th>
+            <th style="text-align:right">회수</th>
+            <th style="text-align:right">받는 금액</th>
+            <th style="width:40px"></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+          <tr style="background:var(--bg-hover);font-weight:700;border-top:2px solid var(--border)">
+            <td>합계</td>
+            <td class="num-cell">${fmt(totalSalary)}</td>
+            <td class="num-cell">${fmt(totalAnnual)}</td>
+            <td class="num-cell">${fmt(totalInsComp)}</td>
+            <td class="num-cell">${fmt(totalInsEmp)}</td>
+            <td class="num-cell" style="color:var(--primary)">${fmt(totalNet)}</td>
+            <td class="num-cell">${fmt(totalAdvance)}</td>
+            <td class="num-cell" style="color:var(--success)">${fmt(totalTakeHome)}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:12px;color:var(--text-light)">
+        * 총 합계는 9개월 기준 (2026.03~2026.12 청년창업사관학교 기간) | 회수 = 선지급/대여금 회수액 | 받는 금액 = 총 금액 - 회수
+      </div>
+    `;
+  },
+
+  updatePayroll(idx, field, value) {
+    const data = DataManager.get();
+    const numVal = Number(String(value).replace(/,/g, '')) || 0;
+    data.financial.payroll[idx][field] = numVal;
+    DataManager.save();
+    this.renderPayroll(data);
+  },
+
+  openAddPayroll() {
+    Modal.open('급여 인원 추가', `
+      <div class="form-group"><label>이름</label><input type="text" id="newPayName" placeholder="홍길동"></div>
+      <div class="form-row">
+        <div class="form-group"><label>월급 (원)</label><input type="number" id="newPaySalary" placeholder="2200000"></div>
+        <div class="form-group"><label>회수금 (원)</label><input type="number" id="newPayAdvance" value="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>4대보험-회사 (원)</label><input type="number" id="newPayInsComp" placeholder="자동계산시 0"></div>
+        <div class="form-group"><label>4대보험-개인 (원)</label><input type="number" id="newPayInsEmp" placeholder="자동계산시 0"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-light);margin-top:4px">* 4대보험을 0으로 두면 월급 기준 약 9.4%(회사)/9.0%(개인)로 자동 계산됩니다.</div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addPayroll()">추가</button>`);
+  },
+
+  addPayroll() {
+    const data = DataManager.get();
+    const name = document.getElementById('newPayName').value.trim();
+    const salary = Number(document.getElementById('newPaySalary').value) || 0;
+    const advance = Number(document.getElementById('newPayAdvance').value) || 0;
+    let insComp = Number(document.getElementById('newPayInsComp').value) || 0;
+    let insEmp = Number(document.getElementById('newPayInsEmp').value) || 0;
+    if (!name) { Utils.toast('이름을 입력해주세요.', 'warning'); return; }
+    if (salary <= 0) { Utils.toast('월급을 입력해주세요.', 'warning'); return; }
+    if (insComp === 0) insComp = Math.round(salary * 0.094);
+    if (insEmp === 0) insEmp = Math.round(salary * 0.090);
+    if (!data.financial.payroll) data.financial.payroll = [];
+    data.financial.payroll.push({ name, monthlySalary: salary, insuranceCompany: insComp, insuranceEmployee: insEmp, advance });
+    DataManager.save();
+    DataManager.addActivity('💰', `급여 인원 추가: ${name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  deletePayroll(idx) {
+    const data = DataManager.get();
+    const p = data.financial.payroll[idx];
+    if (!p) return;
+    Modal.confirm('급여 인원 삭제', `"${p.name}" 급여 정보를 삭제하시겠습니까?`, () => {
+      data.financial.payroll.splice(idx, 1);
+      DataManager.save();
+      DataManager.addActivity('💰', `급여 인원 삭제: ${p.name}`, 'info');
+      Modal.close();
+      Financial.render();
+    });
+  },
+
+  exportPayrollCSV() {
+    const data = DataManager.get();
+    const payroll = data.financial.payroll || [];
+    const header = '이름,월급,총합계(9개월),4대보험(회사),4대보험(개인),총금액,회수,받는금액';
+    const rows = payroll.map(p => {
+      const annual = p.monthlySalary * 9;
+      const net = p.monthlySalary - p.insuranceEmployee;
+      const take = net - p.advance;
+      return `${p.name},${p.monthlySalary},${annual},${p.insuranceCompany},${p.insuranceEmployee},${net},${p.advance},${take}`;
+    });
+    Utils.downloadCSV([header, ...rows].join('\n'), `급여관리_${new Date().toISOString().slice(0, 10)}.csv`);
+    DataManager.addActivity('📤', '급여 데이터 CSV 내보내기', 'success');
+  },
+
+  // ===== 예상 수입 계획 =====
+  renderExpectedIncome(data) {
+    const items = data.financial.expectedIncome || [];
+    const container = document.getElementById('expectedIncomeSection');
+    if (!container) return;
+
+    const fmt = (n) => n.toLocaleString('ko-KR');
+    const statusLabels = { confirmed: '확정', negotiating: '협상중', prospecting: '발굴중', lost: '무산' };
+    const statusColors = { confirmed: '#16a34a', negotiating: '#2563eb', prospecting: '#d97706', lost: '#dc2626' };
+    const probColors = (p) => p >= 80 ? '#16a34a' : p >= 50 ? '#2563eb' : p >= 30 ? '#d97706' : '#dc2626';
+
+    let totalConfirmed = 0, totalExpected = 0;
+    items.forEach(item => {
+      if (item.status === 'confirmed') totalConfirmed += item.amount;
+      totalExpected += item.amount * (item.probability / 100);
+    });
+
+    const summary = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:10px">
+          <div style="font-size:12px;color:#166534">확정 수입</div>
+          <div style="font-size:20px;font-weight:800;color:#16a34a">${fmt(totalConfirmed)}만원</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px">
+          <div style="font-size:12px;color:#1e40af">기대 수입 (확률 반영)</div>
+          <div style="font-size:20px;font-weight:800;color:#2563eb">${fmt(Math.round(totalExpected))}만원</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px">
+          <div style="font-size:12px;color:#92400e">전체 파이프라인</div>
+          <div style="font-size:20px;font-weight:800;color:#d97706">${fmt(items.reduce((s, i) => s + i.amount, 0))}만원</div>
+        </div>
+      </div>
+    `;
+
+    const rows = items.map((item, i) => {
+      const sColor = statusColors[item.status] || '#6b7280';
+      const pColor = probColors(item.probability);
+      return `<tr>
+        <td style="font-weight:600">${Utils.escapeHtml(item.name)}</td>
+        <td>${Utils.escapeHtml(item.source)}</td>
+        <td style="text-align:right;font-weight:700">${fmt(item.amount)}만</td>
+        <td>${item.expectedDate}</td>
+        <td><span style="display:inline-flex;align-items:center;gap:4px"><span style="display:inline-block;width:40px;height:6px;border-radius:3px;background:#e5e7eb"><span style="display:block;width:${item.probability}%;height:100%;border-radius:3px;background:${pColor}"></span></span><span style="font-weight:600;color:${pColor}">${item.probability}%</span></span></td>
+        <td><span style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:${sColor}15;color:${sColor}">${statusLabels[item.status] || item.status}</span></td>
+        <td style="color:var(--text-light);font-size:12px">${Utils.escapeHtml(item.memo || '-')}</td>
+        <td style="text-align:center">
+          <button class="btn btn-sm btn-secondary" onclick="Financial.editExpectedIncome(${i})" style="padding:2px 6px;margin-right:2px">✎</button>
+          <button class="btn btn-sm btn-danger" onclick="Financial.deleteExpectedIncome(${i})" style="padding:2px 6px">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    container.innerHTML = summary + `
+      <table class="data-table" style="font-size:13px">
+        <thead><tr><th>수입명</th><th>출처</th><th style="text-align:right">금액</th><th>예상 시기</th><th>확률</th><th>상태</th><th>메모</th><th style="width:60px"></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+  },
+
+  openAddExpectedIncome() {
+    Modal.open('예상 수입 추가', `
+      <div class="form-group"><label>수입명</label><input type="text" id="newEIName" placeholder="예: 한국도로공사 납품"></div>
+      <div class="form-group"><label>출처/거래처</label><input type="text" id="newEISource" placeholder="예: 한국도로공사"></div>
+      <div class="form-row">
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="newEIAmount" placeholder="3000"></div>
+        <div class="form-group"><label>성사 확률 (%)</label><input type="number" id="newEIProb" min="0" max="100" placeholder="50"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>예상 시기</label><input type="text" id="newEIDate" placeholder="예: 2026-Q3"></div>
+        <div class="form-group"><label>상태</label><select id="newEIStatus"><option value="prospecting">발굴중</option><option value="negotiating">협상중</option><option value="confirmed">확정</option></select></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="newEIMemo" placeholder="선택사항"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addExpectedIncome()">추가</button>`);
+  },
+
+  addExpectedIncome() {
+    const data = DataManager.get();
+    const name = document.getElementById('newEIName').value.trim();
+    if (!name) { Utils.toast('수입명을 입력해주세요.', 'warning'); return; }
+    if (!data.financial.expectedIncome) data.financial.expectedIncome = [];
+    data.financial.expectedIncome.push({
+      id: 'ei' + Date.now(), name,
+      source: document.getElementById('newEISource').value.trim(),
+      amount: Number(document.getElementById('newEIAmount').value) || 0,
+      probability: Number(document.getElementById('newEIProb').value) || 0,
+      expectedDate: document.getElementById('newEIDate').value.trim(),
+      status: document.getElementById('newEIStatus').value,
+      memo: document.getElementById('newEIMemo').value.trim()
+    });
+    DataManager.save();
+    DataManager.addActivity('📈', `예상 수입 추가: ${name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  editExpectedIncome(idx) {
+    const data = DataManager.get();
+    const item = data.financial.expectedIncome[idx];
+    if (!item) return;
+    const statOpts = [['prospecting','발굴중'],['negotiating','협상중'],['confirmed','확정'],['lost','무산']];
+    Modal.open('예상 수입 수정', `
+      <div class="form-group"><label>수입명</label><input type="text" id="editEIName" value="${Utils.escapeHtml(item.name)}"></div>
+      <div class="form-group"><label>출처/거래처</label><input type="text" id="editEISource" value="${Utils.escapeHtml(item.source || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="editEIAmount" value="${item.amount}"></div>
+        <div class="form-group"><label>성사 확률 (%)</label><input type="number" id="editEIProb" min="0" max="100" value="${item.probability}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>예상 시기</label><input type="text" id="editEIDate" value="${item.expectedDate || ''}"></div>
+        <div class="form-group"><label>상태</label><select id="editEIStatus">${statOpts.map(s=>`<option value="${s[0]}" ${item.status===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="editEIMemo" value="${Utils.escapeHtml(item.memo || '')}"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.saveEditExpectedIncome(${idx})">저장</button>`);
+  },
+
+  saveEditExpectedIncome(idx) {
+    const data = DataManager.get();
+    const item = data.financial.expectedIncome[idx];
+    if (!item) return;
+    item.name = document.getElementById('editEIName').value.trim();
+    item.source = document.getElementById('editEISource').value.trim();
+    item.amount = Number(document.getElementById('editEIAmount').value) || 0;
+    item.probability = Number(document.getElementById('editEIProb').value) || 0;
+    item.expectedDate = document.getElementById('editEIDate').value.trim();
+    item.status = document.getElementById('editEIStatus').value;
+    item.memo = document.getElementById('editEIMemo').value.trim();
+    DataManager.save();
+    DataManager.addActivity('📈', `예상 수입 수정: ${item.name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  deleteExpectedIncome(idx) {
+    const data = DataManager.get();
+    const item = data.financial.expectedIncome[idx];
+    if (!item) return;
+    Modal.confirm('예상 수입 삭제', `"${item.name}"을(를) 삭제하시겠습니까?`, () => {
+      data.financial.expectedIncome.splice(idx, 1);
+      DataManager.save();
+      DataManager.addActivity('📈', `예상 수입 삭제: ${item.name}`, 'info');
+      Modal.close();
+      Financial.render();
+    });
+  },
+
+  // ===== 월간 생존 요약 =====
+  renderMonthlySurvival(data) {
+    const container = document.getElementById('monthlySurvivalSection');
+    if (!container) return;
+
+    const fmt = (n) => n.toLocaleString('ko-KR');
+    const payroll = data.financial.payroll || [];
+    const loans = data.financial.loans || [];
+    const recurring = data.financial.recurringExpenses || [];
+
+    // 급여 총합 (만원 단위 변환)
+    const totalSalary = Math.round(payroll.reduce((s, p) => s + p.monthlySalary, 0) / 10000);
+    const totalInsComp = Math.round(payroll.reduce((s, p) => s + p.insuranceCompany, 0) / 10000);
+    // 대출 이자
+    const totalLoanInterest = Math.round(loans.reduce((s, l) => s + (l.remainingAmount * (l.interestRate / 100) / 12), 0));
+    const totalLoanPayment = loans.reduce((s, l) => s + l.monthlyPayment, 0);
+    // 정기 지출 (급여 제외)
+    const recurringNonSalary = recurring.filter(r => r.category !== 'salary').reduce((s, r) => s + r.amount, 0);
+
+    const monthlyFixedTotal = totalSalary + totalInsComp + totalLoanInterest + totalLoanPayment + recurringNonSalary;
+
+    // 현재 월 수입
+    const curMonth = data.financial.months[0];
+    const monthlyIncome = curMonth ? Object.values(curMonth.income).reduce((s, v) => s + v, 0) : 0;
+
+    // 현금 잔고
+    const balances = Dashboard.calcMonthlyBalances(data);
+    const currentCash = balances[0] || 0;
+    const runwayMonths = monthlyFixedTotal > 0 ? (currentCash / monthlyFixedTotal).toFixed(1) : '∞';
+
+    const surplus = monthlyIncome - monthlyFixedTotal;
+
+    container.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+        <div style="padding:16px;border-radius:12px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #bbf7d0">
+          <div style="font-size:12px;color:#166534">이번 달 예상 수입</div>
+          <div style="font-size:24px;font-weight:800;color:#16a34a;margin-top:4px">${fmt(monthlyIncome)}만원</div>
+        </div>
+        <div style="padding:16px;border-radius:12px;background:linear-gradient(135deg,#fef2f2,#fecaca);border:1px solid #fca5a5">
+          <div style="font-size:12px;color:#991b1b">월 고정 지출 합계</div>
+          <div style="font-size:24px;font-weight:800;color:#dc2626;margin-top:4px">${fmt(monthlyFixedTotal)}만원</div>
+        </div>
+        <div style="padding:16px;border-radius:12px;background:linear-gradient(135deg,${surplus >= 0 ? '#f0fdf4,#dcfce7' : '#fef2f2,#fecaca'});border:1px solid ${surplus >= 0 ? '#bbf7d0' : '#fca5a5'}">
+          <div style="font-size:12px;color:${surplus >= 0 ? '#166534' : '#991b1b'}">월간 수지 (수입-지출)</div>
+          <div style="font-size:24px;font-weight:800;color:${surplus >= 0 ? '#16a34a' : '#dc2626'};margin-top:4px">${surplus >= 0 ? '+' : ''}${fmt(surplus)}만원</div>
+        </div>
+        <div style="padding:16px;border-radius:12px;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd">
+          <div style="font-size:12px;color:#1e40af">런웨이 (현금 기준)</div>
+          <div style="font-size:24px;font-weight:800;color:#2563eb;margin-top:4px">${runwayMonths}개월</div>
+        </div>
+      </div>
+      <table class="data-table" style="font-size:13px">
+        <thead><tr><th>항목</th><th style="text-align:right">월 금액 (만원)</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:600">인건비 (급여)</td><td style="text-align:right;font-weight:600;color:var(--danger)">${fmt(totalSalary)}</td><td style="color:var(--text-light)">${payroll.length}명</td></tr>
+          <tr><td style="font-weight:600">4대보험 (회사부담)</td><td style="text-align:right;font-weight:600;color:var(--danger)">${fmt(totalInsComp)}</td><td style="color:var(--text-light)">국민연금/건강/고용/산재</td></tr>
+          <tr><td style="font-weight:600">대출 이자</td><td style="text-align:right;font-weight:600;color:var(--warning)">${fmt(totalLoanInterest)}</td><td style="color:var(--text-light)">${loans.length}건</td></tr>
+          ${totalLoanPayment > 0 ? `<tr><td style="font-weight:600">대출 원금 상환</td><td style="text-align:right;font-weight:600;color:var(--danger)">${fmt(totalLoanPayment)}</td><td style="color:var(--text-light)">월 상환</td></tr>` : ''}
+          <tr><td style="font-weight:600">운영비 (클라우드/사무실 등)</td><td style="text-align:right;font-weight:600;color:var(--warning)">${fmt(recurringNonSalary)}</td><td style="color:var(--text-light)">정기 지출 기준</td></tr>
+          <tr style="background:var(--bg-hover);font-weight:700;border-top:2px solid var(--border)">
+            <td>총 월 고정 지출</td>
+            <td style="text-align:right;color:var(--danger);font-size:15px">${fmt(monthlyFixedTotal)}만원</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+  },
+
+  // ===== 정기 지출 캘린더 =====
+  prevCalMonth() {
+    const [y, m] = this.calendarMonth.split('-').map(Number);
+    const d = new Date(y, m - 2, 1);
+    this.calendarMonth = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    this.renderRecurringCalendar(DataManager.get());
+  },
+
+  nextCalMonth() {
+    const [y, m] = this.calendarMonth.split('-').map(Number);
+    const d = new Date(y, m, 1);
+    this.calendarMonth = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    this.renderRecurringCalendar(DataManager.get());
+  },
+
+  renderRecurringCalendar(data) {
+    const expenses = data.financial.recurringExpenses || [];
+    const [year, month] = this.calendarMonth.split('-').map(Number);
+    const label = document.getElementById('calendarMonthLabel');
+    if (label) label.textContent = `${year}년 ${month}월`;
+
+    const firstDay = new Date(year, month - 1, 1).getDay();
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const today = new Date();
+    const isCurrentMonth = today.getFullYear() === year && today.getMonth() + 1 === month;
+    const todayDate = today.getDate();
+
+    // Build day-expense map
+    const dayMap = {};
+    let monthlyTotal = 0;
+    expenses.forEach(ex => {
+      const day = Math.min(ex.day, daysInMonth);
+      if (!dayMap[day]) dayMap[day] = [];
+      dayMap[day].push(ex);
+      monthlyTotal += ex.amount;
+    });
+
+    const catColors = { salary: '#ef4444', cloud: '#3b82f6', office: '#f59e0b', equipment: '#8b5cf6', travel: '#10b981', outsource: '#ec4899', misc: '#6b7280' };
+
+    let calHTML = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;font-size:12px">`;
+    ['일','월','화','수','목','금','토'].forEach(d => {
+      calHTML += `<div style="text-align:center;font-weight:700;padding:8px 0;color:var(--text-light);background:var(--bg-hover);border-radius:4px">${d}</div>`;
+    });
+
+    // Empty cells before first day
+    for (let i = 0; i < firstDay; i++) {
+      calHTML += `<div style="min-height:80px;background:var(--bg);border-radius:4px"></div>`;
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const isToday = isCurrentMonth && d === todayDate;
+      const hasExpense = dayMap[d];
+      const dayTotal = hasExpense ? hasExpense.reduce((s, e) => s + e.amount, 0) : 0;
+      const bgStyle = isToday ? 'background:var(--primary);color:white' : hasExpense ? 'background:rgba(239,68,68,0.08)' : 'background:var(--bg)';
+
+      calHTML += `<div style="min-height:80px;${bgStyle};border-radius:6px;padding:4px 6px;border:1px solid ${hasExpense ? 'rgba(239,68,68,0.2)' : 'var(--border)'}">`;
+      calHTML += `<div style="font-weight:${isToday || hasExpense ? '700' : '400'};margin-bottom:2px">${d}</div>`;
+      if (hasExpense) {
+        hasExpense.forEach(ex => {
+          const color = catColors[ex.category] || '#6b7280';
+          calHTML += `<div style="font-size:10px;padding:2px 4px;margin:1px 0;border-radius:3px;background:${color}20;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" title="${Utils.escapeHtml(ex.name)}: ${ex.amount}만원${ex.memo ? ' - ' + ex.memo : ''}">${ex.amount}만 ${Utils.escapeHtml(ex.name.length > 6 ? ex.name.slice(0, 6) + '..' : ex.name)}</div>`;
+        });
+      }
+      calHTML += `</div>`;
+    }
+    calHTML += `</div>`;
+
+    // Monthly summary
+    calHTML += `<div style="margin-top:12px;padding:12px 16px;background:var(--bg-hover);border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:600">${year}년 ${month}월 정기 지출 합계</span>
+      <span style="font-size:18px;font-weight:700;color:var(--danger)">${monthlyTotal.toLocaleString('ko-KR')}만원</span>
+    </div>`;
+
+    const calContainer = document.getElementById('recurringCalendar');
+    if (calContainer) calContainer.innerHTML = calHTML;
+
+    // Recurring expense list
+    const listContainer = document.getElementById('recurringList');
+    if (listContainer) {
+      const cycleLabel = { monthly: '매월', weekly: '매주' };
+      listContainer.innerHTML = `
+        <table class="data-table" style="font-size:13px">
+          <thead><tr><th>항목</th><th>금액 (만원)</th><th>주기</th><th>납부일</th><th>카테고리</th><th>메모</th><th style="width:40px"></th></tr></thead>
+          <tbody>${expenses.map((ex, i) => `
+            <tr>
+              <td style="font-weight:600">${Utils.escapeHtml(ex.name)}</td>
+              <td style="text-align:right;font-weight:600;color:var(--danger)">${ex.amount.toLocaleString()}</td>
+              <td>${cycleLabel[ex.cycle] || ex.cycle}</td>
+              <td>${ex.day}일</td>
+              <td>${Utils.escapeHtml(ex.category)}</td>
+              <td style="color:var(--text-light)">${Utils.escapeHtml(ex.memo || '-')}</td>
+              <td style="text-align:center">
+                <button class="btn btn-sm btn-secondary" onclick="Financial.editRecurring(${i})" title="수정" style="padding:2px 6px;margin-right:2px">✎</button>
+                <button class="btn btn-sm btn-danger" onclick="Financial.deleteRecurring(${i})" title="삭제" style="padding:2px 6px">✕</button>
+              </td>
+            </tr>
+          `).join('')}</tbody>
+        </table>
+      `;
+    }
+  },
+
+  openAddRecurring() {
+    Modal.open('정기 지출 추가', `
+      <div class="form-group"><label>항목명</label><input type="text" id="newRecName" placeholder="예: AWS 클라우드"></div>
+      <div class="form-row">
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="newRecAmount" placeholder="50"></div>
+        <div class="form-group"><label>납부일</label><input type="number" id="newRecDay" min="1" max="31" placeholder="1~31"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>주기</label><select id="newRecCycle"><option value="monthly">매월</option><option value="weekly">매주</option></select></div>
+        <div class="form-group"><label>카테고리</label><select id="newRecCategory">
+          <option value="salary">인건비</option><option value="cloud">클라우드/서버</option><option value="equipment">장비</option>
+          <option value="travel">출장/교통</option><option value="office">사무실/관리</option><option value="outsource">외주</option><option value="misc">기타</option>
+        </select></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="newRecMemo" placeholder="선택사항"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addRecurring()">추가</button>`);
+  },
+
+  addRecurring() {
+    const data = DataManager.get();
+    const name = document.getElementById('newRecName').value.trim();
+    const amount = Number(document.getElementById('newRecAmount').value) || 0;
+    const day = Number(document.getElementById('newRecDay').value) || 1;
+    const cycle = document.getElementById('newRecCycle').value;
+    const category = document.getElementById('newRecCategory').value;
+    const memo = document.getElementById('newRecMemo').value.trim();
+    if (!name) { Utils.toast('항목명을 입력해주세요.', 'warning'); return; }
+    if (amount <= 0) { Utils.toast('금액을 입력해주세요.', 'warning'); return; }
+    if (!data.financial.recurringExpenses) data.financial.recurringExpenses = [];
+    data.financial.recurringExpenses.push({ id: 're' + Date.now(), name, amount, cycle, day: Math.min(Math.max(day, 1), 31), category, memo });
+    DataManager.save();
+    DataManager.addActivity('📅', `정기 지출 추가: ${name} (${amount}만원/${cycle === 'monthly' ? '월' : '주'})`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  editRecurring(idx) {
+    const data = DataManager.get();
+    const ex = data.financial.recurringExpenses[idx];
+    if (!ex) return;
+    const cats = [['salary','인건비'],['cloud','클라우드/서버'],['equipment','장비'],['travel','출장/교통'],['office','사무실/관리'],['outsource','외주'],['misc','기타']];
+    Modal.open('정기 지출 수정', `
+      <div class="form-group"><label>항목명</label><input type="text" id="editRecName" value="${Utils.escapeHtml(ex.name)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="editRecAmount" value="${ex.amount}"></div>
+        <div class="form-group"><label>납부일</label><input type="number" id="editRecDay" min="1" max="31" value="${ex.day}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>주기</label><select id="editRecCycle"><option value="monthly" ${ex.cycle==='monthly'?'selected':''}>매월</option><option value="weekly" ${ex.cycle==='weekly'?'selected':''}>매주</option></select></div>
+        <div class="form-group"><label>카테고리</label><select id="editRecCategory">${cats.map(c=>`<option value="${c[0]}" ${ex.category===c[0]?'selected':''}>${c[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="editRecMemo" value="${Utils.escapeHtml(ex.memo || '')}"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.saveEditRecurring(${idx})">저장</button>`);
+  },
+
+  saveEditRecurring(idx) {
+    const data = DataManager.get();
+    const ex = data.financial.recurringExpenses[idx];
+    if (!ex) return;
+    ex.name = document.getElementById('editRecName').value.trim();
+    ex.amount = Number(document.getElementById('editRecAmount').value) || 0;
+    ex.day = Math.min(Math.max(Number(document.getElementById('editRecDay').value) || 1, 1), 31);
+    ex.cycle = document.getElementById('editRecCycle').value;
+    ex.category = document.getElementById('editRecCategory').value;
+    ex.memo = document.getElementById('editRecMemo').value.trim();
+    DataManager.save();
+    DataManager.addActivity('📅', `정기 지출 수정: ${ex.name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  deleteRecurring(idx) {
+    const data = DataManager.get();
+    const ex = data.financial.recurringExpenses[idx];
+    if (!ex) return;
+    Modal.confirm('정기 지출 삭제', `"${ex.name}" 항목을 삭제하시겠습니까?`, () => {
+      data.financial.recurringExpenses.splice(idx, 1);
+      DataManager.save();
+      DataManager.addActivity('📅', `정기 지출 삭제: ${ex.name}`, 'info');
+      Modal.close();
+      Financial.render();
+    });
+  },
+
+  // ===== 대출 현황 =====
+  renderLoans(data) {
+    const loans = data.financial.loans || [];
+    const container = document.getElementById('loanSection');
+    if (!container) return;
+
+    const fmt = (n) => n.toLocaleString('ko-KR');
+    const statusLabels = { active: '상환중', grace: '거치기간', completed: '상환완료', overdue: '연체' };
+    const statusColors = { active: 'var(--primary)', grace: 'var(--warning)', completed: 'var(--success)', overdue: 'var(--danger)' };
+
+    if (loans.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-muted);font-size:14px">등록된 대출이 없습니다.</p>';
+      return;
+    }
+
+    let totalRemaining = 0, totalMonthly = 0, totalInterestMonthly = 0;
+
+    const cards = loans.map((loan, i) => {
+      const monthlyInterest = Math.round(loan.remainingAmount * (loan.interestRate / 100) / 12);
+      const repayPct = loan.totalAmount > 0 ? ((loan.totalAmount - loan.remainingAmount) / loan.totalAmount * 100).toFixed(1) : 0;
+      const statusColor = statusColors[loan.status] || 'var(--text-light)';
+      const statusText = statusLabels[loan.status] || loan.status;
+      totalRemaining += loan.remainingAmount;
+      totalMonthly += loan.monthlyPayment;
+      totalInterestMonthly += monthlyInterest;
+
+      return `
+        <div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--bg)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-weight:700;font-size:15px">${Utils.escapeHtml(loan.name)}</div>
+              <div style="font-size:12px;color:var(--text-light);margin-top:2px">${Utils.escapeHtml(loan.lender)} | ${loan.startDate} ~ ${loan.endDate}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${statusColor}20;color:${statusColor}">${statusText}</span>
+              <button class="btn btn-sm btn-secondary" onclick="Financial.editLoan(${i})" title="수정" style="padding:2px 8px">✎</button>
+              <button class="btn btn-sm btn-danger" onclick="Financial.deleteLoan(${i})" title="삭제" style="padding:2px 8px">✕</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:12px">
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">총 대출금</div>
+              <div style="font-size:16px;font-weight:700">${fmt(loan.totalAmount)}만</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">잔여 원금</div>
+              <div style="font-size:16px;font-weight:700;color:var(--danger)">${fmt(loan.remainingAmount)}만</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">금리 (연)</div>
+              <div style="font-size:16px;font-weight:700">${loan.interestRate}%</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">월 이자</div>
+              <div style="font-size:16px;font-weight:700;color:var(--warning)">${fmt(monthlyInterest)}만</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">월 상환액</div>
+              <div style="font-size:16px;font-weight:700;color:var(--primary)">${loan.monthlyPayment > 0 ? fmt(loan.monthlyPayment) + '만' : '-'}</div>
+            </div>
+            <div style="text-align:center;padding:8px;background:var(--bg-hover);border-radius:8px">
+              <div style="font-size:11px;color:var(--text-light)">납부일</div>
+              <div style="font-size:16px;font-weight:700">${loan.paymentDay > 0 ? '매월 ' + loan.paymentDay + '일' : '-'}</div>
+            </div>
+          </div>
+          <div style="margin-bottom:4px;display:flex;justify-content:space-between;font-size:12px">
+            <span>상환 진행률</span><span style="font-weight:600">${repayPct}%</span>
+          </div>
+          <div class="budget-bar"><div class="budget-fill" style="width:${repayPct}%;background:${Number(repayPct) > 50 ? 'var(--success)' : 'var(--primary)'}">${repayPct}%</div></div>
+          ${loan.memo ? `<div style="margin-top:8px;font-size:12px;color:var(--text-light)">* ${Utils.escapeHtml(loan.memo)}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    const summary = `
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#fee2e2,#fecaca);border-radius:10px">
+          <div style="font-size:12px;color:#991b1b">총 잔여 대출</div>
+          <div style="font-size:20px;font-weight:800;color:#dc2626">${fmt(totalRemaining)}만원</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px">
+          <div style="font-size:12px;color:#92400e">월 이자 합계</div>
+          <div style="font-size:20px;font-weight:800;color:#d97706">${fmt(totalInterestMonthly)}만원</div>
+        </div>
+        <div style="text-align:center;padding:12px;background:linear-gradient(135deg,#dbeafe,#bfdbfe);border-radius:10px">
+          <div style="font-size:12px;color:#1e40af">월 상환 합계</div>
+          <div style="font-size:20px;font-weight:800;color:#2563eb">${totalMonthly > 0 ? fmt(totalMonthly) + '만원' : '거치기간'}</div>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = summary + cards;
+  },
+
+  openAddLoan() {
+    Modal.open('대출 추가', `
+      <div class="form-group"><label>대출명</label><input type="text" id="newLoanName" placeholder="예: 중기부 정책자금"></div>
+      <div class="form-group"><label>대출 기관</label><input type="text" id="newLoanLender" placeholder="예: 중소벤처기업부"></div>
+      <div class="form-row">
+        <div class="form-group"><label>총 대출금 (만원)</label><input type="number" id="newLoanTotal" placeholder="10000"></div>
+        <div class="form-group"><label>잔여 원금 (만원)</label><input type="number" id="newLoanRemain" placeholder="10000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>금리 (%/연)</label><input type="number" id="newLoanRate" step="0.1" placeholder="1.0"></div>
+        <div class="form-group"><label>월 상환액 (만원)</label><input type="number" id="newLoanMonthly" placeholder="0=거치기간"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>납부일 (매월)</label><input type="number" id="newLoanPayDay" min="0" max="31" placeholder="0=미정"></div>
+        <div class="form-group"><label>상태</label><select id="newLoanStatus"><option value="grace">거치기간</option><option value="active">상환중</option><option value="completed">상환완료</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>시작일</label><input type="month" id="newLoanStart" value="${new Date().toISOString().slice(0,7)}"></div>
+        <div class="form-group"><label>만기일</label><input type="month" id="newLoanEnd"></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="newLoanMemo" placeholder="선택사항"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.addLoan()">추가</button>`);
+  },
+
+  addLoan() {
+    const data = DataManager.get();
+    const name = document.getElementById('newLoanName').value.trim();
+    if (!name) { Utils.toast('대출명을 입력해주세요.', 'warning'); return; }
+    if (!data.financial.loans) data.financial.loans = [];
+    data.financial.loans.push({
+      id: 'loan' + Date.now(),
+      name,
+      lender: document.getElementById('newLoanLender').value.trim(),
+      totalAmount: Number(document.getElementById('newLoanTotal').value) || 0,
+      remainingAmount: Number(document.getElementById('newLoanRemain').value) || 0,
+      interestRate: Number(document.getElementById('newLoanRate').value) || 0,
+      monthlyPayment: Number(document.getElementById('newLoanMonthly').value) || 0,
+      paymentDay: Number(document.getElementById('newLoanPayDay').value) || 0,
+      startDate: document.getElementById('newLoanStart').value,
+      endDate: document.getElementById('newLoanEnd').value,
+      status: document.getElementById('newLoanStatus').value,
+      memo: document.getElementById('newLoanMemo').value.trim()
+    });
+    DataManager.save();
+    DataManager.addActivity('🏦', `대출 추가: ${name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  editLoan(idx) {
+    const data = DataManager.get();
+    const loan = data.financial.loans[idx];
+    if (!loan) return;
+    const statOpts = [['grace','거치기간'],['active','상환중'],['completed','상환완료'],['overdue','연체']];
+    Modal.open('대출 수정', `
+      <div class="form-group"><label>대출명</label><input type="text" id="editLoanName" value="${Utils.escapeHtml(loan.name)}"></div>
+      <div class="form-group"><label>대출 기관</label><input type="text" id="editLoanLender" value="${Utils.escapeHtml(loan.lender || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>총 대출금 (만원)</label><input type="number" id="editLoanTotal" value="${loan.totalAmount}"></div>
+        <div class="form-group"><label>잔여 원금 (만원)</label><input type="number" id="editLoanRemain" value="${loan.remainingAmount}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>금리 (%/연)</label><input type="number" id="editLoanRate" step="0.1" value="${loan.interestRate}"></div>
+        <div class="form-group"><label>월 상환액 (만원)</label><input type="number" id="editLoanMonthly" value="${loan.monthlyPayment}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>납부일 (매월)</label><input type="number" id="editLoanPayDay" min="0" max="31" value="${loan.paymentDay}"></div>
+        <div class="form-group"><label>상태</label><select id="editLoanStatus">${statOpts.map(s=>`<option value="${s[0]}" ${loan.status===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>시작일</label><input type="month" id="editLoanStart" value="${loan.startDate || ''}"></div>
+        <div class="form-group"><label>만기일</label><input type="month" id="editLoanEnd" value="${loan.endDate || ''}"></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="editLoanMemo" value="${Utils.escapeHtml(loan.memo || '')}"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.saveEditLoan(${idx})">저장</button>`);
+  },
+
+  saveEditLoan(idx) {
+    const data = DataManager.get();
+    const loan = data.financial.loans[idx];
+    if (!loan) return;
+    loan.name = document.getElementById('editLoanName').value.trim();
+    loan.lender = document.getElementById('editLoanLender').value.trim();
+    loan.totalAmount = Number(document.getElementById('editLoanTotal').value) || 0;
+    loan.remainingAmount = Number(document.getElementById('editLoanRemain').value) || 0;
+    loan.interestRate = Number(document.getElementById('editLoanRate').value) || 0;
+    loan.monthlyPayment = Number(document.getElementById('editLoanMonthly').value) || 0;
+    loan.paymentDay = Number(document.getElementById('editLoanPayDay').value) || 0;
+    loan.startDate = document.getElementById('editLoanStart').value;
+    loan.endDate = document.getElementById('editLoanEnd').value;
+    loan.status = document.getElementById('editLoanStatus').value;
+    loan.memo = document.getElementById('editLoanMemo').value.trim();
+    DataManager.save();
+    DataManager.addActivity('🏦', `대출 수정: ${loan.name}`, 'info');
+    Modal.close();
+    this.render();
+  },
+
+  deleteLoan(idx) {
+    const data = DataManager.get();
+    const loan = data.financial.loans[idx];
+    if (!loan) return;
+    Modal.confirm('대출 삭제', `"${loan.name}" 대출을 삭제하시겠습니까?`, () => {
+      data.financial.loans.splice(idx, 1);
+      DataManager.save();
+      DataManager.addActivity('🏦', `대출 삭제: ${loan.name}`, 'info');
+      Modal.close();
+      Financial.render();
+    });
   }
 };
 
