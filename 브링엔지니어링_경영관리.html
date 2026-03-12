@@ -1345,6 +1345,65 @@ select {
   margin-top: 12px;
 }
 
+/* ===== LOGIN SCREEN ===== */
+#loginScreen {
+  position: fixed; inset: 0; z-index: 99999;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.login-box {
+  background: white; border-radius: 16px; padding: 48px; min-width: 360px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3); text-align: center;
+}
+.login-box h2 { font-size: 22px; margin-bottom: 8px; color: #0f172a; }
+.login-box p { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+.login-box input { width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 15px; margin-bottom: 16px; box-sizing: border-box; }
+.login-box input:focus { border-color: #2563eb; outline: none; }
+.login-box button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.login-box button:hover { background: #1d4ed8; }
+.login-error { color: #ef4444; font-size: 13px; margin-bottom: 12px; display: none; }
+
+/* ===== CONTACT/MEETING CARDS ===== */
+.contact-card { background: var(--bg); border-radius: 10px; padding: 16px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+.contact-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.contact-header { display: flex; justify-content: space-between; align-items: center; }
+.contact-name { font-weight: 700; font-size: 15px; }
+.contact-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--primary-light); color: var(--primary-dark); }
+.contact-info { display: flex; gap: 16px; margin-top: 8px; font-size: 12px; color: var(--text-light); flex-wrap: wrap; }
+.meeting-card { position: relative; padding: 16px; padding-left: 32px; border-left: 2px solid var(--primary); margin-left: 16px; margin-bottom: 12px; }
+.meeting-card::before { content: ''; position: absolute; left: -6px; top: 20px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); }
+.meeting-type { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+.meeting-type.meeting { background: #dbeafe; color: #1d4ed8; }
+.meeting-type.call { background: #dcfce7; color: #16a34a; }
+.meeting-type.email { background: #fef3c7; color: #d97706; }
+.meeting-type.visit { background: #ede9fe; color: #7c3aed; }
+
+/* ===== INVESTMENT CARDS ===== */
+.investor-card { background: var(--bg); border-radius: 10px; padding: 16px; margin-bottom: 10px; }
+.investor-stage { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.investor-stage.prospect { background: #e2e8f0; color: #475569; }
+.investor-stage.contacted { background: #dbeafe; color: #1d4ed8; }
+.investor-stage.meeting { background: #fef3c7; color: #d97706; }
+.investor-stage.dd { background: #ede9fe; color: #7c3aed; }
+.investor-stage.termsheet { background: #dcfce7; color: #16a34a; }
+.investor-stage.closed { background: #bbf7d0; color: #15803d; }
+.investor-stage.passed { background: #fee2e2; color: #dc2626; }
+
+/* ===== DOCUMENT CARDS ===== */
+.doc-card { background: var(--bg); border-radius: 10px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.doc-icon { font-size: 28px; margin-right: 14px; }
+.doc-expiry-soon { border-left: 4px solid var(--warning); }
+.doc-expired { border-left: 4px solid var(--danger); }
+.doc-status { font-size: 11px; padding: 2px 8px; border-radius: 20px; }
+.doc-status.active { background: #dcfce7; color: #16a34a; }
+.doc-status.expired { background: #fee2e2; color: #dc2626; }
+.doc-status.draft { background: #e2e8f0; color: #475569; }
+
+/* ===== NOTIFICATION BANNER ===== */
+.notif-banner { position: fixed; top: 12px; right: 12px; z-index: 9000; max-width: 380px; }
+.notif-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.1); display: flex; gap: 10px; align-items: flex-start; animation: slideIn .3s ease; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
 /* ===== FORM VALIDATION ===== */
 .form-group input:invalid,
 .form-group input.error {
@@ -1571,6 +1630,18 @@ select {
       <li class="nav-item" data-page="roadmap" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">🗺️</span>
         <span class="nav-text">로드맵 & 전략</span>
+      </li>
+      <li class="nav-item" data-page="contacts" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📇</span>
+        <span class="nav-text">거래처 관리</span>
+      </li>
+      <li class="nav-item" data-page="investment" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💎</span>
+        <span class="nav-text">투자 유치</span>
+      </li>
+      <li class="nav-item" data-page="documents" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📂</span>
+        <span class="nav-text">계약/문서</span>
       </li>
       <li class="nav-item" data-page="reports" role="menuitem" tabindex="0">
         <span class="nav-icon" aria-hidden="true">📋</span>
@@ -2067,6 +2138,80 @@ select {
       </section>
 
       <!-- Settings Page -->
+      <!-- Contacts Page -->
+      <section id="page-contacts" class="page">
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3>거래처 & 담당자 관리</h3>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="contactSearch" placeholder="검색..." oninput="Contacts.render()" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+              <button class="btn btn-primary btn-sm" onclick="Contacts.openAdd()">+ 거래처 추가</button>
+            </div>
+          </div>
+          <div id="contactsList"></div>
+        </div>
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3>미팅 & 통화 이력</h3>
+            <button class="btn btn-primary btn-sm" onclick="Contacts.openAddMeeting()">+ 이력 추가</button>
+          </div>
+          <div id="meetingTimeline"></div>
+        </div>
+      </section>
+
+      <!-- Investment Page -->
+      <section id="page-investment" class="page">
+        <div class="kpi-grid" id="investmentKPIGrid"></div>
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3>투자자 관리</h3>
+            <button class="btn btn-primary btn-sm" onclick="Investment.openAddInvestor()">+ 투자자 추가</button>
+          </div>
+          <div id="investorList"></div>
+        </div>
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>IR 미팅 일정</h3>
+            <div id="irSchedule"></div>
+          </div>
+          <div class="chart-card">
+            <h3>밸류에이션 시뮬레이션</h3>
+            <div id="valuationSim"></div>
+          </div>
+        </div>
+        <div class="section-card">
+          <h3>IR 자료 관리</h3>
+          <div id="irDocuments"></div>
+        </div>
+      </section>
+
+      <!-- Documents Page -->
+      <section id="page-documents" class="page">
+        <div class="kpi-grid" id="documentsKPIGrid"></div>
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+            <h3>계약서 & 문서 관리</h3>
+            <div style="display:flex;gap:8px">
+              <select id="docCategoryFilter" onchange="Documents.render()" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px">
+                <option value="all">전체</option>
+                <option value="contract">계약서</option>
+                <option value="mou">MOU/협약서</option>
+                <option value="government">정부과제</option>
+                <option value="legal">법률/인허가</option>
+                <option value="internal">내부 문서</option>
+                <option value="other">기타</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="Documents.openAdd()">+ 문서 등록</button>
+            </div>
+          </div>
+          <div id="documentsList"></div>
+        </div>
+        <div class="section-card">
+          <h3>만료 임박 문서</h3>
+          <div id="expiringDocs"></div>
+        </div>
+      </section>
+
       <section id="page-settings" class="page">
         <div class="section-card">
           <h3>회사 기본 정보</h3>
@@ -2122,16 +2267,42 @@ select {
           </div>
         </div>
         <div class="section-card">
+          <h3>🔒 비밀번호 잠금</h3>
+          <p style="font-size:13px;color:var(--text-light);margin-bottom:12px">비밀번호를 설정하면 서버 접속 시 로그인이 필요합니다.</p>
+          <div id="passwordStatus"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <input type="password" id="settingPassword" placeholder="새 비밀번호 (4자 이상)" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:6px">
+            <button class="btn btn-primary btn-sm" onclick="Settings.setPassword()">비밀번호 설정</button>
+            <button class="btn btn-danger btn-sm" onclick="Settings.removePassword()">잠금 해제</button>
+          </div>
+        </div>
+        <div class="section-card">
           <h3>앱 정보</h3>
           <p style="font-size:13px;color:var(--text-light)">
-            브링엔지니어링 경영관리 시스템 v2.0<br>
+            브링엔지니어링 경영관리 시스템 v3.0<br>
             데이터: 서버 파일 저장 (./data/app-data.json)<br>
+            문서: 서버 파일 저장 (./data/documents/)<br>
             단축키: <span class="shortcut-key">?</span> 키를 눌러 확인
           </p>
         </div>
       </section>
     </div>
   </main>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" style="display:none">
+    <div class="login-box">
+      <div style="font-size:48px;margin-bottom:16px">🏗️</div>
+      <h2>브링엔지니어링</h2>
+      <p>경영관리 시스템에 로그인하세요</p>
+      <div id="loginError" class="login-error"></div>
+      <input type="password" id="loginPassword" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')Auth.login()">
+      <button onclick="Auth.login()">로그인</button>
+    </div>
+  </div>
+
+  <!-- Notification Banner -->
+  <div id="notifBanner" class="notif-banner"></div>
 
   <!-- Modal -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
@@ -2768,6 +2939,42 @@ const DEFAULT_DATA = {
     { time: '2026-03-09 10:00', icon: '💰', text: '청년창업사관학교 1차 입금 확인', type: 'success' }
   ],
 
+  // ===== 거래처 & 미팅 이력 =====
+  contacts: [
+    { id: 'c1', name: '한국도로공사 본사', category: '공공기관', contactName: '', contactPhone: '', contactEmail: '', address: '김천시 혁신로 208', memo: '' },
+  ],
+  meetings: [
+    { id: 'mt1', contactId: 'c1', date: '2026-03-10', type: 'meeting', title: '초기 미팅', attendees: '서창환', summary: '제품 소개 및 협력 논의', nextAction: '제안서 전달', nextDate: '2026-03-17' },
+  ],
+
+  // ===== 투자 유치 =====
+  investors: [],
+  irMeetings: [],
+  irDocuments: [],
+  valuation: {
+    preMoneyMin: 10, // 억원
+    preMoneyMax: 30,
+    method: 'comparable', // comparable, dcf, berkus
+    notes: ''
+  },
+
+  // ===== 계약/문서 관리 =====
+  documents: [
+    { id: 'doc1', title: '사업자등록증', category: 'legal', date: '2025-01-01', expiryDate: '', status: 'active', parties: '브링엔지니어링', amount: 0, memo: '', fileName: '', storedName: '' },
+  ],
+
+  // ===== 알림 설정 =====
+  notifications: {
+    weeklyReport: true,
+    weeklyReportDay: 5, // 금요일
+    monthlyReport: true,
+    monthlyReportDay: 1, // 1일
+    docExpiryAlert: true,
+    docExpiryDays: 30,
+    loanPaymentAlert: true,
+    loanPaymentDays: 7
+  },
+
   settings: {
     alertRunway: true,
     alertOKR: true,
@@ -2788,6 +2995,7 @@ const DataManager = {
       // 동기 XHR로 초기 로드 (앱 시작 시 1회)
       const xhr = new XMLHttpRequest();
       xhr.open('GET', '/api/data', false);
+      if (window._authToken) xhr.setRequestHeader('X-Auth-Token', window._authToken);
       xhr.send();
       if (xhr.status === 200) {
         const stored = JSON.parse(xhr.responseText);
@@ -2819,7 +3027,7 @@ const DataManager = {
     this._saving = true;
     fetch('/api/data', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Auth-Token': window._authToken || '' },
       body: JSON.stringify(this._data)
     }).then(res => {
       this._saving = false;
@@ -7412,6 +7620,668 @@ const RoadmapPage = {
 
   </script>
   <script>
+// ===== CONTACTS MODULE =====
+const Contacts = {
+  render() {
+    this.renderContacts();
+    this.renderMeetings();
+  },
+
+  renderContacts() {
+    const data = DataManager.get();
+    const search = (document.getElementById('contactSearch')?.value || '').toLowerCase();
+    const contacts = (data.contacts || []).filter(c =>
+      !search || c.name.toLowerCase().includes(search) || (c.contactName||'').toLowerCase().includes(search) || (c.category||'').toLowerCase().includes(search)
+    );
+    const el = document.getElementById('contactsList');
+    if (!el) return;
+    if (contacts.length === 0) {
+      el.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px">등록된 거래처가 없습니다.</p>';
+      return;
+    }
+    el.innerHTML = contacts.map((c, i) => {
+      const meetings = (data.meetings || []).filter(m => m.contactId === c.id);
+      const lastMeeting = meetings.sort((a, b) => b.date.localeCompare(a.date))[0];
+      return `<div class="contact-card">
+        <div class="contact-header">
+          <div><span class="contact-name">${Utils.escapeHtml(c.name)}</span> <span class="contact-badge">${Utils.escapeHtml(c.category||'기타')}</span></div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-sm" onclick="Contacts.openAddMeeting('${c.id}')" style="font-size:11px;padding:2px 8px">+ 이력</button>
+            <button class="btn btn-sm" onclick="Contacts.edit('${c.id}')" style="font-size:11px;padding:2px 8px">수정</button>
+            <button class="btn btn-sm btn-danger" onclick="Contacts.delete('${c.id}')" style="font-size:11px;padding:2px 8px">삭제</button>
+          </div>
+        </div>
+        <div class="contact-info">
+          ${c.contactName ? `<span>👤 ${Utils.escapeHtml(c.contactName)}</span>` : ''}
+          ${c.contactPhone ? `<span>📞 ${Utils.escapeHtml(c.contactPhone)}</span>` : ''}
+          ${c.contactEmail ? `<span>✉️ ${Utils.escapeHtml(c.contactEmail)}</span>` : ''}
+          ${c.address ? `<span>📍 ${Utils.escapeHtml(c.address)}</span>` : ''}
+          <span>📅 미팅 ${meetings.length}건${lastMeeting ? ' (최근: '+lastMeeting.date+')' : ''}</span>
+        </div>
+        ${c.memo ? `<div style="font-size:12px;color:var(--text-light);margin-top:6px;padding:6px 8px;background:var(--bg-hover);border-radius:4px">${Utils.escapeHtml(c.memo)}</div>` : ''}
+      </div>`;
+    }).join('');
+  },
+
+  renderMeetings() {
+    const data = DataManager.get();
+    const meetings = (data.meetings || []).sort((a, b) => b.date.localeCompare(a.date));
+    const el = document.getElementById('meetingTimeline');
+    if (!el) return;
+    if (meetings.length === 0) {
+      el.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px">등록된 이력이 없습니다.</p>';
+      return;
+    }
+    const typeLabels = { meeting: '미팅', call: '통화', email: '이메일', visit: '방문' };
+    el.innerHTML = meetings.slice(0, 50).map(m => {
+      const contact = (data.contacts || []).find(c => c.id === m.contactId);
+      return `<div class="meeting-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>${Utils.escapeHtml(m.title)}</strong> <span class="meeting-type ${m.type}">${typeLabels[m.type]||m.type}</span></div>
+          <div style="display:flex;gap:4px;align-items:center">
+            <span style="font-size:12px;color:var(--text-light)">${m.date}</span>
+            <button class="btn btn-sm btn-danger" onclick="Contacts.deleteMeeting('${m.id}')" style="font-size:10px;padding:1px 6px">✕</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text-light);margin-top:4px">
+          ${contact ? `📇 ${Utils.escapeHtml(contact.name)}` : ''} ${m.attendees ? `· 👥 ${Utils.escapeHtml(m.attendees)}` : ''}
+        </div>
+        ${m.summary ? `<div style="font-size:13px;margin-top:6px">${Utils.escapeHtml(m.summary)}</div>` : ''}
+        ${m.nextAction ? `<div style="font-size:12px;margin-top:4px;color:var(--primary)">➡️ 다음: ${Utils.escapeHtml(m.nextAction)}${m.nextDate ? ' ('+m.nextDate+')' : ''}</div>` : ''}
+      </div>`;
+    }).join('');
+  },
+
+  openAdd() {
+    Modal.open('거래처 추가', `
+      <div class="form-group"><label>거래처명 *</label><input type="text" id="newContactName" required></div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="newContactCategory"><option>공공기관</option><option>지자체</option><option>대학/연구</option><option>민간기업</option><option>투자사</option><option>파트너</option><option>기타</option></select></div>
+        <div class="form-group"><label>담당자</label><input type="text" id="newContactPerson"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>전화번호</label><input type="text" id="newContactPhone"></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="newContactEmail"></div>
+      </div>
+      <div class="form-group"><label>주소</label><input type="text" id="newContactAddr"></div>
+      <div class="form-group"><label>메모</label><textarea id="newContactMemo" rows="2"></textarea></div>
+    `, () => {
+      const name = document.getElementById('newContactName').value.trim();
+      if (!name) return Utils.toast('거래처명을 입력하세요.', 'warning');
+      const data = DataManager.get();
+      if (!data.contacts) data.contacts = [];
+      data.contacts.push({
+        id: 'c' + Date.now(),
+        name,
+        category: document.getElementById('newContactCategory').value,
+        contactName: document.getElementById('newContactPerson').value.trim(),
+        contactPhone: document.getElementById('newContactPhone').value.trim(),
+        contactEmail: document.getElementById('newContactEmail').value.trim(),
+        address: document.getElementById('newContactAddr').value.trim(),
+        memo: document.getElementById('newContactMemo').value.trim()
+      });
+      DataManager.save();
+      DataManager.addActivity('📇', `거래처 추가: ${name}`, 'info');
+      Modal.close();
+      this.render();
+    });
+  },
+
+  edit(id) {
+    const data = DataManager.get();
+    const c = (data.contacts||[]).find(x => x.id === id);
+    if (!c) return;
+    Modal.open('거래처 수정', `
+      <div class="form-group"><label>거래처명 *</label><input type="text" id="editContactName" value="${Utils.escapeHtml(c.name)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="editContactCategory">${['공공기관','지자체','대학/연구','민간기업','투자사','파트너','기타'].map(o=>`<option${o===c.category?' selected':''}>${o}</option>`).join('')}</select></div>
+        <div class="form-group"><label>담당자</label><input type="text" id="editContactPerson" value="${Utils.escapeHtml(c.contactName||'')}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>전화번호</label><input type="text" id="editContactPhone" value="${Utils.escapeHtml(c.contactPhone||'')}"></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="editContactEmail" value="${Utils.escapeHtml(c.contactEmail||'')}"></div>
+      </div>
+      <div class="form-group"><label>주소</label><input type="text" id="editContactAddr" value="${Utils.escapeHtml(c.address||'')}"></div>
+      <div class="form-group"><label>메모</label><textarea id="editContactMemo" rows="2">${Utils.escapeHtml(c.memo||'')}</textarea></div>
+    `, () => {
+      c.name = document.getElementById('editContactName').value.trim();
+      c.category = document.getElementById('editContactCategory').value;
+      c.contactName = document.getElementById('editContactPerson').value.trim();
+      c.contactPhone = document.getElementById('editContactPhone').value.trim();
+      c.contactEmail = document.getElementById('editContactEmail').value.trim();
+      c.address = document.getElementById('editContactAddr').value.trim();
+      c.memo = document.getElementById('editContactMemo').value.trim();
+      DataManager.save();
+      Modal.close();
+      this.render();
+    });
+  },
+
+  delete(id) {
+    const data = DataManager.get();
+    const c = (data.contacts||[]).find(x => x.id === id);
+    if (!c) return;
+    if (!confirm(`"${c.name}" 거래처를 삭제하시겠습니까?`)) return;
+    data.contacts = data.contacts.filter(x => x.id !== id);
+    data.meetings = (data.meetings||[]).filter(m => m.contactId !== id);
+    DataManager.save();
+    DataManager.addActivity('📇', `거래처 삭제: ${c.name}`, 'info');
+    this.render();
+  },
+
+  openAddMeeting(contactId) {
+    const data = DataManager.get();
+    const contacts = data.contacts || [];
+    Modal.open('미팅/통화 이력 추가', `
+      <div class="form-row">
+        <div class="form-group"><label>거래처 *</label><select id="newMtContact">${contacts.map(c => `<option value="${c.id}"${c.id===contactId?' selected':''}>${Utils.escapeHtml(c.name)}</option>`).join('')}</select></div>
+        <div class="form-group"><label>유형</label><select id="newMtType"><option value="meeting">미팅</option><option value="call">통화</option><option value="email">이메일</option><option value="visit">방문</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>일자 *</label><input type="date" id="newMtDate" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="form-group"><label>제목 *</label><input type="text" id="newMtTitle"></div>
+      </div>
+      <div class="form-group"><label>참석자</label><input type="text" id="newMtAttendees" placeholder="예: 서창환, 김현서"></div>
+      <div class="form-group"><label>내용 요약</label><textarea id="newMtSummary" rows="3"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>다음 액션</label><input type="text" id="newMtNext"></div>
+        <div class="form-group"><label>다음 일정</label><input type="date" id="newMtNextDate"></div>
+      </div>
+    `, () => {
+      const title = document.getElementById('newMtTitle').value.trim();
+      if (!title) return Utils.toast('제목을 입력하세요.', 'warning');
+      if (!data.meetings) data.meetings = [];
+      data.meetings.push({
+        id: 'mt' + Date.now(),
+        contactId: document.getElementById('newMtContact').value,
+        date: document.getElementById('newMtDate').value,
+        type: document.getElementById('newMtType').value,
+        title,
+        attendees: document.getElementById('newMtAttendees').value.trim(),
+        summary: document.getElementById('newMtSummary').value.trim(),
+        nextAction: document.getElementById('newMtNext').value.trim(),
+        nextDate: document.getElementById('newMtNextDate').value
+      });
+      DataManager.save();
+      DataManager.addActivity('📇', `미팅 이력 추가: ${title}`, 'info');
+      Modal.close();
+      this.render();
+    });
+  },
+
+  deleteMeeting(id) {
+    const data = DataManager.get();
+    if (!confirm('이 이력을 삭제하시겠습니까?')) return;
+    data.meetings = (data.meetings||[]).filter(m => m.id !== id);
+    DataManager.save();
+    this.render();
+  }
+};
+
+// ===== INVESTMENT MODULE =====
+const Investment = {
+  render() {
+    this.renderKPIs();
+    this.renderInvestors();
+    this.renderIRSchedule();
+    this.renderValuation();
+    this.renderIRDocs();
+  },
+
+  renderKPIs() {
+    const data = DataManager.get();
+    const investors = data.investors || [];
+    const total = investors.length;
+    const active = investors.filter(i => !['passed','closed'].includes(i.stage)).length;
+    const meetings = (data.irMeetings || []).length;
+    const el = document.getElementById('investmentKPIGrid');
+    if (!el) return;
+    el.innerHTML = `
+      <div class="kpi-card"><div class="kpi-label">전체 투자자</div><div class="kpi-value">${total}명</div></div>
+      <div class="kpi-card"><div class="kpi-label">진행 중</div><div class="kpi-value" style="color:var(--primary)">${active}명</div></div>
+      <div class="kpi-card"><div class="kpi-label">IR 미팅</div><div class="kpi-value">${meetings}회</div></div>
+      <div class="kpi-card"><div class="kpi-label">목표 밸류에이션</div><div class="kpi-value">${data.valuation?.preMoneyMin||0}~${data.valuation?.preMoneyMax||0}억</div></div>
+    `;
+  },
+
+  renderInvestors() {
+    const data = DataManager.get();
+    const investors = data.investors || [];
+    const el = document.getElementById('investorList');
+    if (!el) return;
+    const stageLabels = { prospect:'발굴', contacted:'접촉', meeting:'미팅', dd:'실사(DD)', termsheet:'텀시트', closed:'투자완료', passed:'불발' };
+    if (investors.length === 0) {
+      el.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px">등록된 투자자가 없습니다.</p>';
+      return;
+    }
+    el.innerHTML = investors.map(inv => `
+      <div class="investor-card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <strong style="font-size:15px">${Utils.escapeHtml(inv.name)}</strong>
+            <span class="investor-stage ${inv.stage}">${stageLabels[inv.stage]||inv.stage}</span>
+            ${inv.type ? `<span style="font-size:11px;color:var(--text-light);margin-left:6px">${Utils.escapeHtml(inv.type)}</span>` : ''}
+          </div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-sm" onclick="Investment.editInvestor('${inv.id}')" style="font-size:11px;padding:2px 8px">수정</button>
+            <button class="btn btn-sm btn-danger" onclick="Investment.deleteInvestor('${inv.id}')" style="font-size:11px;padding:2px 8px">삭제</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:var(--text-light);flex-wrap:wrap">
+          ${inv.contactName ? `<span>👤 ${Utils.escapeHtml(inv.contactName)}</span>` : ''}
+          ${inv.contactEmail ? `<span>✉️ ${Utils.escapeHtml(inv.contactEmail)}</span>` : ''}
+          ${inv.amount ? `<span>💰 ${inv.amount}억원</span>` : ''}
+          ${inv.lastContact ? `<span>📅 최근: ${inv.lastContact}</span>` : ''}
+        </div>
+        ${inv.memo ? `<div style="font-size:12px;margin-top:6px;padding:6px 8px;background:var(--bg-hover);border-radius:4px">${Utils.escapeHtml(inv.memo)}</div>` : ''}
+      </div>
+    `).join('');
+  },
+
+  renderIRSchedule() {
+    const data = DataManager.get();
+    const meetings = (data.irMeetings || []).sort((a,b) => b.date.localeCompare(a.date));
+    const el = document.getElementById('irSchedule');
+    if (!el) return;
+    el.innerHTML = `
+      <button class="btn btn-primary btn-sm" onclick="Investment.openAddIRMeeting()" style="margin-bottom:12px">+ IR 미팅 추가</button>
+      ${meetings.length === 0 ? '<p style="text-align:center;color:var(--text-light);padding:20px">등록된 IR 미팅이 없습니다.</p>' :
+        meetings.map(m => {
+          const inv = (data.investors||[]).find(i => i.id === m.investorId);
+          return `<div style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between">
+            <div><strong>${m.date}</strong> — ${Utils.escapeHtml(m.title)} ${inv ? '('+Utils.escapeHtml(inv.name)+')' : ''}</div>
+            <button class="btn btn-sm btn-danger" onclick="Investment.deleteIRMeeting('${m.id}')" style="font-size:10px;padding:1px 6px">✕</button>
+          </div>`;
+        }).join('')}
+    `;
+  },
+
+  renderValuation() {
+    const data = DataManager.get();
+    const v = data.valuation || {};
+    const el = document.getElementById('valuationSim');
+    if (!el) return;
+    const methods = { comparable: '비교법 (유사기업)', dcf: 'DCF (현금흐름할인)', berkus: '버커스법 (초기단계)' };
+    el.innerHTML = `
+      <div style="margin-bottom:16px">
+        <div class="form-row">
+          <div class="form-group"><label>프리머니 최소 (억)</label><input type="number" id="valMin" value="${v.preMoneyMin||10}" onchange="Investment.saveValuation()" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px"></div>
+          <div class="form-group"><label>프리머니 최대 (억)</label><input type="number" id="valMax" value="${v.preMoneyMax||30}" onchange="Investment.saveValuation()" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px"></div>
+          <div class="form-group"><label>산정 방식</label><select id="valMethod" onchange="Investment.saveValuation()" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px">${Object.entries(methods).map(([k,v2])=>`<option value="${k}"${k===v.method?' selected':''}>${v2}</option>`).join('')}</select></div>
+        </div>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:16px">
+        <h4 style="margin-bottom:12px">지분 희석 시뮬레이션</h4>
+        <table class="data-table" style="font-size:13px"><thead><tr><th>투자금 (억)</th><th>프리머니</th><th>포스트머니</th><th>투자자 지분</th><th>창업자 잔여</th></tr></thead><tbody>
+        ${[1,3,5,10].map(amt => {
+          const pre = (v.preMoneyMin||10);
+          const post = pre + amt;
+          const investorPct = (amt/post*100).toFixed(1);
+          const founderPct = (100 - amt/post*100).toFixed(1);
+          return `<tr><td>${amt}억</td><td>${pre}억</td><td>${post}억</td><td>${investorPct}%</td><td>${founderPct}%</td></tr>`;
+        }).join('')}
+        </tbody></table>
+      </div>
+      <div class="form-group" style="margin-top:12px"><label>메모</label><textarea id="valNotes" rows="2" onchange="Investment.saveValuation()" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px">${Utils.escapeHtml(v.notes||'')}</textarea></div>
+    `;
+  },
+
+  renderIRDocs() {
+    const data = DataManager.get();
+    const docs = data.irDocuments || [];
+    const el = document.getElementById('irDocuments');
+    if (!el) return;
+    el.innerHTML = `
+      <button class="btn btn-primary btn-sm" onclick="Investment.openAddIRDoc()" style="margin-bottom:12px">+ IR 자료 등록</button>
+      ${docs.length === 0 ? '<p style="color:var(--text-light);font-size:13px">등록된 IR 자료가 없습니다.</p>' :
+        docs.map(d => `<div style="padding:8px;border-bottom:1px solid var(--border);font-size:13px;display:flex;justify-content:space-between">
+          <div>📄 <strong>${Utils.escapeHtml(d.title)}</strong> <span style="color:var(--text-light)">${d.version||''} · ${d.date||''}</span></div>
+          <button class="btn btn-sm btn-danger" onclick="Investment.deleteIRDoc('${d.id}')" style="font-size:10px;padding:1px 6px">✕</button>
+        </div>`).join('')}
+    `;
+  },
+
+  saveValuation() {
+    const data = DataManager.get();
+    data.valuation = {
+      preMoneyMin: parseInt(document.getElementById('valMin')?.value) || 10,
+      preMoneyMax: parseInt(document.getElementById('valMax')?.value) || 30,
+      method: document.getElementById('valMethod')?.value || 'comparable',
+      notes: document.getElementById('valNotes')?.value || ''
+    };
+    DataManager.save();
+    this.renderValuation();
+  },
+
+  openAddInvestor() {
+    Modal.open('투자자 추가', `
+      <div class="form-row">
+        <div class="form-group"><label>투자사/투자자명 *</label><input type="text" id="newInvName"></div>
+        <div class="form-group"><label>유형</label><select id="newInvType"><option>VC</option><option>엔젤</option><option>CVC</option><option>정책금융</option><option>액셀러레이터</option><option>기타</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>단계</label><select id="newInvStage"><option value="prospect">발굴</option><option value="contacted">접촉</option><option value="meeting">미팅</option><option value="dd">실사(DD)</option><option value="termsheet">텀시트</option><option value="closed">투자완료</option></select></div>
+        <div class="form-group"><label>투자 희망금액 (억)</label><input type="number" id="newInvAmount" step="0.1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>담당자</label><input type="text" id="newInvContact"></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="newInvEmail"></div>
+      </div>
+      <div class="form-group"><label>메모</label><textarea id="newInvMemo" rows="2"></textarea></div>
+    `, () => {
+      const name = document.getElementById('newInvName').value.trim();
+      if (!name) return Utils.toast('투자사명을 입력하세요.', 'warning');
+      const data = DataManager.get();
+      if (!data.investors) data.investors = [];
+      data.investors.push({
+        id: 'inv' + Date.now(), name,
+        type: document.getElementById('newInvType').value,
+        stage: document.getElementById('newInvStage').value,
+        amount: parseFloat(document.getElementById('newInvAmount').value) || 0,
+        contactName: document.getElementById('newInvContact').value.trim(),
+        contactEmail: document.getElementById('newInvEmail').value.trim(),
+        memo: document.getElementById('newInvMemo').value.trim(),
+        lastContact: new Date().toISOString().slice(0,10)
+      });
+      DataManager.save();
+      DataManager.addActivity('💎', `투자자 추가: ${name}`, 'info');
+      Modal.close();
+      this.render();
+    });
+  },
+
+  editInvestor(id) {
+    const data = DataManager.get();
+    const inv = (data.investors||[]).find(x => x.id === id);
+    if (!inv) return;
+    const stages = {prospect:'발굴',contacted:'접촉',meeting:'미팅',dd:'실사(DD)',termsheet:'텀시트',closed:'투자완료',passed:'불발'};
+    Modal.open('투자자 수정', `
+      <div class="form-row">
+        <div class="form-group"><label>투자사명</label><input type="text" id="editInvName" value="${Utils.escapeHtml(inv.name)}"></div>
+        <div class="form-group"><label>유형</label><select id="editInvType">${['VC','엔젤','CVC','정책금융','액셀러레이터','기타'].map(o=>`<option${o===inv.type?' selected':''}>${o}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>단계</label><select id="editInvStage">${Object.entries(stages).map(([k,v])=>`<option value="${k}"${k===inv.stage?' selected':''}>${v}</option>`).join('')}</select></div>
+        <div class="form-group"><label>금액 (억)</label><input type="number" id="editInvAmount" value="${inv.amount||''}" step="0.1"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>담당자</label><input type="text" id="editInvContact" value="${Utils.escapeHtml(inv.contactName||'')}"></div>
+        <div class="form-group"><label>이메일</label><input type="email" id="editInvEmail" value="${Utils.escapeHtml(inv.contactEmail||'')}"></div>
+      </div>
+      <div class="form-group"><label>메모</label><textarea id="editInvMemo" rows="2">${Utils.escapeHtml(inv.memo||'')}</textarea></div>
+    `, () => {
+      inv.name = document.getElementById('editInvName').value.trim();
+      inv.type = document.getElementById('editInvType').value;
+      inv.stage = document.getElementById('editInvStage').value;
+      inv.amount = parseFloat(document.getElementById('editInvAmount').value) || 0;
+      inv.contactName = document.getElementById('editInvContact').value.trim();
+      inv.contactEmail = document.getElementById('editInvEmail').value.trim();
+      inv.memo = document.getElementById('editInvMemo').value.trim();
+      inv.lastContact = new Date().toISOString().slice(0,10);
+      DataManager.save();
+      Modal.close();
+      this.render();
+    });
+  },
+
+  deleteInvestor(id) {
+    const data = DataManager.get();
+    const inv = (data.investors||[]).find(x => x.id === id);
+    if (!inv || !confirm(`"${inv.name}" 투자자를 삭제하시겠습니까?`)) return;
+    data.investors = data.investors.filter(x => x.id !== id);
+    DataManager.save();
+    this.render();
+  },
+
+  openAddIRMeeting() {
+    const data = DataManager.get();
+    const investors = data.investors || [];
+    Modal.open('IR 미팅 추가', `
+      <div class="form-row">
+        <div class="form-group"><label>투자자</label><select id="newIRInvestor"><option value="">선택</option>${investors.map(i=>`<option value="${i.id}">${Utils.escapeHtml(i.name)}</option>`).join('')}</select></div>
+        <div class="form-group"><label>일자</label><input type="date" id="newIRDate" value="${new Date().toISOString().slice(0,10)}"></div>
+      </div>
+      <div class="form-group"><label>제목</label><input type="text" id="newIRTitle"></div>
+      <div class="form-group"><label>내용</label><textarea id="newIRNote" rows="2"></textarea></div>
+    `, () => {
+      const title = document.getElementById('newIRTitle').value.trim() || 'IR 미팅';
+      if (!data.irMeetings) data.irMeetings = [];
+      data.irMeetings.push({ id: 'ir'+Date.now(), investorId: document.getElementById('newIRInvestor').value, date: document.getElementById('newIRDate').value, title, note: document.getElementById('newIRNote').value.trim() });
+      DataManager.save();
+      DataManager.addActivity('💎', `IR 미팅 추가: ${title}`, 'info');
+      Modal.close();
+      this.render();
+    });
+  },
+
+  deleteIRMeeting(id) { const data = DataManager.get(); data.irMeetings = (data.irMeetings||[]).filter(m=>m.id!==id); DataManager.save(); this.render(); },
+
+  openAddIRDoc() {
+    Modal.open('IR 자료 등록', `
+      <div class="form-group"><label>자료명</label><input type="text" id="newIRDocTitle" placeholder="예: 사업계획서 v2.0"></div>
+      <div class="form-row">
+        <div class="form-group"><label>버전</label><input type="text" id="newIRDocVer" placeholder="v1.0"></div>
+        <div class="form-group"><label>일자</label><input type="date" id="newIRDocDate" value="${new Date().toISOString().slice(0,10)}"></div>
+      </div>
+    `, () => {
+      const title = document.getElementById('newIRDocTitle').value.trim();
+      if (!title) return Utils.toast('자료명을 입력하세요.', 'warning');
+      const data = DataManager.get();
+      if (!data.irDocuments) data.irDocuments = [];
+      data.irDocuments.push({ id: 'ird'+Date.now(), title, version: document.getElementById('newIRDocVer').value.trim(), date: document.getElementById('newIRDocDate').value });
+      DataManager.save();
+      Modal.close();
+      this.render();
+    });
+  },
+
+  deleteIRDoc(id) { const data = DataManager.get(); data.irDocuments = (data.irDocuments||[]).filter(d=>d.id!==id); DataManager.save(); this.render(); }
+};
+
+// ===== DOCUMENTS MODULE =====
+const Documents = {
+  render() {
+    this.renderKPIs();
+    this.renderDocuments();
+    this.renderExpiring();
+  },
+
+  renderKPIs() {
+    const data = DataManager.get();
+    const docs = data.documents || [];
+    const total = docs.length;
+    const active = docs.filter(d => d.status === 'active').length;
+    const now = new Date();
+    const soon = docs.filter(d => {
+      if (!d.expiryDate) return false;
+      const diff = (new Date(d.expiryDate) - now) / (1000*60*60*24);
+      return diff > 0 && diff <= 30;
+    }).length;
+    const expired = docs.filter(d => d.expiryDate && new Date(d.expiryDate) < now).length;
+    const el = document.getElementById('documentsKPIGrid');
+    if (!el) return;
+    el.innerHTML = `
+      <div class="kpi-card"><div class="kpi-label">전체 문서</div><div class="kpi-value">${total}건</div></div>
+      <div class="kpi-card"><div class="kpi-label">유효 문서</div><div class="kpi-value" style="color:var(--success)">${active}건</div></div>
+      <div class="kpi-card"><div class="kpi-label">만료 임박 (30일)</div><div class="kpi-value" style="color:var(--warning)">${soon}건</div></div>
+      <div class="kpi-card"><div class="kpi-label">만료됨</div><div class="kpi-value" style="color:var(--danger)">${expired}건</div></div>
+    `;
+  },
+
+  renderDocuments() {
+    const data = DataManager.get();
+    const filter = document.getElementById('docCategoryFilter')?.value || 'all';
+    let docs = data.documents || [];
+    if (filter !== 'all') docs = docs.filter(d => d.category === filter);
+    const el = document.getElementById('documentsList');
+    if (!el) return;
+    const categoryLabels = {contract:'계약서',mou:'MOU/협약서',government:'정부과제',legal:'법률/인허가',internal:'내부 문서',other:'기타'};
+    const icons = {contract:'📝',mou:'🤝',government:'🏛️',legal:'⚖️',internal:'📁',other:'📄'};
+    const now = new Date();
+    if (docs.length === 0) {
+      el.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:40px">등록된 문서가 없습니다.</p>';
+      return;
+    }
+    el.innerHTML = docs.map(d => {
+      const isExpired = d.expiryDate && new Date(d.expiryDate) < now;
+      const isSoon = d.expiryDate && !isExpired && ((new Date(d.expiryDate) - now) / (1000*60*60*24)) <= 30;
+      const cls = isExpired ? 'doc-expired' : isSoon ? 'doc-expiry-soon' : '';
+      return `<div class="doc-card ${cls}">
+        <div style="display:flex;align-items:center;flex:1">
+          <span class="doc-icon">${icons[d.category]||'📄'}</span>
+          <div>
+            <div style="font-weight:600;font-size:14px">${Utils.escapeHtml(d.title)}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:2px">
+              ${categoryLabels[d.category]||d.category} · ${d.parties||''} · ${d.date||''}
+              ${d.expiryDate ? ` · 만료: ${d.expiryDate}` : ''}
+              ${d.amount ? ` · ${d.amount.toLocaleString()}만원` : ''}
+            </div>
+            ${d.memo ? `<div style="font-size:11px;color:var(--text-light);margin-top:2px">${Utils.escapeHtml(d.memo)}</div>` : ''}
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <span class="doc-status ${isExpired?'expired':d.status||'active'}">${isExpired?'만료':d.status==='draft'?'초안':'유효'}</span>
+          ${d.storedName ? `<a href="/api/documents/${d.storedName}" target="_blank" class="btn btn-sm" style="font-size:11px;padding:2px 8px">📎</a>` : ''}
+          <button class="btn btn-sm" onclick="Documents.edit('${d.id}')" style="font-size:11px;padding:2px 8px">수정</button>
+          <button class="btn btn-sm btn-danger" onclick="Documents.delete('${d.id}')" style="font-size:11px;padding:2px 8px">삭제</button>
+        </div>
+      </div>`;
+    }).join('');
+  },
+
+  renderExpiring() {
+    const data = DataManager.get();
+    const now = new Date();
+    const docs = (data.documents || []).filter(d => {
+      if (!d.expiryDate) return false;
+      const diff = (new Date(d.expiryDate) - now) / (1000*60*60*24);
+      return diff > 0 && diff <= 60;
+    }).sort((a,b) => a.expiryDate.localeCompare(b.expiryDate));
+    const el = document.getElementById('expiringDocs');
+    if (!el) return;
+    if (docs.length === 0) {
+      el.innerHTML = '<p style="text-align:center;color:var(--text-light);padding:20px">60일 내 만료 예정 문서가 없습니다.</p>';
+      return;
+    }
+    el.innerHTML = docs.map(d => {
+      const days = Math.ceil((new Date(d.expiryDate) - now) / (1000*60*60*24));
+      const color = days <= 7 ? 'var(--danger)' : days <= 30 ? 'var(--warning)' : 'var(--text-light)';
+      return `<div style="padding:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div><strong>${Utils.escapeHtml(d.title)}</strong> <span style="font-size:12px;color:var(--text-light)">${d.parties||''}</span></div>
+        <div style="font-size:13px;font-weight:600;color:${color}">${d.expiryDate} (${days}일 남음)</div>
+      </div>`;
+    }).join('');
+  },
+
+  openAdd() {
+    Modal.open('문서 등록', `
+      <div class="form-group"><label>문서 제목 *</label><input type="text" id="newDocTitle"></div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="newDocCategory"><option value="contract">계약서</option><option value="mou">MOU/협약서</option><option value="government">정부과제</option><option value="legal">법률/인허가</option><option value="internal">내부 문서</option><option value="other">기타</option></select></div>
+        <div class="form-group"><label>상태</label><select id="newDocStatus"><option value="active">유효</option><option value="draft">초안</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>작성/체결일</label><input type="date" id="newDocDate" value="${new Date().toISOString().slice(0,10)}"></div>
+        <div class="form-group"><label>만료일</label><input type="date" id="newDocExpiry"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>계약 상대방</label><input type="text" id="newDocParties"></div>
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="newDocAmount"></div>
+      </div>
+      <div class="form-group"><label>메모</label><textarea id="newDocMemo" rows="2"></textarea></div>
+      <div class="form-group"><label>파일 첨부</label><input type="file" id="newDocFile"></div>
+    `, async () => {
+      const title = document.getElementById('newDocTitle').value.trim();
+      if (!title) return Utils.toast('문서 제목을 입력하세요.', 'warning');
+      const data = DataManager.get();
+      if (!data.documents) data.documents = [];
+      const doc = {
+        id: 'doc' + Date.now(), title,
+        category: document.getElementById('newDocCategory').value,
+        status: document.getElementById('newDocStatus').value,
+        date: document.getElementById('newDocDate').value,
+        expiryDate: document.getElementById('newDocExpiry').value,
+        parties: document.getElementById('newDocParties').value.trim(),
+        amount: parseInt(document.getElementById('newDocAmount').value) || 0,
+        memo: document.getElementById('newDocMemo').value.trim(),
+        fileName: '', storedName: ''
+      };
+      // File upload
+      const fileInput = document.getElementById('newDocFile');
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const base64 = await new Promise(resolve => { reader.onload = e => resolve(e.target.result.split(',')[1]); reader.readAsDataURL(file); });
+        const resp = await fetch('/api/documents/upload', { method:'POST', headers:{'Content-Type':'application/json', 'X-Auth-Token': window._authToken||''}, body: JSON.stringify({filename: file.name, data: base64}) });
+        const result = await resp.json();
+        if (result.ok) { doc.fileName = file.name; doc.storedName = result.storedName; }
+      }
+      data.documents.push(doc);
+      DataManager.save();
+      DataManager.addActivity('📂', `문서 등록: ${title}`, 'info');
+      Modal.close();
+      this.render();
+    });
+  },
+
+  edit(id) {
+    const data = DataManager.get();
+    const d = (data.documents||[]).find(x => x.id === id);
+    if (!d) return;
+    Modal.open('문서 수정', `
+      <div class="form-group"><label>문서 제목</label><input type="text" id="editDocTitle" value="${Utils.escapeHtml(d.title)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>분류</label><select id="editDocCategory">${['contract','mou','government','legal','internal','other'].map(c=>`<option value="${c}"${c===d.category?' selected':''}>${{contract:'계약서',mou:'MOU/협약서',government:'정부과제',legal:'법률/인허가',internal:'내부 문서',other:'기타'}[c]}</option>`).join('')}</select></div>
+        <div class="form-group"><label>상태</label><select id="editDocStatus"><option value="active"${d.status==='active'?' selected':''}>유효</option><option value="draft"${d.status==='draft'?' selected':''}>초안</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>체결일</label><input type="date" id="editDocDate" value="${d.date||''}"></div>
+        <div class="form-group"><label>만료일</label><input type="date" id="editDocExpiry" value="${d.expiryDate||''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>상대방</label><input type="text" id="editDocParties" value="${Utils.escapeHtml(d.parties||'')}"></div>
+        <div class="form-group"><label>금액 (만원)</label><input type="number" id="editDocAmount" value="${d.amount||''}"></div>
+      </div>
+      <div class="form-group"><label>메모</label><textarea id="editDocMemo" rows="2">${Utils.escapeHtml(d.memo||'')}</textarea></div>
+      ${d.fileName ? `<p style="font-size:12px;color:var(--text-light)">📎 현재 파일: ${Utils.escapeHtml(d.fileName)}</p>` : ''}
+      <div class="form-group"><label>새 파일 (교체)</label><input type="file" id="editDocFile"></div>
+    `, async () => {
+      d.title = document.getElementById('editDocTitle').value.trim();
+      d.category = document.getElementById('editDocCategory').value;
+      d.status = document.getElementById('editDocStatus').value;
+      d.date = document.getElementById('editDocDate').value;
+      d.expiryDate = document.getElementById('editDocExpiry').value;
+      d.parties = document.getElementById('editDocParties').value.trim();
+      d.amount = parseInt(document.getElementById('editDocAmount').value) || 0;
+      d.memo = document.getElementById('editDocMemo').value.trim();
+      const fileInput = document.getElementById('editDocFile');
+      if (fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const base64 = await new Promise(resolve => { reader.onload = e => resolve(e.target.result.split(',')[1]); reader.readAsDataURL(file); });
+        const resp = await fetch('/api/documents/upload', { method:'POST', headers:{'Content-Type':'application/json', 'X-Auth-Token': window._authToken||''}, body: JSON.stringify({filename: file.name, data: base64}) });
+        const result = await resp.json();
+        if (result.ok) { d.fileName = file.name; d.storedName = result.storedName; }
+      }
+      DataManager.save();
+      Modal.close();
+      this.render();
+    });
+  },
+
+  delete(id) {
+    const data = DataManager.get();
+    const d = (data.documents||[]).find(x => x.id === id);
+    if (!d || !confirm(`"${d.title}" 문서를 삭제하시겠습니까?`)) return;
+    data.documents = data.documents.filter(x => x.id !== id);
+    DataManager.save();
+    DataManager.addActivity('📂', `문서 삭제: ${d.title}`, 'info');
+    this.render();
+  }
+};
+
+  </script>
+  <script>
 // ===== SETTINGS MODULE =====
 
 const Settings = {
@@ -7429,6 +8299,7 @@ const Settings = {
     document.getElementById('settingRunwayDanger').value = s.runwayDanger || 3;
     document.getElementById('settingRunwayWarning').value = s.runwayWarning || 6;
     document.getElementById('settingOKRThreshold').value = s.okrThreshold || 40;
+    this.renderPasswordStatus();
   },
 
   save() {
@@ -7496,17 +8367,191 @@ const Settings = {
         setTimeout(() => location.reload(), 1000);
       });
     });
+  },
+
+  setPassword() {
+    const pw = document.getElementById('settingPassword').value;
+    if (!pw || pw.length < 4) return Utils.toast('비밀번호는 4자 이상이어야 합니다.', 'warning');
+    fetch('/api/set-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Auth-Token': window._authToken || '' },
+      body: JSON.stringify({ password: pw })
+    }).then(r => r.json()).then(res => {
+      if (res.ok) {
+        window._authToken = res.token;
+        document.getElementById('settingPassword').value = '';
+        Utils.toast('비밀번호가 설정되었습니다.', 'success');
+        this.renderPasswordStatus();
+      }
+    });
+  },
+
+  removePassword() {
+    if (!confirm('비밀번호 잠금을 해제하시겠습니까?')) return;
+    fetch('/api/remove-password', {
+      method: 'POST',
+      headers: { 'X-Auth-Token': window._authToken || '' }
+    }).then(r => r.json()).then(res => {
+      if (res.ok) {
+        window._authToken = '';
+        Utils.toast('비밀번호가 해제되었습니다.', 'success');
+        this.renderPasswordStatus();
+      }
+    });
+  },
+
+  renderPasswordStatus() {
+    const el = document.getElementById('passwordStatus');
+    if (!el) return;
+    fetch('/api/auth-status').then(r=>r.json()).then(s => {
+      el.innerHTML = s.hasPassword
+        ? '<span style="color:var(--success);font-size:13px">🔒 비밀번호 잠금 활성화됨</span>'
+        : '<span style="color:var(--text-light);font-size:13px">🔓 비밀번호 미설정 (누구나 접속 가능)</span>';
+    });
   }
 };
 
   </script>
   <script>
+// ===== AUTH MODULE =====
+window._authToken = '';
+
+const Auth = {
+  async check() {
+    try {
+      const res = await fetch('/api/auth-status');
+      const status = await res.json();
+      if (status.hasPassword && !status.loggedIn) {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('loginPassword').focus();
+        return false;
+      }
+      return true;
+    } catch (e) {
+      return true;
+    }
+  },
+
+  async login() {
+    const pw = document.getElementById('loginPassword').value;
+    const errEl = document.getElementById('loginError');
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      const result = await res.json();
+      if (result.ok) {
+        window._authToken = result.token;
+        document.getElementById('loginScreen').style.display = 'none';
+        App.startApp();
+      } else {
+        errEl.textContent = result.error || '로그인 실패';
+        errEl.style.display = 'block';
+      }
+    } catch (e) {
+      errEl.textContent = '서버 연결 오류';
+      errEl.style.display = 'block';
+    }
+  }
+};
+
+// ===== NOTIFICATION MANAGER =====
+const NotifManager = {
+  check() {
+    const data = DataManager.get();
+    const notifs = [];
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+    const dayOfWeek = now.getDay(); // 0=Sun
+    const dayOfMonth = now.getDate();
+
+    // 문서 만료 알림
+    const noti = data.notifications || {};
+    if (noti.docExpiryAlert !== false) {
+      const days = noti.docExpiryDays || 30;
+      (data.documents || []).forEach(d => {
+        if (!d.expiryDate) return;
+        const diff = Math.ceil((new Date(d.expiryDate) - now) / (1000*60*60*24));
+        if (diff > 0 && diff <= days) {
+          notifs.push({ icon: '📄', text: `"${d.title}" 만료 ${diff}일 전`, type: diff <= 7 ? 'danger' : 'warning' });
+        } else if (diff <= 0 && diff > -7) {
+          notifs.push({ icon: '🚨', text: `"${d.title}" 만료됨!`, type: 'danger' });
+        }
+      });
+    }
+
+    // 대출 상환일 알림
+    if (noti.loanPaymentAlert !== false) {
+      const ldays = noti.loanPaymentDays || 7;
+      (data.financial?.loans || []).forEach(l => {
+        if (!l.nextPaymentDate) return;
+        const diff = Math.ceil((new Date(l.nextPaymentDate) - now) / (1000*60*60*24));
+        if (diff >= 0 && diff <= ldays) {
+          notifs.push({ icon: '🏦', text: `"${l.name}" 상환일 ${diff}일 전 (${l.monthlyPayment}만원)`, type: diff <= 3 ? 'danger' : 'warning' });
+        }
+      });
+    }
+
+    // 주간 리포트 알림 (금요일)
+    if (noti.weeklyReport !== false && dayOfWeek === (noti.weeklyReportDay || 5)) {
+      notifs.push({ icon: '📋', text: '주간 리포트 작성일입니다', type: 'info' });
+    }
+
+    // 월간 리포트 알림
+    if (noti.monthlyReport !== false && dayOfMonth === (noti.monthlyReportDay || 1)) {
+      notifs.push({ icon: '📊', text: '월간 경영 리포트 작성일입니다', type: 'info' });
+    }
+
+    // 미팅 다음 액션 알림
+    (data.meetings || []).forEach(m => {
+      if (!m.nextDate) return;
+      const diff = Math.ceil((new Date(m.nextDate) - now) / (1000*60*60*24));
+      if (diff >= 0 && diff <= 3) {
+        notifs.push({ icon: '📇', text: `"${m.nextAction || m.title}" 예정 (${diff === 0 ? '오늘' : diff + '일 후'})`, type: diff === 0 ? 'warning' : 'info' });
+      }
+    });
+
+    // Update alert badge
+    const badge = document.getElementById('alertCount');
+    if (badge) badge.textContent = notifs.length;
+
+    // Show banner for important ones
+    if (notifs.length > 0) {
+      this.showBanner(notifs.slice(0, 5));
+    }
+
+    return notifs;
+  },
+
+  showBanner(notifs) {
+    const el = document.getElementById('notifBanner');
+    if (!el) return;
+    el.innerHTML = notifs.map(n => `
+      <div class="notif-item">
+        <span style="font-size:18px">${n.icon}</span>
+        <div style="flex:1;font-size:13px">${Utils.escapeHtml(n.text)}</div>
+        <button onclick="this.closest('.notif-item').remove()" style="border:none;background:none;cursor:pointer;font-size:16px;color:var(--text-light)">&times;</button>
+      </div>
+    `).join('');
+    // Auto-hide after 15 seconds
+    setTimeout(() => { if (el) el.innerHTML = ''; }, 15000);
+  }
+};
+
 // ===== BRING ENGINEERING — MAIN APPLICATION =====
 
 const App = {
   currentPage: 'dashboard',
 
-  init() {
+  async init() {
+    const authed = await Auth.check();
+    if (!authed) return; // wait for login
+    this.startApp();
+  },
+
+  startApp() {
     DataManager.load();
     Modal.init();
     this.setupNavigation();
@@ -7517,6 +8562,8 @@ const App = {
     this.updateDate();
     this.navigateTo('dashboard');
     this.checkBackupReminder();
+    // 알림 체크
+    setTimeout(() => NotifManager.check(), 2000);
   },
 
   setupNavigation() {
@@ -7622,7 +8669,7 @@ const App = {
   },
 
   backupData() {
-    fetch('/api/backup', { method: 'POST' })
+    fetch('/api/backup', { method: 'POST', headers: { 'X-Auth-Token': window._authToken || '' } })
       .then(res => res.json())
       .then(result => {
         if (result.ok) {
@@ -7750,6 +8797,9 @@ const App = {
       pipeline: '영업 파이프라인',
       risk: '리스크 관리',
       roadmap: '로드맵 & 전략',
+      contacts: '거래처 관리',
+      investment: '투자 유치',
+      documents: '계약/문서 관리',
       reports: '리포트 & 분석',
       settings: '설정'
     };
@@ -7772,6 +8822,9 @@ const App = {
       pipeline: Pipeline,
       risk: Risk,
       roadmap: RoadmapPage,
+      contacts: Contacts,
+      investment: Investment,
+      documents: Documents,
       reports: null,
       settings: Settings
     };
