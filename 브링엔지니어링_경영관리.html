@@ -1708,6 +1708,7 @@ select {
       <section id="page-financial" class="page">
         <div class="page-actions">
           <button class="btn btn-primary" onclick="Financial.openAddModal()">+ 거래 추가</button>
+          <button class="btn btn-primary" onclick="Financial.openPasteTransaction()" style="background:#8b5cf6">📋 붙여넣기 입력</button>
           <button class="btn btn-secondary" onclick="Financial.recalculate()">재계산</button>
           <button class="btn btn-secondary" onclick="Financial.exportCSV()">CSV 내보내기</button>
         </div>
@@ -2007,11 +2008,18 @@ select {
           <div class="table-container" id="fdiScheduleSection"></div>
         </div>
         <div class="section-card">
-          <h3>경쟁사 분석</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">경쟁사 분석</h3>
+            <button class="btn btn-sm btn-primary" onclick="RoadmapPage.openAddCompetitor()">+ 경쟁사 추가</button>
+          </div>
           <div class="table-container" id="competitorSection"></div>
+          <div id="competitorDetailSection" style="margin-top:16px"></div>
         </div>
         <div class="section-card">
-          <h3>수상 · 인증 · 레퍼런스</h3>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">수상 · 인증 · 레퍼런스</h3>
+            <button class="btn btn-sm btn-primary" onclick="RoadmapPage.openAddBrandAsset()">+ 항목 추가</button>
+          </div>
           <div id="brandAssetsSection"></div>
         </div>
       </section>
@@ -2403,13 +2411,21 @@ const DEFAULT_DATA = {
       { item: '가격 경쟁력', bring: '중간', compA: '중간', compB: '높음', overseas: '낮음(고가)', academia: '없음' }
     ],
     brandAssets: [
-      { type: '수상', content: 'DeXplore Global 대상', org: 'DeXplore', date: '2025', usage: 'IR·사업계획서' },
-      { type: '수상', content: '기타 8개 수상 (총 9개)', org: '각 기관', date: '2025', usage: 'IR·홍보' },
-      { type: '인증', content: 'TRL 5 인증', org: '평가기관', date: '2025', usage: '기술력 증빙 (Shadow AI)' },
-      { type: '성과', content: '터널 PoC — 직사광 51.91% 저감', org: '현장', date: '2025', usage: '레퍼런스 (진주 폐터널)' },
-      { type: '선정', content: '정부지원사업 6개 선정', org: '각 기관', date: '2025~', usage: 'IR·홍보' },
-      { type: '지재권', content: '특허 2건 출원', org: '특허청', date: '2025', usage: '기술보호' },
-      { type: 'MOU', content: '3개 기관 체결', org: '각 기관', date: '2025~', usage: '파트너십' }
+      { type: '수상', content: 'DeXplore Global 대상', org: 'DeXplore', date: '2025', usage: 'IR·사업계획서', detail: '글로벌 스타트업 경진대회 대상 수상. 50개국 300팀 중 1위', link: '', attachment: '' },
+      { type: '수상', content: '창업경진대회 외 8개 수상 (총 9개)', org: '각 기관', date: '2025', usage: 'IR·홍보', detail: '예비창업패키지 우수상, 캠퍼스타운 최우수상, 도전K스타트업 등', link: '', attachment: '' },
+      { type: '인증', content: 'TRL 5 인증 (Shadow AI)', org: '평가기관', date: '2025', usage: '기술력 증빙', detail: '기술준비수준 5단계 — 유사 환경 검증 완료. AI 기반 터널 조도 분석 솔루션', link: '', attachment: '' },
+      { type: '성과', content: '터널 PoC — 직사광 51.91% 저감', org: '진주시 폐터널', date: '2025', usage: '레퍼런스·IR', detail: '진주 폐터널 현장 실증. 직사광 저감 51.91% 달성. 측정 SOP 기반 정량 검증 완료', link: '', attachment: '' },
+      { type: '선정', content: '정부지원사업 6개 선정', org: '중기부/창진원 등', date: '2025~2026', usage: 'IR·홍보·신뢰도', detail: '예비창업패키지, 초기창업패키지, 청년창업사관학교, 캠퍼스타운, TIPS 등', link: '', attachment: '' },
+      { type: '지재권', content: '특허 2건 출원 (Shadow AI, Lux-Guard)', org: '특허청', date: '2025', usage: '기술보호·IP 포트폴리오', detail: 'Shadow AI 관련 AI 분석 방법론 특허 + Lux-Guard 눈부심 저감 장치 특허', link: '', attachment: '' },
+      { type: 'MOU', content: '3개 기관 MOU 체결', org: '상지대/한국도로공사 등', date: '2025~', usage: '파트너십·영업', detail: '산학협력(상지대), 현장 실증(한국도로공사 강원), 공동연구 등', link: '', attachment: '' },
+      { type: '인증', content: '벤처기업 인증', org: '중소벤처기업부', date: '2025', usage: '세제혜택·신뢰도', detail: '벤처기업 인증 (기술보증기금 추천). 법인세/소득세 감면, 정부사업 가점', link: '', attachment: '' },
+      { type: '레퍼런스', content: '상지대학교 공동연구', org: '상지대학교', date: '2026-Q2', usage: '학술·기술 신뢰도', detail: '터널 조도 측정 데이터 공동분석. CIE 88 기준 검증 연구', link: '', attachment: '' }
+    ],
+    competitorDetail: [
+      { id: 'cd1', name: '국내 A사 (조도측정 전문)', founded: '2010', employees: '30~50명', revenue: '20억~', strengths: '조도계측 분야 다수 B2G 레퍼런스, 한국도로공사와 장기 계약', weaknesses: 'AI 분석 역량 없음, 이동측정 불가, 고정 장비 중심', products: '터널 조도 측정 서비스, 도로 조명 컨설팅', clients: '한국도로공사, 지자체', threat: '높음', note: '기존 시장 점유자. 레퍼런스 많지만 기술 고도화 부족' },
+      { id: 'cd2', name: '국내 B사 (재귀반사 측정)', founded: '2015', employees: '10~20명', revenue: '5~10억', strengths: '재귀반사 측정 전문성, 일부 B2G 실적', weaknesses: 'CIE 88 미적용, 터널 조도 측정 역량 부족', products: '도로 표지판 재귀반사 측정', clients: '지자체, 국토부', threat: '중간', note: '직접 경쟁보다는 인접 시장' },
+      { id: 'cd3', name: '해외 (독일/일본)', founded: '-', employees: '대기업', revenue: '-', strengths: '고정밀 하드웨어, CIE 88 완전 준수, 글로벌 레퍼런스', weaknesses: '고가(장비당 1억+), 국내 A/S 어려움, 소프트웨어 약함', products: 'LMK 시리즈(독일 TechnoTeam), 루미나(일본)', clients: '유럽/일본 공공기관', threat: '낮음 (가격장벽)', note: '기술 벤치마크 대상. 가격으로 국내 시장 진입 어려움' },
+      { id: 'cd4', name: '대학/연구기관', founded: '-', employees: '-', revenue: '-', strengths: '학술 데이터·논문 보유', weaknesses: '상용화 불가, 현장 투입 불가, SOP 없음', products: '연구 보고서', clients: '정부 R&D', threat: '낮음', note: '협력 대상. 경쟁이 아닌 파트너십 가능' }
     ]
   },
 
@@ -3690,6 +3706,79 @@ const Financial = {
       this.render();
       Dashboard.render();
     }
+  },
+
+  // ===== 클립보드 붙여넣기 거래 입력 =====
+  openPasteTransaction() {
+    Modal.open('붙여넣기로 거래 입력', `
+      <div style="font-size:13px;color:var(--text-light);margin-bottom:12px">
+        토스/뱅크샐러드 앱에서 거래 내역을 복사하거나, 카드 결제 알림 문자를 붙여넣기 하세요.<br>
+        <strong>인식 가능 형식:</strong><br>
+        · [신한카드] 32,000원 스타벅스 03/12<br>
+        · 카카오뱅크 출금 50,000원 | 스타벅스<br>
+        · 2026-03-12 / 스타벅스 / 32,000원<br>
+        · 여러 줄 한꺼번에 붙여넣기 가능
+      </div>
+      <div class="form-group"><label>거래 내역 붙여넣기</label>
+        <textarea id="pasteInput" rows="8" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:monospace" placeholder="여기에 붙여넣기 (Ctrl+V)"></textarea>
+      </div>
+      <div id="pastePreview" style="margin-top:8px"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="Financial.parsePasteTransaction()">인식 & 등록</button>`);
+    setTimeout(() => {
+      const ta = document.getElementById('pasteInput');
+      if (ta) { ta.focus(); ta.addEventListener('input', () => Financial.previewPaste()); }
+    }, 200);
+  },
+
+  previewPaste() {
+    const text = document.getElementById('pasteInput').value;
+    const parsed = this._parseTransactionText(text);
+    const el = document.getElementById('pastePreview');
+    if (!el) return;
+    if (parsed.length === 0) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div style="font-size:12px;font-weight:600;margin-bottom:4px">인식된 거래 ${parsed.length}건:</div>` +
+      parsed.map(p => `<div style="font-size:12px;padding:4px 8px;margin:2px 0;background:var(--bg-hover);border-radius:4px;display:flex;justify-content:space-between"><span>${Utils.escapeHtml(p.description)}</span><span style="font-weight:600;color:var(--danger)">${p.amount.toLocaleString()}원</span></div>`).join('');
+  },
+
+  _parseTransactionText(text) {
+    const lines = text.split('\n').filter(l => l.trim());
+    const results = [];
+    for (const line of lines) {
+      // Pattern: amount extraction (comma separated numbers + 원)
+      const amountMatch = line.match(/([\d,]+)\s*원/);
+      if (!amountMatch) continue;
+      const amount = parseInt(amountMatch[1].replace(/,/g, ''));
+      if (isNaN(amount) || amount <= 0) continue;
+      // Extract description (remove amount, card info brackets, date patterns)
+      let desc = line.replace(/\[.*?\]/g, '').replace(/([\d,]+)\s*원/g, '').replace(/\d{2,4}[\/\-\.]\d{1,2}([\/\-\.]\d{1,2})?/g, '').replace(/승인|결제|출금|사용|카드/g, '').replace(/\|/g, '').trim();
+      desc = desc.replace(/\s+/g, ' ').trim();
+      if (!desc) desc = '기타 지출';
+      results.push({ amount, description: desc, date: new Date().toISOString().slice(0, 10) });
+    }
+    return results;
+  },
+
+  parsePasteTransaction() {
+    const text = document.getElementById('pasteInput').value;
+    const parsed = this._parseTransactionText(text);
+    if (parsed.length === 0) { Utils.toast('인식된 거래가 없습니다. 형식을 확인해주세요.', 'warning'); return; }
+    const data = DataManager.get();
+    const curMonth = data.financial.months[0];
+    // Add to misc expense (만원 변환)
+    let totalAdded = 0;
+    parsed.forEach(p => {
+      const amountMan = Math.round(p.amount / 10000 * 10) / 10;
+      if (curMonth) {
+        curMonth.expense.misc = (curMonth.expense.misc || 0) + amountMan;
+        totalAdded += p.amount;
+      }
+    });
+    DataManager.save();
+    DataManager.addActivity('📋', `붙여넣기 거래 ${parsed.length}건 (${totalAdded.toLocaleString()}원) 등록`, 'info');
+    Modal.close();
+    Utils.toast(`${parsed.length}건 거래 (${totalAdded.toLocaleString()}원) 등록 완료!`, 'success');
+    this.render();
+    Dashboard.render();
   },
 
   // ===== 급여 관리 =====
@@ -6543,6 +6632,7 @@ const RoadmapPage = {
     this.renderWeeklyRoadmap();
     this.renderFDISchedule();
     this.renderCompetitors();
+    this.renderCompetitorDetail();
     this.renderBrandAssets();
   },
 
@@ -6627,31 +6717,370 @@ const RoadmapPage = {
     const el = document.getElementById('competitorSection');
     if (!el) return;
 
-    el.innerHTML = `<table class="data-table"><thead><tr><th>비교 항목</th><th style="color:var(--primary)">브링엔지니어링</th><th>국내 업체 A</th><th>국내 업체 B</th><th>해외 솔루션</th><th>대학·연구기관</th></tr></thead><tbody>` +
-      comp.map(c => `<tr><td><strong>${c.item}</strong></td><td class="highlight-cell">${c.bring}</td><td>${c.compA}</td><td>${c.compB}</td><td>${c.overseas}</td><td>${c.academia}</td></tr>`).join('') +
-      `</tbody></table>`;
+    el.innerHTML = `<table class="data-table"><thead><tr><th>비교 항목</th><th style="color:var(--primary)">브링엔지니어링</th><th>국내 업체 A</th><th>국내 업체 B</th><th>해외 솔루션</th><th>대학·연구기관</th><th style="width:40px"></th></tr></thead><tbody>` +
+      comp.map((c, i) => `<tr><td><strong>${Utils.escapeHtml(c.item)}</strong></td><td class="highlight-cell">${Utils.escapeHtml(c.bring)}</td><td>${Utils.escapeHtml(c.compA)}</td><td>${Utils.escapeHtml(c.compB)}</td><td>${Utils.escapeHtml(c.overseas)}</td><td>${Utils.escapeHtml(c.academia)}</td><td style="text-align:center"><button class="btn btn-sm btn-secondary" onclick="RoadmapPage.editCompItem(${i})" style="padding:2px 6px">✎</button></td></tr>`).join('') +
+      `</tbody></table>
+      <div style="margin-top:8px;text-align:right"><button class="btn btn-sm btn-secondary" onclick="RoadmapPage.openAddCompItem()">+ 비교 항목 추가</button></div>`;
   },
 
+  renderCompetitorDetail() {
+    const details = DataManager.get().strategy?.competitorDetail || [];
+    const el = document.getElementById('competitorDetailSection');
+    if (!el) return;
+
+    const threatColors = { '높음': '#dc2626', '중간': '#d97706', '낮음': '#16a34a', '낮음 (가격장벽)': '#16a34a' };
+
+    el.innerHTML = details.map((c, i) => {
+      const tColor = threatColors[c.threat] || '#6b7280';
+      return `
+      <div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;background:var(--bg)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div>
+            <div style="font-weight:700;font-size:15px">${Utils.escapeHtml(c.name)}</div>
+            <div style="font-size:12px;color:var(--text-light);margin-top:2px">설립: ${Utils.escapeHtml(c.founded || '-')} | 규모: ${Utils.escapeHtml(c.employees || '-')} | 매출: ${Utils.escapeHtml(c.revenue || '-')}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:${tColor}20;color:${tColor}">위협: ${Utils.escapeHtml(c.threat)}</span>
+            <button class="btn btn-sm btn-secondary" onclick="RoadmapPage.editCompetitor(${i})" style="padding:2px 8px">✎</button>
+            <button class="btn btn-sm btn-danger" onclick="RoadmapPage.deleteCompetitor(${i})" style="padding:2px 8px">✕</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px">
+          <div><span style="font-weight:600;color:var(--success)">강점:</span> ${Utils.escapeHtml(c.strengths)}</div>
+          <div><span style="font-weight:600;color:var(--danger)">약점:</span> ${Utils.escapeHtml(c.weaknesses)}</div>
+          <div><span style="font-weight:600">주요 제품:</span> ${Utils.escapeHtml(c.products || '-')}</div>
+          <div><span style="font-weight:600">주요 고객:</span> ${Utils.escapeHtml(c.clients || '-')}</div>
+        </div>
+        ${c.note ? `<div style="margin-top:8px;font-size:12px;color:var(--text-light);padding:8px;background:var(--bg-hover);border-radius:6px">💡 ${Utils.escapeHtml(c.note)}</div>` : ''}
+      </div>`;
+    }).join('') || '<p style="color:var(--text-muted);font-size:14px">등록된 경쟁사 상세 정보가 없습니다.</p>';
+  },
+
+  openAddCompItem() {
+    Modal.open('경쟁 비교 항목 추가', `
+      <div class="form-group"><label>비교 항목</label><input type="text" id="newCompItem" placeholder="예: SaaS 모델"></div>
+      <div class="form-group"><label>브링엔지니어링</label><input type="text" id="newCompBring" placeholder="우리의 현황"></div>
+      <div class="form-row">
+        <div class="form-group"><label>국내 A사</label><input type="text" id="newCompA"></div>
+        <div class="form-group"><label>국내 B사</label><input type="text" id="newCompB"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>해외 솔루션</label><input type="text" id="newCompOverseas"></div>
+        <div class="form-group"><label>대학·연구기관</label><input type="text" id="newCompAcademia"></div>
+      </div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="RoadmapPage.addCompItem()">추가</button>`);
+  },
+
+  addCompItem() {
+    const data = DataManager.get();
+    const item = document.getElementById('newCompItem').value.trim();
+    if (!item) { Utils.toast('항목명을 입력해주세요.', 'warning'); return; }
+    if (!data.strategy.competitors) data.strategy.competitors = [];
+    data.strategy.competitors.push({
+      item, bring: document.getElementById('newCompBring').value.trim(),
+      compA: document.getElementById('newCompA').value.trim(),
+      compB: document.getElementById('newCompB').value.trim(),
+      overseas: document.getElementById('newCompOverseas').value.trim(),
+      academia: document.getElementById('newCompAcademia').value.trim()
+    });
+    DataManager.save();
+    Modal.close();
+    this.renderCompetitors();
+  },
+
+  editCompItem(idx) {
+    const data = DataManager.get();
+    const c = data.strategy.competitors[idx];
+    if (!c) return;
+    Modal.open('비교 항목 수정', `
+      <div class="form-group"><label>비교 항목</label><input type="text" id="editCompItem" value="${Utils.escapeHtml(c.item)}"></div>
+      <div class="form-group"><label>브링엔지니어링</label><input type="text" id="editCompBring" value="${Utils.escapeHtml(c.bring)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>국내 A사</label><input type="text" id="editCompA" value="${Utils.escapeHtml(c.compA)}"></div>
+        <div class="form-group"><label>국내 B사</label><input type="text" id="editCompB" value="${Utils.escapeHtml(c.compB)}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>해외 솔루션</label><input type="text" id="editCompOverseas" value="${Utils.escapeHtml(c.overseas)}"></div>
+        <div class="form-group"><label>대학·연구기관</label><input type="text" id="editCompAcademia" value="${Utils.escapeHtml(c.academia)}"></div>
+      </div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-danger" onclick="RoadmapPage.deleteCompItem(${idx})" style="margin-right:auto">삭제</button><button class="btn btn-primary" onclick="RoadmapPage.saveCompItem(${idx})">저장</button>`);
+  },
+
+  saveCompItem(idx) {
+    const data = DataManager.get();
+    const c = data.strategy.competitors[idx];
+    if (!c) return;
+    c.item = document.getElementById('editCompItem').value.trim();
+    c.bring = document.getElementById('editCompBring').value.trim();
+    c.compA = document.getElementById('editCompA').value.trim();
+    c.compB = document.getElementById('editCompB').value.trim();
+    c.overseas = document.getElementById('editCompOverseas').value.trim();
+    c.academia = document.getElementById('editCompAcademia').value.trim();
+    DataManager.save();
+    Modal.close();
+    this.renderCompetitors();
+  },
+
+  deleteCompItem(idx) {
+    const data = DataManager.get();
+    data.strategy.competitors.splice(idx, 1);
+    DataManager.save();
+    Modal.close();
+    this.renderCompetitors();
+  },
+
+  openAddCompetitor() {
+    Modal.open('경쟁사 추가', `
+      <div class="form-group"><label>업체명</label><input type="text" id="newCDName" placeholder="예: OO테크"></div>
+      <div class="form-row">
+        <div class="form-group"><label>설립</label><input type="text" id="newCDFounded" placeholder="2015"></div>
+        <div class="form-group"><label>규모</label><input type="text" id="newCDEmp" placeholder="10~20명"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>매출</label><input type="text" id="newCDRev" placeholder="5~10억"></div>
+        <div class="form-group"><label>위협도</label><select id="newCDThreat"><option value="높음">높음</option><option value="중간" selected>중간</option><option value="낮음">낮음</option></select></div>
+      </div>
+      <div class="form-group"><label>강점</label><input type="text" id="newCDStr"></div>
+      <div class="form-group"><label>약점</label><input type="text" id="newCDWeak"></div>
+      <div class="form-row">
+        <div class="form-group"><label>주요 제품</label><input type="text" id="newCDProd"></div>
+        <div class="form-group"><label>주요 고객</label><input type="text" id="newCDClients"></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="newCDNote"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="RoadmapPage.addCompetitor()">추가</button>`);
+  },
+
+  addCompetitor() {
+    const data = DataManager.get();
+    const name = document.getElementById('newCDName').value.trim();
+    if (!name) { Utils.toast('업체명을 입력해주세요.', 'warning'); return; }
+    if (!data.strategy.competitorDetail) data.strategy.competitorDetail = [];
+    data.strategy.competitorDetail.push({
+      id: 'cd' + Date.now(), name,
+      founded: document.getElementById('newCDFounded').value.trim(),
+      employees: document.getElementById('newCDEmp').value.trim(),
+      revenue: document.getElementById('newCDRev').value.trim(),
+      strengths: document.getElementById('newCDStr').value.trim(),
+      weaknesses: document.getElementById('newCDWeak').value.trim(),
+      products: document.getElementById('newCDProd').value.trim(),
+      clients: document.getElementById('newCDClients').value.trim(),
+      threat: document.getElementById('newCDThreat').value,
+      note: document.getElementById('newCDNote').value.trim()
+    });
+    DataManager.save();
+    DataManager.addActivity('🔍', `경쟁사 추가: ${name}`, 'info');
+    Modal.close();
+    this.renderCompetitorDetail();
+  },
+
+  editCompetitor(idx) {
+    const data = DataManager.get();
+    const c = data.strategy.competitorDetail[idx];
+    if (!c) return;
+    const thOpts = ['높음','중간','낮음','낮음 (가격장벽)'];
+    Modal.open('경쟁사 수정', `
+      <div class="form-group"><label>업체명</label><input type="text" id="editCDName" value="${Utils.escapeHtml(c.name)}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>설립</label><input type="text" id="editCDFounded" value="${Utils.escapeHtml(c.founded || '')}"></div>
+        <div class="form-group"><label>규모</label><input type="text" id="editCDEmp" value="${Utils.escapeHtml(c.employees || '')}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>매출</label><input type="text" id="editCDRev" value="${Utils.escapeHtml(c.revenue || '')}"></div>
+        <div class="form-group"><label>위협도</label><select id="editCDThreat">${thOpts.map(t=>`<option value="${t}" ${c.threat===t?'selected':''}>${t}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-group"><label>강점</label><input type="text" id="editCDStr" value="${Utils.escapeHtml(c.strengths || '')}"></div>
+      <div class="form-group"><label>약점</label><input type="text" id="editCDWeak" value="${Utils.escapeHtml(c.weaknesses || '')}"></div>
+      <div class="form-row">
+        <div class="form-group"><label>주요 제품</label><input type="text" id="editCDProd" value="${Utils.escapeHtml(c.products || '')}"></div>
+        <div class="form-group"><label>주요 고객</label><input type="text" id="editCDClients" value="${Utils.escapeHtml(c.clients || '')}"></div>
+      </div>
+      <div class="form-group"><label>메모</label><input type="text" id="editCDNote" value="${Utils.escapeHtml(c.note || '')}"></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="RoadmapPage.saveEditCompetitor(${idx})">저장</button>`);
+  },
+
+  saveEditCompetitor(idx) {
+    const data = DataManager.get();
+    const c = data.strategy.competitorDetail[idx];
+    if (!c) return;
+    c.name = document.getElementById('editCDName').value.trim();
+    c.founded = document.getElementById('editCDFounded').value.trim();
+    c.employees = document.getElementById('editCDEmp').value.trim();
+    c.revenue = document.getElementById('editCDRev').value.trim();
+    c.strengths = document.getElementById('editCDStr').value.trim();
+    c.weaknesses = document.getElementById('editCDWeak').value.trim();
+    c.products = document.getElementById('editCDProd').value.trim();
+    c.clients = document.getElementById('editCDClients').value.trim();
+    c.threat = document.getElementById('editCDThreat').value;
+    c.note = document.getElementById('editCDNote').value.trim();
+    DataManager.save();
+    Modal.close();
+    this.renderCompetitorDetail();
+  },
+
+  deleteCompetitor(idx) {
+    const data = DataManager.get();
+    const c = data.strategy.competitorDetail[idx];
+    if (!c) return;
+    Modal.confirm('경쟁사 삭제', `"${c.name}" 정보를 삭제하시겠습니까?`, () => {
+      data.strategy.competitorDetail.splice(idx, 1);
+      DataManager.save();
+      Modal.close();
+      RoadmapPage.renderCompetitorDetail();
+    });
+  },
+
+  // ===== 수상 · 인증 · 레퍼런스 =====
   renderBrandAssets() {
     const assets = DataManager.get().strategy?.brandAssets || [];
     const el = document.getElementById('brandAssetsSection');
     if (!el) return;
 
-    const typeIcons = { '수상': '🏆', '인증': '✅', '성과': '📊', '선정': '🎯', '지재권': '📜', 'MOU': '🤝' };
+    const typeIcons = { '수상': '🏆', '인증': '✅', '성과': '📊', '선정': '🎯', '지재권': '📜', 'MOU': '🤝', '레퍼런스': '🏢' };
+    const typeColors = { '수상': '#f59e0b', '인증': '#16a34a', '성과': '#3b82f6', '선정': '#8b5cf6', '지재권': '#ec4899', 'MOU': '#06b6d4', '레퍼런스': '#64748b' };
 
     el.innerHTML = `<div class="brand-grid">` +
-      assets.map(a => `
-        <div class="brand-card">
-          <div class="brand-icon">${typeIcons[a.type] || '📌'}</div>
-          <div class="brand-content">
-            <span class="badge badge-info">${a.type}</span>
-            <h4>${a.content}</h4>
-            <div class="brand-meta">${a.org} · ${a.date}</div>
-            <div class="brand-usage">활용: ${a.usage}</div>
+      assets.map((a, i) => {
+        const icon = typeIcons[a.type] || '📌';
+        const color = typeColors[a.type] || '#6b7280';
+        const hasAttachment = a.attachment && a.attachment.length > 0;
+        return `
+        <div class="brand-card" style="border-left:3px solid ${color}">
+          <div class="brand-icon">${icon}</div>
+          <div class="brand-content" style="flex:1">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start">
+              <span class="badge" style="background:${color}20;color:${color}">${a.type}</span>
+              <div style="display:flex;gap:4px">
+                <button class="btn btn-sm btn-secondary" onclick="RoadmapPage.editBrandAsset(${i})" style="padding:2px 6px;font-size:11px">✎</button>
+                <button class="btn btn-sm btn-danger" onclick="RoadmapPage.deleteBrandAsset(${i})" style="padding:2px 6px;font-size:11px">✕</button>
+              </div>
+            </div>
+            <h4 style="margin:6px 0 4px">${Utils.escapeHtml(a.content)}</h4>
+            <div class="brand-meta">${Utils.escapeHtml(a.org)} · ${Utils.escapeHtml(a.date)}</div>
+            ${a.detail ? `<div style="font-size:12px;color:var(--text);margin-top:6px;padding:6px 8px;background:var(--bg-hover);border-radius:4px">${Utils.escapeHtml(a.detail)}</div>` : ''}
+            <div class="brand-usage" style="margin-top:6px">활용: ${Utils.escapeHtml(a.usage)}</div>
+            <div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              ${a.link ? `<a href="${Utils.escapeHtml(a.link)}" target="_blank" style="font-size:11px;color:var(--primary)">🔗 관련 링크</a>` : ''}
+              ${hasAttachment ? `<span style="font-size:11px;color:var(--success)">📎 첨부파일 있음</span>` : ''}
+              <label style="font-size:11px;color:var(--primary);cursor:pointer;padding:2px 6px;border:1px dashed var(--border);border-radius:4px">
+                📁 파일 첨부
+                <input type="file" accept="image/*,.pdf,.doc,.docx,.hwp" style="display:none" onchange="RoadmapPage.attachFile(${i},this)">
+              </label>
+            </div>
+            ${hasAttachment ? `<div style="margin-top:6px">${a.attachment.startsWith('data:image') ? `<img src="${a.attachment}" style="max-width:200px;max-height:120px;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="window.open(this.src)">` : `<span style="font-size:11px;background:var(--bg-hover);padding:4px 8px;border-radius:4px">📄 ${Utils.escapeHtml(a.attachmentName || '첨부파일')}</span>`}</div>` : ''}
           </div>
         </div>
-      `).join('') +
+      `}).join('') +
       `</div>`;
+  },
+
+  attachFile(idx, input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 500 * 1024) {
+      Utils.toast('파일 크기는 500KB 이하만 가능합니다. (localStorage 제한)', 'warning');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = DataManager.get();
+      data.strategy.brandAssets[idx].attachment = e.target.result;
+      data.strategy.brandAssets[idx].attachmentName = file.name;
+      DataManager.save();
+      DataManager.addActivity('📎', `첨부파일 추가: ${file.name}`, 'info');
+      RoadmapPage.renderBrandAssets();
+    };
+    reader.readAsDataURL(file);
+  },
+
+  openAddBrandAsset() {
+    const types = ['수상','인증','성과','선정','지재권','MOU','레퍼런스'];
+    Modal.open('수상/인증/레퍼런스 추가', `
+      <div class="form-row">
+        <div class="form-group"><label>유형</label><select id="newBAType">${types.map(t=>`<option value="${t}">${t}</option>`).join('')}</select></div>
+        <div class="form-group"><label>날짜</label><input type="text" id="newBADate" placeholder="2025"></div>
+      </div>
+      <div class="form-group"><label>내용</label><input type="text" id="newBAContent" placeholder="예: 창업경진대회 대상"></div>
+      <div class="form-group"><label>기관</label><input type="text" id="newBAOrg" placeholder="예: 중기부"></div>
+      <div class="form-group"><label>상세 설명</label><textarea id="newBADetail" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px" placeholder="수상 배경, 규모, 의미 등 상세 설명"></textarea></div>
+      <div class="form-group"><label>활용처</label><input type="text" id="newBAUsage" placeholder="IR·사업계획서"></div>
+      <div class="form-group"><label>관련 링크 (선택)</label><input type="text" id="newBALink" placeholder="https://..."></div>
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="RoadmapPage.addBrandAsset()">추가</button>`);
+  },
+
+  addBrandAsset() {
+    const data = DataManager.get();
+    const content = document.getElementById('newBAContent').value.trim();
+    if (!content) { Utils.toast('내용을 입력해주세요.', 'warning'); return; }
+    if (!data.strategy.brandAssets) data.strategy.brandAssets = [];
+    data.strategy.brandAssets.push({
+      type: document.getElementById('newBAType').value,
+      content, org: document.getElementById('newBAOrg').value.trim(),
+      date: document.getElementById('newBADate').value.trim(),
+      usage: document.getElementById('newBAUsage').value.trim(),
+      detail: document.getElementById('newBADetail').value.trim(),
+      link: document.getElementById('newBALink').value.trim(),
+      attachment: ''
+    });
+    DataManager.save();
+    DataManager.addActivity('🏆', `수상/인증 추가: ${content}`, 'info');
+    Modal.close();
+    this.renderBrandAssets();
+  },
+
+  editBrandAsset(idx) {
+    const data = DataManager.get();
+    const a = data.strategy.brandAssets[idx];
+    if (!a) return;
+    const types = ['수상','인증','성과','선정','지재권','MOU','레퍼런스'];
+    Modal.open('수상/인증/레퍼런스 수정', `
+      <div class="form-row">
+        <div class="form-group"><label>유형</label><select id="editBAType">${types.map(t=>`<option value="${t}" ${a.type===t?'selected':''}>${t}</option>`).join('')}</select></div>
+        <div class="form-group"><label>날짜</label><input type="text" id="editBADate" value="${Utils.escapeHtml(a.date || '')}"></div>
+      </div>
+      <div class="form-group"><label>내용</label><input type="text" id="editBAContent" value="${Utils.escapeHtml(a.content)}"></div>
+      <div class="form-group"><label>기관</label><input type="text" id="editBAOrg" value="${Utils.escapeHtml(a.org || '')}"></div>
+      <div class="form-group"><label>상세 설명</label><textarea id="editBADetail" rows="3" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px">${Utils.escapeHtml(a.detail || '')}</textarea></div>
+      <div class="form-group"><label>활용처</label><input type="text" id="editBAUsage" value="${Utils.escapeHtml(a.usage || '')}"></div>
+      <div class="form-group"><label>관련 링크</label><input type="text" id="editBALink" value="${Utils.escapeHtml(a.link || '')}"></div>
+      ${a.attachment ? `<div class="form-group"><label>첨부파일</label><div style="display:flex;gap:8px;align-items:center"><span style="font-size:12px">📎 ${Utils.escapeHtml(a.attachmentName || '파일')}</span><button class="btn btn-sm btn-danger" onclick="RoadmapPage.removeAttachment(${idx})">삭제</button></div></div>` : ''}
+    `, `<button class="btn btn-secondary" onclick="Modal.close()">취소</button><button class="btn btn-primary" onclick="RoadmapPage.saveEditBrandAsset(${idx})">저장</button>`);
+  },
+
+  saveEditBrandAsset(idx) {
+    const data = DataManager.get();
+    const a = data.strategy.brandAssets[idx];
+    if (!a) return;
+    a.type = document.getElementById('editBAType').value;
+    a.content = document.getElementById('editBAContent').value.trim();
+    a.org = document.getElementById('editBAOrg').value.trim();
+    a.date = document.getElementById('editBADate').value.trim();
+    a.usage = document.getElementById('editBAUsage').value.trim();
+    a.detail = document.getElementById('editBADetail').value.trim();
+    a.link = document.getElementById('editBALink').value.trim();
+    DataManager.save();
+    Modal.close();
+    this.renderBrandAssets();
+  },
+
+  deleteBrandAsset(idx) {
+    const data = DataManager.get();
+    const a = data.strategy.brandAssets[idx];
+    if (!a) return;
+    Modal.confirm('항목 삭제', `"${a.content}" 을(를) 삭제하시겠습니까?`, () => {
+      data.strategy.brandAssets.splice(idx, 1);
+      DataManager.save();
+      Modal.close();
+      RoadmapPage.renderBrandAssets();
+    });
+  },
+
+  removeAttachment(idx) {
+    const data = DataManager.get();
+    data.strategy.brandAssets[idx].attachment = '';
+    data.strategy.brandAssets[idx].attachmentName = '';
+    DataManager.save();
+    Modal.close();
+    this.renderBrandAssets();
   }
 };
 
