@@ -4499,7 +4499,7 @@ const Financial = {
       if (hasExpense) {
         hasExpense.forEach(ex => {
           const color = catColors[ex.category] || '#6b7280';
-          calHTML += `<div style="font-size:10px;padding:2px 4px;margin:1px 0;border-radius:3px;background:${color}20;color:${color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer" title="${Utils.escapeHtml(ex.name)}: ${ex.amount}만원${ex.memo ? ' - ' + ex.memo : ''}">${ex.amount}만 ${Utils.escapeHtml(ex.name.length > 6 ? ex.name.slice(0, 6) + '..' : ex.name)}</div>`;
+          calHTML += `<div style="font-size:10px;padding:2px 4px;margin:1px 0;border-radius:3px;background:${color}30;color:var(--text);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border-left:3px solid ${color}" title="${Utils.escapeHtml(ex.name)}: ${ex.amount}만원${ex.memo ? ' - ' + ex.memo : ''}">${ex.amount}만 ${Utils.escapeHtml(ex.name.length > 6 ? ex.name.slice(0, 6) + '..' : ex.name)}</div>`;
         });
       }
       calHTML += `</div>`;
