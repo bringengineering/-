@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="브링엔지니어링 경영관리 시스템 — CEO 대시보드">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>브링엔지니어링 — 경영관리 시스템</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏗️</text></svg>" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <noscript>
+    <div class="noscript-msg">
+      <h2>JavaScript가 필요합니다</h2>
+      <p>이 경영관리 시스템을 사용하려면 브라우저의 JavaScript를 활성화해 주세요.</p>
+    </div>
+  </noscript>
+
+  <!-- Sidebar Navigation -->
+  <nav id="sidebar" aria-label="메인 네비게이션">
+    <div class="sidebar-header">
+      <h2>BRING</h2>
+      <span class="subtitle">Engineering</span>
+    </div>
+    <ul class="nav-menu" role="menubar">
+      <li class="nav-item active" data-page="dashboard" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📊</span>
+        <span class="nav-text">경영 대시보드</span>
+      </li>
+      <li class="nav-item" data-page="operations" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🏛️</span>
+        <span class="nav-text">운영 체계</span>
+      </li>
+      <li class="nav-item" data-page="financial" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">💰</span>
+        <span class="nav-text">재무 관리</span>
+      </li>
+      <li class="nav-item" data-page="okr" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🎯</span>
+        <span class="nav-text">OKR 목표관리</span>
+      </li>
+      <li class="nav-item" data-page="team" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">👥</span>
+        <span class="nav-text">팀 & 인사</span>
+      </li>
+      <li class="nav-item" data-page="hrpage" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📝</span>
+        <span class="nav-text">인사 제도</span>
+      </li>
+      <li class="nav-item" data-page="projects" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🔧</span>
+        <span class="nav-text">프로젝트 & 기술</span>
+      </li>
+      <li class="nav-item" data-page="quality" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">✅</span>
+        <span class="nav-text">품질 & IP</span>
+      </li>
+      <li class="nav-item" data-page="pipeline" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📈</span>
+        <span class="nav-text">영업 파이프라인</span>
+      </li>
+      <li class="nav-item" data-page="risk" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⚠️</span>
+        <span class="nav-text">리스크 관리</span>
+      </li>
+      <li class="nav-item" data-page="roadmap" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">🗺️</span>
+        <span class="nav-text">로드맵 & 전략</span>
+      </li>
+      <li class="nav-item" data-page="reports" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">📋</span>
+        <span class="nav-text">리포트 & 분석</span>
+      </li>
+      <li class="nav-item" data-page="settings" role="menuitem" tabindex="0">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        <span class="nav-text">설정</span>
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="company-health">
+        <span class="health-label">회사 건강도</span>
+        <div class="health-bar" role="progressbar" aria-label="회사 건강도">
+          <div class="health-fill" id="globalHealthBar"></div>
+        </div>
+        <span class="health-score" id="globalHealthScore">--</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <header id="top-bar">
+      <div class="top-bar-left">
+        <button id="menu-toggle" class="menu-btn" aria-label="메뉴 열기">☰</button>
+        <h1 id="page-title">경영 대시보드</h1>
+      </div>
+      <div class="top-bar-right">
+        <span class="current-date" id="currentDate"></span>
+        <button class="theme-toggle" id="themeToggle" onclick="App.toggleTheme()" title="다크모드 전환 (D)" aria-label="테마 전환">🌙</button>
+        <button class="theme-toggle" id="shortcutHelp" onclick="App.showShortcuts()" title="키보드 단축키 (?)" aria-label="단축키 도움말">⌨️</button>
+        <div class="alert-badge" id="alertBadge" title="알림" role="status" aria-label="알림">
+          <span class="alert-icon" aria-hidden="true">🔔</span>
+          <span class="alert-count" id="alertCount">0</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="page-container">
+      <!-- Dashboard Page -->
+      <section id="page-dashboard" class="page active">
+        <div class="kpi-grid" id="dashboardKPIGrid"></div>
+        <div class="alert-banner" id="alertBanner" role="alert" aria-live="polite"></div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>현금 잔고 추이</h3>
+            <canvas id="cashChart" aria-label="현금 잔고 추이 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>OKR 진행률</h3>
+            <canvas id="okrChart" aria-label="OKR 진행률 차트" role="img"></canvas>
+          </div>
+        </div>
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>제품별 TRL 진행</h3>
+            <canvas id="trlChart" aria-label="TRL 진행 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>영업 파이프라인 현황</h3>
+            <canvas id="pipelineChart" aria-label="파이프라인 현황 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3>4대 영역 건강도 (Health Check)</h3>
+          <div class="health-matrix" id="healthMatrix"></div>
+        </div>
+
+        <div class="section-card">
+          <h3>최근 활동 로그</h3>
+          <div class="activity-log" id="activityLog"></div>
+        </div>
+      </section>
+
+      <!-- Operations Page -->
+      <section id="page-operations" class="page">
+        <div class="section-card">
+          <h3>미션 · 비전 · 핵심가치</h3>
+          <div id="missionVisionSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>핵심가치 (Core Values)</h3>
+          <div id="coreValuesSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>행동원칙 (Do / Don't)</h3>
+          <div id="behaviorRulesSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>운영 리듬 캘린더</h3>
+          <div class="table-container" id="rhythmSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>의사결정 프레임워크</h3>
+          <div id="decisionSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>RACI 매트릭스</h3>
+          <div class="table-container" id="raciSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>긴급 의사결정 프로세스 (대표 부재 시)</h3>
+          <div class="table-container" id="emergencySection"></div>
+        </div>
+        <div class="section-card">
+          <h3>커뮤니케이션 프로토콜</h3>
+          <div class="table-container" id="commProtocolSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>이슈 에스컬레이션</h3>
+          <div class="table-container" id="escalationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>현재 조직 구조 (2026.03)</h3>
+          <div class="table-container" id="orgStructureSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>조직 성장 로드맵</h3>
+          <div id="growthRoadmapSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>핵심 인력 리스크 (Key Person Risk)</h3>
+          <div class="table-container" id="keyPersonRiskSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>회의 운영 원칙</h3>
+          <div id="meetingRulesSection"></div>
+        </div>
+      </section>
+
+      <!-- Financial Page -->
+      <section id="page-financial" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Financial.openAddModal()">+ 거래 추가</button>
+          <button class="btn btn-secondary" onclick="Financial.recalculate()">재계산</button>
+          <button class="btn btn-secondary" onclick="Financial.exportCSV()">CSV 내보내기</button>
+        </div>
+
+        <div class="kpi-grid" id="financialKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card wide">
+            <h3>월별 수입 vs 지출</h3>
+            <canvas id="incomeExpenseChart" aria-label="수입 지출 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>지출 항목별 비중</h3>
+            <canvas id="expensePieChart" aria-label="지출 비중 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>현금 잔고 & 런웨이 추이</h3>
+            <canvas id="runwayChart" aria-label="런웨이 추이 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3>월별 캐시플로우 상세</h3>
+          <div class="table-container">
+            <table id="cashflowTable" class="data-table">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <h3 style="margin:0;padding:0;border:0">정부과제 예산 집행률</h3>
+            <button class="btn btn-sm btn-primary" onclick="Financial.openAddGovBudget()">+ 과제 추가</button>
+          </div>
+          <div id="govBudgetSection"></div>
+        </div>
+      </section>
+
+      <!-- OKR Page -->
+      <section id="page-okr" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="OKR.openAddObjective()">+ Objective 추가</button>
+          <select id="okrQuarterSelect" onchange="OKR.switchQuarter(this.value)" aria-label="분기 선택">
+            <option value="2026-Q2">2026 Q2</option>
+            <option value="2026-Q3">2026 Q3</option>
+            <option value="2026-Q4">2026 Q4</option>
+          </select>
+        </div>
+
+        <div class="kpi-grid" id="okrKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>Objective별 달성률</h3>
+            <canvas id="okrProgressChart" aria-label="OKR 달성률 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>Objective별 현재 점수</h3>
+            <canvas id="okrTrendChart" aria-label="OKR 현재 점수 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div id="okrObjectivesList" class="okr-list"></div>
+      </section>
+
+      <!-- Team Page -->
+      <section id="page-team" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Team.openAddMember()">+ 멤버 추가</button>
+          <button class="btn btn-secondary" onclick="Team.exportCSV()">CSV 내보내기</button>
+        </div>
+
+        <div class="kpi-grid" id="teamKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>팀원별 스킬 레벨</h3>
+            <canvas id="skillRadarChart" aria-label="스킬 레이더 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>팀 만족도 추이</h3>
+            <canvas id="satisfactionChart" aria-label="만족도 추이 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="team-grid" id="teamMemberGrid"></div>
+
+        <div class="section-card">
+          <h3>운영 리듬 실행 현황</h3>
+          <div id="routineTracker"></div>
+        </div>
+      </section>
+
+      <!-- HR Page -->
+      <section id="page-hrpage" class="page">
+        <div class="section-card">
+          <h3>온보딩 프로그램 (30-60-90일)</h3>
+          <div id="onboardingSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>성과평가 체계</h3>
+          <div class="table-container" id="perfEvalSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>보상 · 인센티브 체계</h3>
+          <div class="table-container" id="compensationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>퇴직 · 인수인계 프로토콜</h3>
+          <div id="resignationSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>개발자 착수 준비 계획</h3>
+          <div id="devPlansSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>세무 · 회계 캘린더 (2026)</h3>
+          <div class="table-container" id="taxCalendarSection"></div>
+        </div>
+      </section>
+
+      <!-- Projects Page -->
+      <section id="page-projects" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Projects.openAddProject()">+ 프로젝트 추가</button>
+        </div>
+
+        <div class="kpi-grid" id="projectsKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card wide">
+            <h3>제품별 TRL 로드맵</h3>
+            <canvas id="trlRoadmapChart" aria-label="TRL 로드맵 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div id="projectsList" class="projects-list"></div>
+
+        <div class="section-card">
+          <h3>기술 부채 현황</h3>
+          <div id="techDebtSection"></div>
+        </div>
+      </section>
+
+      <!-- Quality & IP Page -->
+      <section id="page-quality" class="page">
+        <div class="section-card">
+          <h3>VisiScan 측정 서비스 품질 체크리스트 (QMS)</h3>
+          <div id="qmsSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>IP 포트폴리오 현황</h3>
+          <div class="table-container" id="ipSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>기술 부채 관리 기준</h3>
+          <div id="techDebtTypesSection"></div>
+        </div>
+      </section>
+
+      <!-- Pipeline Page -->
+      <section id="page-pipeline" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Pipeline.openAddDeal()">+ 딜 추가</button>
+          <input type="text" id="pipelineSearch" placeholder="딜 검색..." oninput="Pipeline.render()" class="search-input" aria-label="파이프라인 검색">
+        </div>
+
+        <div class="kpi-grid" id="pipelineKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>파이프라인 단계별 금액</h3>
+            <canvas id="pipelineFunnelChart" aria-label="파이프라인 퍼널 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>월별 매출 전망</h3>
+            <canvas id="revenueForecastChart" aria-label="매출 전망 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3>파이프라인 상세</h3>
+          <div class="pipeline-board" id="pipelineBoard"></div>
+        </div>
+      </section>
+
+      <!-- Risk Page -->
+      <section id="page-risk" class="page">
+        <div class="page-actions">
+          <button class="btn btn-primary" onclick="Risk.openAddRisk()">+ 리스크 추가</button>
+          <button class="btn btn-secondary" onclick="Risk.exportCSV()">CSV 내보내기</button>
+          <input type="text" id="riskSearch" placeholder="리스크 검색..." oninput="Risk.render()" class="search-input" aria-label="리스크 검색">
+          <select id="riskFilterStatus" onchange="Risk.render()" aria-label="상태 필터">
+            <option value="">전체 상태</option>
+            <option value="active">활성</option>
+            <option value="monitoring">관찰</option>
+            <option value="resolved">해결</option>
+          </select>
+          <select id="riskFilterCategory" onchange="Risk.render()" aria-label="카테고리 필터">
+            <option value="">전체 카테고리</option>
+            <option value="재무">재무</option>
+            <option value="인력">인력</option>
+            <option value="기술">기술</option>
+            <option value="사업">사업</option>
+            <option value="법무">법무</option>
+          </select>
+        </div>
+
+        <div class="kpi-grid" id="riskKPIGrid"></div>
+
+        <div class="charts-row">
+          <div class="chart-card">
+            <h3>리스크 히트맵 (영향 × 확률)</h3>
+            <canvas id="riskHeatmapChart" aria-label="리스크 히트맵 차트" role="img"></canvas>
+          </div>
+          <div class="chart-card">
+            <h3>카테고리별 리스크 분포</h3>
+            <canvas id="riskCategoryChart" aria-label="리스크 분포 차트" role="img"></canvas>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3>리스크 레지스터</h3>
+          <div class="table-container">
+            <table id="riskTable" class="data-table">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roadmap & Strategy Page -->
+      <section id="page-roadmap" class="page">
+        <div class="section-card">
+          <h3>12주 체계 정착 실행 로드맵</h3>
+          <div id="weeklyRoadmapSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>FDInnovation 추진일정표 (2026)</h3>
+          <div class="table-container" id="fdiScheduleSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>경쟁사 분석</h3>
+          <div class="table-container" id="competitorSection"></div>
+        </div>
+        <div class="section-card">
+          <h3>수상 · 인증 · 레퍼런스</h3>
+          <div id="brandAssetsSection"></div>
+        </div>
+      </section>
+
+      <!-- Reports Page -->
+      <section id="page-reports" class="page">
+        <div class="section-card">
+          <h3>월간 경영 리포트 생성</h3>
+          <p>현재 데이터를 기반으로 자동 생성되는 경영 리포트입니다.</p>
+          <div class="page-actions">
+            <select id="reportMonth" aria-label="리포트 월 선택">
+              <option value="2026-03">2026년 3월</option>
+              <option value="2026-04">2026년 4월</option>
+              <option value="2026-05">2026년 5월</option>
+            </select>
+            <button class="btn btn-primary" onclick="Reports.generate()">리포트 생성</button>
+            <button class="btn btn-secondary" onclick="Reports.exportPDF()">PDF 내보내기</button>
+          </div>
+        </div>
+        <div id="reportContent" class="report-content"></div>
+      </section>
+
+      <!-- Settings Page -->
+      <section id="page-settings" class="page">
+        <div class="section-card">
+          <h3>회사 기본 정보</h3>
+          <form id="companySettingsForm">
+            <div class="form-group">
+              <label for="settingCompanyName">회사명</label>
+              <input type="text" id="settingCompanyName" value="브링엔지니어링">
+            </div>
+            <div class="form-group">
+              <label for="settingCEO">대표자</label>
+              <input type="text" id="settingCEO" value="서창환">
+            </div>
+            <div class="form-group">
+              <label for="settingFoundedDate">설립일</label>
+              <input type="date" id="settingFoundedDate">
+            </div>
+            <div class="form-group">
+              <label for="settingFiscalStart">회계연도 시작월</label>
+              <select id="settingFiscalStart">
+                <option value="1">1월</option>
+                <option value="3" selected>3월</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="Settings.save()">저장</button>
+          </form>
+        </div>
+        <div class="section-card">
+          <h3>데이터 관리</h3>
+          <div class="settings-actions">
+            <button class="btn btn-secondary" onclick="Settings.exportData()">전체 데이터 내보내기 (JSON)</button>
+            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">데이터 가져오기</button>
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="Settings.importData(event)">
+            <button class="btn btn-danger" onclick="Settings.resetData()">데이터 초기화</button>
+          </div>
+        </div>
+        <div class="section-card">
+          <h3>알림 설정</h3>
+          <div class="form-group">
+            <label><input type="checkbox" id="settingAlertRunway" checked> 런웨이 경고</label>
+            <div class="form-row" style="margin-top:8px">
+              <div class="form-group"><label>위험 임계값 (개월)</label><input type="number" id="settingRunwayDanger" min="1" max="12" value="3"></div>
+              <div class="form-group"><label>주의 임계값 (개월)</label><input type="number" id="settingRunwayWarning" min="1" max="24" value="6"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" id="settingAlertOKR" checked> OKR 진행률 경고</label>
+            <div class="form-row" style="margin-top:8px">
+              <div class="form-group"><label>경고 기준 (%)</label><input type="number" id="settingOKRThreshold" min="10" max="100" value="40"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" id="settingAlertRisk" checked> 심각 등급 리스크 발생 시 경고</label>
+          </div>
+        </div>
+        <div class="section-card">
+          <h3>앱 정보</h3>
+          <p style="font-size:13px;color:var(--text-light)">
+            브링엔지니어링 경영관리 시스템 v2.0<br>
+            데이터: localStorage 기반 (브라우저 내 저장)<br>
+            단축키: <span class="shortcut-key">?</span> 키를 눌러 확인
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button class="modal-close" onclick="Modal.close()" aria-label="닫기">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-footer" id="modalFooter"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/financial.js"></script>
+  <script src="js/okr.js"></script>
+  <script src="js/team.js"></script>
+  <script src="js/projects.js"></script>
+  <script src="js/pipeline.js"></script>
+  <script src="js/risk.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/operations.js"></script>
+  <script src="js/quality.js"></script>
+  <script src="js/hrpage.js"></script>
+  <script src="js/roadmappage.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
